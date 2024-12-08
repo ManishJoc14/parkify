@@ -33,17 +33,17 @@ export default function Benefits() {
   ];
 
   return (
-    <section className="container mx-auto bg-accent py-16">
+    <section id="benefits" className="container mx-auto bg-accent py-16">
       <div className="text-center">
         <div className="flex items-center justify-center space-x-2 mb-2">
           <span className="h-1 w-6 bg-rose-500 rounded-xl"></span>
           <span className="text-muted-foreground rounded-lg px-2 py-1.5 text-sm sm:text-md font-medium">
-            Benefits of Book My Spot App
+            Benefits of Parkify
           </span>
         </div>
         <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
           Exclusive Benefits of{" "}
-          <p className="text-primary text-2xl sm:text-3xl">Book My Spot App</p>
+          <p className="text-primary text-2xl sm:text-3xl">Parkify App</p>
         </h2>
       </div>
 

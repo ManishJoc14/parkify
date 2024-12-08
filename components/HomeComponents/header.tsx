@@ -14,7 +14,7 @@ export default function Header() {
       <div className="container mx-auto flex h-16 items-baseline justify-between px-4">
         <Link href="/" className="flex items-baseline">
           <span className="h-8 text-4xl">🚗</span>
-          <span className="text-xl font-semibold">BookMySpot</span>
+          <span className="text-xl font-semibold">Parkify</span>
         </Link>
 
         {/* Desktop Navigation */}
@@ -26,25 +26,25 @@ export default function Header() {
             Home
           </Link>
           <Link
-            href="/how-it-works"
+            href="#how-it-works"
             className="text-md font-semibold font-sans text-secondary-foreground hover:text-primary transition-colors"
           >
             How It Works
           </Link>
           <Link
-            href="/benefits"
+            href="#benefits"
             className="text-md font-semibold font-sans text-secondary-foreground hover:text-primary transition-colors"
           >
             Benefits
           </Link>
           <Link
-            href="/testimonials"
+            href="#testimonials"
             className="text-md font-semibold font-sans text-secondary-foreground hover:text-primary transition-colors"
           >
             Testimonial
           </Link>
           <Link
-            href="/faq"
+            href="#faq"
             className="text-md font-semibold font-sans text-secondary-foreground hover:text-primary transition-colors"
           >
             FAQ
@@ -76,7 +76,7 @@ export default function Header() {
                 Home
               </Link>
               <Link
-                href="/how-it-works"
+                href="#how-it-works"
                 className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
                 onClick={() => setIsOpen(false)}
               >
@@ -90,14 +90,14 @@ export default function Header() {
                 Benefits
               </Link>
               <Link
-                href="/testimonials"
+                href="#testimonials"
                 className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
                 onClick={() => setIsOpen(false)}
               >
                 Testimonial
               </Link>
               <Link
-                href="/faq"
+                href="#faq"
                 className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
                 onClick={() => setIsOpen(false)}
               >

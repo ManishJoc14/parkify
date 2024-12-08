@@ -1,13 +1,4 @@
-import {
-  Car,
-  Clock,
-  MapPin,
-  Search,
-  Star,
-  Ticket,
-  User,
-  Wallet,
-} from "lucide-react";
+import { Search, Ticket, User, Wallet } from "lucide-react";
 import ServiceCardSmall from "./serviceCardSmall";
 import { services } from "@/public/data/services";
 
@@ -37,7 +28,7 @@ export default function HowItWorks() {
   ];
 
   return (
-    <section className="container mx-auto py-12">
+    <section id="how-it-works" className="container mx-auto py-16">
       <div className="flex items-center justify-center space-x-2 mb-2">
         <span className="h-1 w-6 bg-rose-500 rounded-xl"></span>
         <span className="text-muted-foreground rounded-lg px-2 py-1.5 text-sm sm:text-md font-medium">

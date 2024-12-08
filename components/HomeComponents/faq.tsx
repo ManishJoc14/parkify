@@ -40,7 +40,7 @@ export default function FAQ() {
   ];
 
   return (
-    <div className="container mx-auto px-8 py-16">
+    <div id="faq" className="container mx-auto px-8 py-16">
       {/* header */}
       <div className="flex items-center justify-center px-16 mb-1">
         <span className="h-1 w-6 bg-rose-500 rounded-xl"></span>

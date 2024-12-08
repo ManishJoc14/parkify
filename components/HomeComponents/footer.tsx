@@ -5,11 +5,11 @@ export default function Footer() {
   return (
     <>
       <footer className="bg-gray-900 text-gray-300 p-2">
-        <div className="container mx-auto px-4 py-8 flex flex-col md:flex-row justify-between gap-8">
+        <div className="container mx-auto px-4 py-8 flex flex-col md:flex-row justify-between gap-10">
           {/* <!-- Brand Section --> */}
           <div>
             <h3 className="text-white text-lg font-bold">
-              <span className="text-2xl">🚗</span>Book My Spot
+              <span className="text-2xl">🚗</span>Parkify
             </h3>
             <p className="mt-2 text-sm">
               Find and reserve parking spots with ease. Simplify your parking
@@ -44,7 +44,8 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="flex flex-row gap-6 justify-between">
+          {/*  <!-- Company and Contact Section -->   */}
+          <div className="flex flex-row gap-8 justify-between">
             {/* <!-- Company Section --> */}
             <div>
               <h4 className="text-white text-lg font-semibold">Company</h4>
@@ -81,11 +82,11 @@ export default function Footer() {
             <div>
               <h4 className="text-white text-lg font-semibold">Contact</h4>
               <ul className="mt-2 space-y-2 text-sm">
-                <li className="text-nowrap">📞 9812300000</li>
+                <li className="text-nowrap">📞 98123000</li>
                 <li className="text-nowrap">
                   🌐{" "}
                   <Link href="#" className="hover:underline">
-                    www.bookmyspot.com
+                    www.parkify.com
                   </Link>
                 </li>
                 <li className="text-nowrap">
@@ -94,7 +95,7 @@ export default function Footer() {
                     href="mailto:info@bookmyspot.com"
                     className="hover:underline"
                   >
-                    info@bookmyspot.com
+                    info@parkify.com
                   </Link>
                 </li>
                 <li className="text-nowrap">📌 Banehswor, Kathmandu</li>

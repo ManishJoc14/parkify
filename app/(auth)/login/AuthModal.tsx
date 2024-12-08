@@ -4,6 +4,14 @@ import React, { useState, useEffect } from "react";
 import { X, Mail, Lock, User, Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -15,6 +23,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [role, setRole] = useState("user");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -27,6 +36,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
       setEmail("");
       setPassword("");
       setName("");
+      setRole("");
       setError("");
       setIsLoading(false);
     }
@@ -82,6 +92,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     }
   };
 
+  console.log(role);
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
       <div
@@ -107,23 +119,20 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className=" flex flex-col gap-1">
+          <form onSubmit={handleSubmit} className=" flex flex-col gap-2">
             {isSignUp && (
               <>
-                <div className="pt-2">
-                  <p className="px-2 text-sm bg-white text-gray-500 ">Name</p>
-                </div>
                 <div className="relative">
                   <User
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                    className="absolute left-3 top-[48%] -translate-y-1/2 text-gray-400"
                     size={20}
                   />
-                  <input
+                  <Input
                     type="text"
-                    placeholder="John Doe"
+                    placeholder="Name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                    className="pl-10 flex item-center"
                     required={isSignUp}
                     disabled={isLoading}
                   />
@@ -131,77 +140,85 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               </>
             )}
 
-            <div className="pt-4">
-              <p className="px-2 text-sm bg-white text-gray-500 ">Email</p>
-            </div>
             <div className="relative">
               <Mail
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                className="absolute left-3 top-[48%] -translate-y-1/2 text-gray-400"
                 size={20}
               />
-              <input
+              <Input
                 type="email"
-                placeholder="johndoe14@gmail.com"
+                placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                className="pl-10"
                 required
                 disabled={isLoading}
               />
-            </div>
-
-            {/* FIXME - Forget Passowrd */}
-            <div className="pt-4">
-              <div className="flex justify-between text-sm">
-                <p
-                  className="px-2 bg-white text-gray-500"
-                  onClick={handleForget}
-                >
-                  Password
-                </p>
-
-                {!isSignUp && (
-                  <p
-                    className="px-2 bg-white cursor-pointer underline hover:text-primary transition-all text-gray-500 "
-                    onClick={handleForget}
-                  >
-                    Forgot Password?
-                  </p>
-                )}
-              </div>
             </div>
 
             <div className="relative">
               <Lock
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                className="absolute left-3 top-[48%] -translate-y-1/2 text-gray-400"
                 size={20}
               />
-              <input
+              <Input
                 type={showPassword ? "text" : "password"}
-                placeholder="Johndoe@143"
+                placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                className="pl-10"
                 required
                 disabled={isLoading}
               />
+
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                className="absolute right-3 top-[48%] -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 disabled={isLoading}
               >
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
 
+            {/* USER ROLE START */}
+            {isSignUp && (
+              <div className="">
+                <Select
+                  onValueChange={(ROLE) => setRole(ROLE)}
+                  defaultValue="user"
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Theme" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="user">User</SelectItem>
+                    <SelectItem value="admin">Admin</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            {/* USER ROLE END */}
+
             <button
               type="submit"
-              className="w-full bg-indigo-600 text-white py-2 mt-4 rounded-lg hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-indigo-600 text-white py-2 mt-1 rounded-lg hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isLoading}
             >
               {isLoading ? "Please wait..." : isSignUp ? "Sign Up" : "Sign In"}
             </button>
+            {/* FIXME - Forget Passowrd */}
+            <div className="flex justify-start">
+              {!isSignUp && (
+                <p
+                  className="px-2 text-xs mb-2 w-fit bg-white cursor-pointer underline hover:text-primary transition-all text-gray-500 "
+                  onClick={handleForget}
+                >
+                  Forgot Password?
+                </p>
+              )}
+            </div>
           </form>
 
           <div className="relative my-6">

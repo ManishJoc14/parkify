@@ -3,7 +3,6 @@
 import * as React from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 const testimonials = [
@@ -53,7 +52,10 @@ export default function Testimonials() {
   };
 
   return (
-    <section className="container mx-auto py-16 px-8 md:px-16 bg-accent">
+    <section
+      id="testimonials"
+      className="container mx-auto py-16 px-8 md:px-16 bg-accent"
+    >
       <div className="container flex flex-col sm:flex-row gap-16">
         {/* LEFT */}
         <div className="flex-1">
@@ -78,7 +80,7 @@ export default function Testimonials() {
 
           <div className="mt-8 flex flex-col items-start space-y-2">
             <div className="flex -space-x-4">
-              {testimonials.map((testimonial, i) => (
+              {testimonials.map((testimonial) => (
                 <div
                   key={testimonial.id}
                   className="relative h-16 w-16 overflow-hidden rounded-full border-2 border-background"
