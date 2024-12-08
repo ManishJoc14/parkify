@@ -183,7 +183,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
             {/* USER ROLE START */}
             {isSignUp && (
-              <div className="">
+              <div>
                 <Select
                   onValueChange={(ROLE) => setRole(ROLE)}
                   defaultValue="user"

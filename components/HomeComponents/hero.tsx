@@ -11,14 +11,12 @@ export default function Hero() {
           <div className="flex items-center">
             <span className="h-1 w-6 bg-rose-500 rounded-xl"></span>
             <span className="text-muted-foreground rounded-lg px-2 py-1.5 text-sm sm:text-md font-medium">
-              The Best Parking Spot Finder !
+              The Best Parking Finder !
             </span>
           </div>
           <h1 className="text-3xl space-y-6 font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-7xl">
             Your{" "}
-            <span className="text-primary underline">
-              Ultimate Parking Spot
-            </span>
+            <span className="text-primary underline">Ultimate Parking</span>
             <p> Finder 🚗🏍️</p>
           </h1>
           <p className="max-w-[42rem] leading-normal pt-4 text-muted-foreground sm:text-xl sm:leading-8">
