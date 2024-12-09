@@ -10,10 +10,10 @@ const links = [
   { name: "Dashboard", href: "/admin/dashboard", icon: HomeIcon },
   {
     name: "Invoices",
-    href: "/admin/dashboard/invoices",
+    href: "/admin/invoices",
     icon: Copy,
   },
-  { name: "Customers", href: "/admin/dashboard/customers", icon: Users },
+  { name: "Customers", href: "/admin/customers", icon: Users },
 ];
 
 export default function NavLinks() {

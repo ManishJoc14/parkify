@@ -1,26 +1,12 @@
 import { generateYAxis } from "@/lib/utils";
 import { Calendar } from "lucide-react";
 
+import { revenue } from "@/data/seed";
 export default async function RevenueChart() {
   // ----------------------------------------------------------------------
   // FIXME - Fetch data from API
   // const revenue = await fetchRevenue(); // Fetch data inside the component
   // ----------------------------------------------------------------------
-
-  const revenue = [
-    { month: "Jan", revenue: 4500 },
-    { month: "Feb", revenue: 3000 },
-    { month: "Mar", revenue: 5000 },
-    { month: "Apr", revenue: 2000 },
-    { month: "May", revenue: 3500 },
-    { month: "Jun", revenue: 4000 },
-    { month: "Jul", revenue: 2500 },
-    { month: "Aug", revenue: 4500 },
-    { month: "Sep", revenue: 3000 },
-    { month: "Oct", revenue: 5000 },
-    { month: "Nov", revenue: 1500 },
-    { month: "Dec", revenue: 4000 },
-  ];
 
   const chartHeight = 350;
   const { yAxisLabels, topLabel } = generateYAxis(revenue);

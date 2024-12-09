@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import { CircleArrowUp } from "lucide-react";
 import Image from "next/image";
+import { latestInvoices } from "@/data/invoices";
 
 export default async function LatestInvoices() {
   // ----------------------------------------------------------------------
@@ -8,43 +9,6 @@ export default async function LatestInvoices() {
   // const latestInvoices = await fetchLatestInvoices();
   // ----------------------------------------------------------------------
 
-  const latestInvoices = [
-    {
-      id: 1,
-      name: "John Doe",
-      email: "john.doe@example.com",
-      amount: "$200.00",
-      image_url: "https://randomuser.me/api/portraits/men/1.jpg",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      email: "jane.smith@example.com",
-      amount: "$150.00",
-      image_url: "https://randomuser.me/api/portraits/women/2.jpg",
-    },
-    {
-      id: 3,
-      name: "Sam Wilson",
-      email: "sam.wilson@example.com",
-      amount: "$300.00",
-      image_url: "https://randomuser.me/api/portraits/men/3.jpg",
-    },
-    {
-      id: 4,
-      name: "Alice Johnson",
-      email: "alice.johnson@example.com",
-      amount: "$250.00",
-      image_url: "https://randomuser.me/api/portraits/women/4.jpg",
-    },
-    {
-      id: 5,
-      name: "Bob Brown",
-      email: "bob.brown@example.com",
-      amount: "$100.00",
-      image_url: "https://randomuser.me/api/portraits/men/5.jpg",
-    },
-  ];
   return (
     <div className="flex w-full flex-col md:col-span-4">
       <h2 className=" mb-4 text-xl md:text-2xl">Latest Invoices</h2>
@@ -80,9 +44,7 @@ export default async function LatestInvoices() {
                     </p>
                   </div>
                 </div>
-                <p
-                  className="truncate text-sm font-medium md:text-base"
-                >
+                <p className="truncate text-sm font-medium md:text-base">
                   {invoice.amount}
                 </p>
               </div>

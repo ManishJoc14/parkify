@@ -9,11 +9,11 @@ import {
   CardsSkeleton,
 } from "@/components/adminComponents/skeletons";
 
-// import { Metadata } from "next";
+import { Metadata } from "next";
 
-// export const metadata: Metadata = {
-//   title: "Dashboard",
-// };
+export const metadata: Metadata = {
+  title: "Dashboard",
+};
 
 export default async function Page() {
   return (
