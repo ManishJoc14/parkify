@@ -23,7 +23,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [role, setRole] = useState("user");
+  const [role, setRole] = useState("driver");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -186,13 +186,14 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               <div>
                 <Select
                   onValueChange={(ROLE) => setRole(ROLE)}
-                  defaultValue="user"
+                  defaultValue="default"
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Theme" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="user">User</SelectItem>
+                    <SelectItem value="default">Choose Role</SelectItem>
+                    <SelectItem value="driver">Driver</SelectItem>
                     <SelectItem value="admin">Admin</SelectItem>
                   </SelectContent>
                 </Select>

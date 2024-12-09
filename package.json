@@ -1,5 +1,5 @@
 {
-  "name": "book-my-spot",
+  "name": "parkify",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -21,10 +21,10 @@
     "date-fns": "^3.6.0",
     "lottie-react": "^2.4.0",
     "lucide-react": "^0.468.0",
-    "next": "14.2.16",
-    "react": "^18",
+    "next": "15.0.3",
     "react-day-picker": "^8.10.1",
-    "react-dom": "^18",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7"
   },

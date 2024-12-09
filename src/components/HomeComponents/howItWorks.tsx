@@ -1,6 +1,6 @@
 import { Search, Ticket, User, Wallet } from "lucide-react";
 import ServiceCardSmall from "./serviceCardSmall";
-import { services } from "@/public/data/services";
+import { services } from "@/data/services";
 
 export default function HowItWorks() {
   const steps = [

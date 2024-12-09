@@ -1,4 +1,4 @@
-import { services } from "@/public/data/services";
+import { services } from "@/data/services";
 import ServiceCardLarge from "./serviceCardLarge";
 import ServicesHeader from "./servicesHeader";
 
