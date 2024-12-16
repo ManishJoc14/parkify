@@ -10,7 +10,7 @@ export default function InvoicesTable({
 }) {
   return (
     <div className="w-full">
-      <h1 className=" mb-8 text-xl md:text-2xl">Customers</h1>
+      <h1 className="mb-8 text-xl md:text-2xl">Customers</h1>
       <Search placeholder="Search customers..." />
       <div className="mt-6 flow-root">
         <div className="overflow-x-auto">

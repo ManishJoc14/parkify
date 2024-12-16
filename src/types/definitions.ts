@@ -1,9 +1,29 @@
-export type User = {
-  id: string;
-  name: string;
+export interface SignUpWithEmailPROPS {
+  firstName: string;
+  middleName: string;
+  lastName: string;
   email: string;
-  password: string;
-};
+  phoneNo: string;
+  hasAcceptedTerms: boolean;
+  redirectUrl: string;
+  accountType: "DRIVER" | "OWNER";
+}
+
+export interface User {
+  id: number;
+  photo: string;
+  firstName: string;
+  middleName: string;
+  lastName: string;
+  fullName: string;
+  bio: string;
+  phoneNo: string;
+  email: string;
+  dateJoined: string;
+  isEmailVerified: boolean;
+  isPhoneVerified: boolean;
+  roles: string[];
+}
 
 export type Customer = {
   id: string;

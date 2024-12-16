@@ -6,12 +6,45 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 import { Revenue } from "@/types/definitions";
+import { UseFormReturn } from "react-hook-form";
+import { SignUpFormData } from "@/app/(auth-pages)/login/AuthModal";
 
 export const formatCurrency = (amount: number) => {
   return (amount / 100).toLocaleString("en-US", {
     style: "currency",
     currency: "USD",
   });
+};
+
+export const splitName = (
+  form: UseFormReturn<SignUpFormData>,
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
+  data: { name: string }
+): { firstName: string; middleName: string; lastName: string } | void => {
+  let firstName: string,
+    middleName: string = "",
+    lastName: string | string[];
+  const nameParts = data.name.split(" ");
+  const length = nameParts.length;
+
+  if (length < 2) {
+    setIsLoading(false);
+    return form.setError("name", {
+      type: "manual",
+      message: "Full name is required",
+    });
+  }
+
+  if (length == 2) {
+    [firstName, lastName] = nameParts;
+  } else if (length == 3) {
+    [firstName, middleName, lastName] = nameParts;
+  } else {
+    [firstName, middleName, ...lastName] = nameParts;
+    lastName = lastName.join(" ");
+  }
+
+  return { firstName, middleName, lastName };
 };
 
 export const formatDateToLocal = (

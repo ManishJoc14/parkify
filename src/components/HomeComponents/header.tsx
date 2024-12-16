@@ -3,8 +3,8 @@
 import * as React from "react";
 import Link from "next/link";
 import { Menu } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import HeaderAuth from "../authComponents/header-auth";
 
 export default function Header() {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -52,10 +52,8 @@ export default function Header() {
         </nav>
 
         {/* Desktop Login Button */}
-        <div className="hidden md:flex items-center space-x-4">
-          <Button asChild>
-            <Link href="/login">Login</Link>
-          </Button>
+        <div className="hidden md:block">
+          <HeaderAuth />
         </div>
 
         {/* Mobile Menu */}
@@ -103,14 +101,7 @@ export default function Header() {
               >
                 FAQ
               </Link>
-              <Button
-                variant="default"
-                asChild
-                className="w-full justify-start"
-                onClick={() => setIsOpen(false)}
-              >
-                <Link href="/login">Login</Link>
-              </Button>
+              <HeaderAuth />
             </div>
           </SheetContent>
         </Sheet>

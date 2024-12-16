@@ -52,8 +52,6 @@ export default function FeedbackForm() {
   };
 
   if (isSubmitted) return <FeedbackSubmittedMessage />;
-
-  console.log(formData);
   return (
     <div className="container mx-auto py-12">
       <div className="mx-auto max-w-xl">
