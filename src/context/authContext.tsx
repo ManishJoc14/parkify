@@ -77,13 +77,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  const signInWithGoogle = async (token: any) => {
+  // eslint-disable-next-line
+  const signInWithGoogle = async (access_token: string) => {
     try {
       const res = await axiosInstance.post(
         "/public/user-app/users/social/auth",
         {
           thirdPartyApp: "GOOGLE",
-          authToken: token?.access_token,
+          authToken: access_token,
         }
       );
 
@@ -131,15 +132,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         localStorage.setItem("refreshToken", res.data?.tokens.refresh);
         redirectToDashboard(res.data.roles[0]);
       }
+      // eslint-disable-next-line
     } catch (err: any) {
-      if (err.response?.data?.password) {
+      if (err?.response?.data?.password) {
         signInForm.setError("password", {
           type: "manual",
           message: err.response.data.password[0],
         });
       }
 
-      if (err.response?.data?.persona) {
+      if (err?.response?.data?.persona) {
         signInForm.setError("email", {
           type: "manual",
           message: err.response.data.persona[0],
@@ -184,7 +186,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         toast.info(res.data.message);
         return;
       }
-
+      // eslint-disable-next-line
     } catch (err: any) {
       if (err.response?.data?.email) {
         signUpForm.setError("email", {
@@ -208,7 +210,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       //   await sendPasswordResetEmail(auth, email);
     } catch (error) {
-      console.error("Error sending password reset email:", error);
+      console.error("Error sending password reset email:", error, email);
       throw new Error("Failed to send password reset email. Try again later.");
     }
   };

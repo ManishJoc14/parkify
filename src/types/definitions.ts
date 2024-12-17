@@ -25,6 +25,16 @@ export interface User {
   roles: string[];
 }
 
+export interface ParkingSpot {
+  id: string;
+  name: string;
+  type: string;
+  rate: number;
+  address: string;
+  status: "Available" | "Occupied" | "Reserved";
+  image_url: string;
+}
+
 export type Customer = {
   id: string;
   name: string;

@@ -1,34 +1,34 @@
 import React, { Suspense } from "react";
-import Pagination from "@/components/adminComponents/invoices/pagination";
+// import Pagination from "@/components/adminComponents/manageParkingSpots/pagination";
 import Search from "@/components/adminComponents/search";
-import Table from "@/components/adminComponents/invoices/table";
-import { CreateInvoice } from "@/components/adminComponents/invoices/buttons";
-import { InvoicesTableSkeleton } from "@/components/adminComponents/skeletons";
+import Table from "@/components/adminComponents/manageParkingSpots/table";
+import { CreateParkingSpot } from "@/components/adminComponents/manageParkingSpots/buttons";
+import { ParkingsTableSkeleton } from "@/components/adminComponents/skeletons";
 import { Metadata } from "next";
 
 // ----------------------------------------------------------------------
 // FIXME - Fetch data from API
-import { latestInvoices as invoices } from "@/data/invoices";
+import { parkingSpots } from "@/data/parkingSpots";
 // ----------------------------------------------------------------------
 
 export const metadata: Metadata = {
-  title: "Invoices",
+  title: "Parking spots",
 };
-
-export default async function Page({
-  searchParams,
-}: {
-  searchParams?: {
-    query?: string;
-    page?: string;
-  };
-}) {
-  const query = await searchParams?.query || "";
-  const currentPage = Number(searchParams?.page) || 1;
+// {
+//   searchParams,
+// }: {
+//   searchParams?: {
+//     query?: string;
+//     page?: string;
+//   };
+// }
+export default async function Page() {
+  // const query = (await searchParams?.query) || "";
+  // const currentPage = Number(searchParams?.page) || 1;
   // ----------------------------------------------------------------------
   // FIXME - Fetch data from API
   // const totalPages = await fetchInvoicesPages(query);
-  const totalPages = 1;
+  // const totalPages = 1;
   // ----------------------------------------------------------------------
 
   // ----------------------------------------------------------------------
@@ -36,22 +36,21 @@ export default async function Page({
   // const invoices = await fetchFilteredInvoices(query, currentPage);
   // ----------------------------------------------------------------------
 
-  
-
   return (
     <div className="w-full">
       <div className="flex w-full items-center justify-between">
-        <h1 className="text-2xl">Invoices</h1>
+        <h1 className="text-2xl">Manage Parking Spots</h1>
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <Search placeholder="Search invoices..." />
-        <CreateInvoice />
+        <Search placeholder="Search parkings..." />
+        <CreateParkingSpot />
       </div>
-      <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
-        <Table data={invoices} />
+      {/* key={query + currentPage} */}
+      <Suspense fallback={<ParkingsTableSkeleton />}>
+        <Table data={parkingSpots} />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
-        <Pagination totalPages={totalPages} />
+        {/* <Pagination totalPages={totalPages} /> */}
       </div>
     </div>
   );

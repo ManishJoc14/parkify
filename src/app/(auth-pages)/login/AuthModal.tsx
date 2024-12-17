@@ -82,7 +82,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   // };
 
   const handleGoogleSignIn = useGoogleLogin({
-    onSuccess: (token) => signInWithGoogle(token),
+    onSuccess: (tokenResponse) => signInWithGoogle(tokenResponse.access_token),
   });
 
   useEffect(() => {
@@ -437,7 +437,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           </div>
 
           <button
-            onClick={handleGoogleSignIn}
+            onClick={() => handleGoogleSignIn()}
             className="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-50 transition mb-4 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isLoading}
           >

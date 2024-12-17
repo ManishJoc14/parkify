@@ -1,22 +1,22 @@
-import { Pen, Plus, Trash2} from "lucide-react";
+import { Pen, Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
 
-export function CreateInvoice() {
+export function CreateParkingSpot() {
   return (
     <Link
-      href="/admin/invoices/create"
+      href="/admin/add-parking"
       className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
     >
-      <span className="hidden md:block">Create Invoice</span>{" "}
+      <span className="hidden md:block">Add Parking Spot</span>{" "}
       <Plus className="h-5 md:ml-4" />
     </Link>
   );
 }
 
-export function UpdateInvoice({ id }: { id: string }) {
+export function UpdateParkingSpot({ id }: { id: string }) {
   return (
     <Link
-      href={`/admin/invoices/${id}/edit`}
+      href={`/admin/parking-spots/${id}/edit`}
       className="rounded-md border p-2 hover:bg-gray-100"
     >
       <Pen className="w-5" />
@@ -24,7 +24,7 @@ export function UpdateInvoice({ id }: { id: string }) {
   );
 }
 
-export function DeleteInvoice({ id }: { id: string }) {
+export function DeleteParkingSpot({ id }: { id: string }) {
   // ----------------------------------------------------------------------
   // FIXME - Fetch data from API
   // server action => export async function deleteInvoice(id: string){}
@@ -35,6 +35,7 @@ export function DeleteInvoice({ id }: { id: string }) {
       <form>
         {/* <form action={deleteInvoiceWithId}> */}
         <button className="rounded-md border p-2 hover:bg-gray-100">
+          <p className="hidden">{id}</p>
           <span className="sr-only">Delete</span>
           <Trash2 className="w-4" />
         </button>

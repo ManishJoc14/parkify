@@ -1,6 +1,6 @@
 "use client";
 
-import { HomeIcon, Copy, Users, ParkingCircleIcon } from "lucide-react";
+import { HomeIcon, Settings, Users, ParkingCircleIcon } from "lucide-react";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -9,9 +9,9 @@ import clsx from "clsx";
 const links = [
   { name: "Dashboard", href: "/admin/dashboard", icon: HomeIcon },
   {
-    name: "Invoices",
-    href: "/admin/invoices",
-    icon: Copy,
+    name: "Parking Spots",
+    href: "/admin/parking-spots",
+    icon: Settings,
   },
   { name: "Customers", href: "/admin/customers", icon: Users },
   { name: "Add parking", href: "/admin/add-parking", icon: ParkingCircleIcon },

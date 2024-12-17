@@ -1,4 +1,4 @@
-import { Car, Clock, MapPin, Star } from "lucide-react";
+import { Car, MapPin, Star } from "lucide-react";
 import Image from "next/image";
 
 interface ServiceCardSmallProps {

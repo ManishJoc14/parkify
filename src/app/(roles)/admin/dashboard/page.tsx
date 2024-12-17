@@ -5,12 +5,11 @@ import LatestInvoices from "@/components/adminComponents/dashboard/latest-invoic
 import { Suspense } from "react";
 import {
   RevenueChartSkeleton,
-  LatestInvoicesSkeleton,
   CardsSkeleton,
+  ParkingSkeleton,
 } from "@/components/adminComponents/skeletons";
 
 import { Metadata } from "next";
-import { ParkingSpotForm } from "@/components/adminComponents/addParkingForm";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -27,7 +26,7 @@ export default async function Page() {
         <Suspense fallback={<RevenueChartSkeleton />}>
           {await RevenueChart()}
         </Suspense>
-        <Suspense fallback={<LatestInvoicesSkeleton />}>
+        <Suspense fallback={<ParkingSkeleton />}>
           {await LatestInvoices()}
         </Suspense>
       </div>

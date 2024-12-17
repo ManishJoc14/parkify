@@ -8,8 +8,8 @@ export const config = {
 export function middleware(request: NextRequest) {
   // const role = request.cookies.get("role")?.value; // 'Owner' or 'Driver'
   // const isLoggedIn = request.cookies.get("isLoggedIn")?.value == "true";
-  // const pathname = request.nextUrl.pathname;
 
+  console.log(request.nextUrl.pathname);
   // console.log(role, request.cookies.get("isLoggedIn")?.value);
   // const isRestrictedPath =
   //   pathname.startsWith("/admin") || pathname.startsWith("/driver");

@@ -2,7 +2,7 @@ export const services = [
   {
     title: "QuickRent",
     distance: "0.8 km",
-    price: "$20.0",
+    price: "$20.0 per hr",
     rating: 4.8,
     slots: 12,
     location: "Baneshwor, Ktm",
@@ -12,7 +12,7 @@ export const services = [
   {
     title: "EasyCar Rentals",
     distance: "1.2 km",
-    price: "$15.0",
+    price: "$15.0 per hr",
     rating: 4.2,
     slots: 18,
     location: "Koteshwor, Ktm",
@@ -22,7 +22,7 @@ export const services = [
   {
     title: "Rent-A-Ride",
     distance: "2.2 km",
-    price: "$18.0",
+    price: "$18.0 per hr",
     rating: 4.6,
     slots: 16,
     location: "Maitighar, Ktm",
