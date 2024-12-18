@@ -123,11 +123,7 @@ export default function SearchPage() {
               </h2>
             </div>
 
-            {/* grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 */}
             <div className="space-y-4 gap-4 overflow-y-hidden">
-              {/* {mockLocations.map((location) => (
-                <ParkingCard key={location.uuid} location={location} />
-              ))} */}
               {mockLocations.map((location) => (
                 <ParkingCard key={location.uuid} parking={location} />
               ))}

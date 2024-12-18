@@ -7,9 +7,13 @@ import { useAuth } from "@/context/authContext";
 export default function HeaderAuth() {
   const { user, logout } = useAuth();
 
+  console.log(user);
+
   return user ? (
     <div className="flex items-center gap-4">
-      <Link href={`/${user.roles[0]}dashboard`}>Hey, {user.fullName}!</Link>
+      <Link href={`/${user.roles[0]}dashboard`}>
+        Hey, {user.firstName} {user.middleName} {user.lastName}!
+      </Link>
       <Button type="submit" variant={"outline"} onClick={logout}>
         Sign out
       </Button>

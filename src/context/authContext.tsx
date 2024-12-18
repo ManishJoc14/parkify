@@ -125,11 +125,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       }
 
       if (res) {
-        setUser(res?.data);
+        const {
+          message,
+          status,
+          tokens: { refresh, access },
+          ...fetchedUser
+        } = res.data;
+        setUser(fetchedUser);
         setIsAuthenticated(true);
-        toast.success(res?.data?.message);
-        localStorage.setItem("accessToken", res.data?.tokens.access);
-        localStorage.setItem("refreshToken", res.data?.tokens.refresh);
+        toast.success(`${status} : ${message}`);
+        localStorage.setItem("accessToken", access);
+        localStorage.setItem("refreshToken", refresh);
         redirectToDashboard(res.data.roles[0]);
       }
       // eslint-disable-next-line
@@ -236,7 +242,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
       await axiosInstance.post(
         "/public/user-app/users/logout",
-        { refresh },
+        { refreshToken: refresh },
         {
           headers: {
             Authorization: `Bearer ${access}`,

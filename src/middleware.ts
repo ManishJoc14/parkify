@@ -6,31 +6,32 @@ export const config = {
 };
 
 export function middleware(request: NextRequest) {
-  // const role = request.cookies.get("role")?.value; // 'Owner' or 'Driver'
-  // const isLoggedIn = request.cookies.get("isLoggedIn")?.value == "true";
+  const role = request.cookies.get("role")?.value; // 'Owner' or 'Driver'
+  const isLoggedIn = request.cookies.get("isLoggedIn")?.value == "true";
 
-  console.log(request.nextUrl.pathname);
-  // console.log(role, request.cookies.get("isLoggedIn")?.value);
-  // const isRestrictedPath =
-  //   pathname.startsWith("/admin") || pathname.startsWith("/driver");
+  const pathname = request.nextUrl.pathname;
+  console.log(role, request.cookies.get("isLoggedIn")?.value);
 
-  // // Block access to admin or driver routes unless logged in
-  // if (!isLoggedIn && isRestrictedPath) {
-  //   console.log(
-  //     "Unauthenticated access to restricted area, redirecting to /login"
-  //   );
-  //   return NextResponse.redirect(new URL("/login", request.url));
-  // }
+  const isRestrictedPath =
+    pathname.startsWith("/admin") || pathname.startsWith("/driver");
 
-  // // "driver trying to access admin route, redirecting to /driver/dashboard"
-  // if (role === "Driver" && pathname.startsWith("/admin")) {
-  //   return NextResponse.redirect(new URL("/driver/dashboard", request.url));
-  // }
+  // Block access to admin or driver routes unless logged in
+  if (!isLoggedIn && isRestrictedPath) {
+    console.log(
+      "Unauthenticated access to restricted area, redirecting to /login"
+    );
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
 
-  // // "Admin trying to access driver route, redirecting to /admin/dashboard"
-  // if (role === "Owner" && pathname.startsWith("/driver")) {
-  //   return NextResponse.redirect(new URL("/admin/dashboard", request.url));
-  // }
+  // "driver trying to access admin route, redirecting to /driver/dashboard"
+  if (role === "Driver" && pathname.startsWith("/admin")) {
+    return NextResponse.redirect(new URL("/driver/dashboard", request.url));
+  }
+
+  // "Admin trying to access driver route, redirecting to /admin/dashboard"
+  if (role === "Owner" && pathname.startsWith("/driver")) {
+    return NextResponse.redirect(new URL("/admin/dashboard", request.url));
+  }
 
   return NextResponse.next();
 }

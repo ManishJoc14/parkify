@@ -12,7 +12,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useAuth } from "@/context/authContext";
 import { useGoogleLogin } from "@react-oauth/google";
-
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -68,23 +67,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     },
   });
 
-  // const handleGoogleSignIn = async () => {
-  //   setError("");
-  //   setIsLoading(true);
-  //   try {
-  //     // await signInWithGoogle();
-  //     onClose();
-  //   } catch (err) {
-  //     setError((err as { message: string }).message);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
   const handleGoogleSignIn = useGoogleLogin({
     onSuccess: (tokenResponse) => signInWithGoogle(tokenResponse.access_token),
   });
-
   useEffect(() => {
     if (!isOpen) {
       signUpForm.reset();
@@ -120,12 +105,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     }
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="bg-black min-h-screen bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-opacity-50 z-50 flex items-center justify-center p-4">
       <div
-        className="bg-white rounded-2xl w-full max-w-md relative"
+        className="bg-white shadow-md rounded-2xl w-full max-w-md relative"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -135,9 +118,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         >
           <X size={20} />
         </button>
-
         <div className="p-8">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+          <h2 className="text-2xl font-mont-bold text-gray-800 mb-6 text-center">
             {isSignUp ? "Create Account" : "Welcome Back"}
           </h2>
 
@@ -151,7 +133,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             <form
               key="signUpForm"
               onSubmit={signUpForm.handleSubmit(onSignUpSubmit)}
-              className="flex flex-col gap-2"
+              className="flex flex-col gap-3"
             >
               <div className="flex flex-col gap-2 my-1 text-gray-600">
                 <div className="flex gap-2">
@@ -192,7 +174,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               <div>
                 <div className="relative">
                   <User
-                    className="absolute left-3 top-[48%] -translate-y-1/2 text-gray-400"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
                     size={20}
                   />
                   <Controller
@@ -203,7 +185,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                         {...field}
                         type="text"
                         placeholder="Name"
-                        className="pl-10 flex item-center"
+                        className="pl-10"
                         disabled={isLoading}
                       />
                     )}
@@ -219,7 +201,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               <div>
                 <div className="relative">
                   <Mail
-                    className="absolute left-3 top-[48%] -translate-y-1/2 text-gray-400"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
                     size={20}
                   />
                   <Controller
@@ -246,7 +228,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               <div>
                 <div className="relative">
                   <Lock
-                    className="absolute left-3 top-[48%] -translate-y-1/2 text-gray-400"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
                     size={20}
                   />
                   <Controller
@@ -265,7 +247,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-[48%] -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                     disabled={isLoading}
                   >
                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -281,7 +263,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               <div>
                 <div className="relative">
                   <Phone
-                    className="absolute left-3 top-[48%] -translate-y-1/2 text-gray-400"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
                     size={20}
                   />
                   <Controller
@@ -332,7 +314,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
               <button
                 type="submit"
-                className="w-full bg-indigo-600 text-white py-2 mt-1 rounded-lg hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-primary font-mont-medium text-white py-2 mt-1 rounded-lg hover:bg-primary-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={isLoading}
               >
                 {isLoading ? "Please wait..." : "Sign Up"}
@@ -342,12 +324,12 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             <form
               key="signInForm"
               onSubmit={signInForm.handleSubmit(onSignInSubmit)}
-              className="flex flex-col gap-2"
+              className="flex flex-col gap-3"
             >
               <div>
                 <div className="relative">
                   <Mail
-                    className="absolute left-3 top-[48%] -translate-y-1/2 text-gray-400"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
                     size={20}
                   />
                   <Controller
@@ -374,7 +356,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               <div>
                 <div className="relative">
                   <Lock
-                    className="absolute left-3 top-[48%] -translate-y-1/2 text-gray-400"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
                     size={20}
                   />
                   <Controller
@@ -393,7 +375,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-[48%] -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                     disabled={isLoading}
                   >
                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -408,7 +390,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
               <button
                 type="submit"
-                className="w-full bg-indigo-600 text-white py-2 mt-1 rounded-lg hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-primary font-mont-medium text-white py-2 mt-1 rounded-lg hover:bg-primary/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={isLoading}
               >
                 {isLoading ? "Please wait..." : "Sign In"}
@@ -455,7 +437,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
             <button
               onClick={() => setIsSignUp(!isSignUp)}
-              className="text-indigo-600 hover:text-indigo-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              className="text-primary hover:text-primary/90 font-mont-medium disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isLoading}
             >
               {isSignUp ? "Sign In" : "Sign Up"}

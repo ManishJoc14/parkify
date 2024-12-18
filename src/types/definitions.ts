@@ -15,14 +15,16 @@ export interface User {
   firstName: string;
   middleName: string;
   lastName: string;
-  fullName: string;
-  bio: string;
-  phoneNo: string;
   email: string;
-  dateJoined: string;
   isEmailVerified: boolean;
   isPhoneVerified: boolean;
   roles: string[];
+  phoneNo: string;
+
+  dateJoined?: string;
+  fullName?: string;
+  bio?: string;
+  redirectUrl?: string;
 }
 
 export interface ParkingSpot {
