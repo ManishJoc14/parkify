@@ -1,13 +1,17 @@
 "use client";
 
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  useMapEvents,
+} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { Icon } from "leaflet";
-import type { ParkingLocation } from "@/types/definitions";
+import { Icon, LatLng } from "leaflet";
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button"; // shadcn/ui button
-import { UserRoundSearchIcon } from "lucide-react";
 import ParkingCard from "./parking-card";
+import { ParkingLocation } from "@/types/definitions";
 
 // Default marker icon for locations
 const icon = new Icon({
@@ -32,41 +36,22 @@ interface MapProps {
   locations: ParkingLocation[];
 }
 
-// Component to pan map and mark user's location
-function LocateButton({
-  onLocate,
-}: {
-  onLocate: (lat: number, lng: number) => void;
-}) {
-  const map = useMap();
+function LocationMarker() {
+  const [position, setPosition] = useState<LatLng | null>(null);
+  const map = useMapEvents({
+    click() {
+      map.locate();
+    },
+    locationfound(e) {
+      setPosition(e.latlng);
+      map.flyTo(e.latlng, map.getZoom() + 2);
+    },
+  });
 
-  const handleLocate = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          onLocate(latitude, longitude);
-          map.flyTo([latitude, longitude], 18, {
-            animate: true,
-            duration: 1.5,
-          });
-        },
-        (error) => {
-          console.error("Error getting user location:", error);
-        }
-      );
-    } else {
-      alert("Geolocation is not supported by your browser.");
-    }
-  };
-
-  return (
-    <Button
-      onClick={handleLocate}
-      className="absolute bottom-10 left-10 z-[1000] rounded-full bg-blue-500 hover:bg-blue-600 text-white p-3 shadow-md"
-    >
-      <UserRoundSearchIcon className="h-6 w-6" />
-    </Button>
+  return position === null ? null : (
+    <Marker position={position} icon={userIcon}>
+      <Popup>You are here</Popup>
+    </Marker>
   );
 }
 
@@ -86,6 +71,7 @@ export default function Map({ locations }: MapProps) {
           const { latitude, longitude } = position.coords;
           setCenter([latitude, longitude]);
           setUserPosition([latitude, longitude]);
+          console.log(userPosition);
         },
         (error) => {
           console.error("Error getting user location:", error);
@@ -93,10 +79,6 @@ export default function Map({ locations }: MapProps) {
       );
     }
   }, []);
-
-  const handleUserLocation = (lat: number, lng: number) => {
-    setUserPosition([lat, lng]);
-  };
 
   return (
     <div className="relative w-full h-full">
@@ -124,16 +106,9 @@ export default function Map({ locations }: MapProps) {
             </Popup>
           </Marker>
         ))}
-        {/* User's Position Marker */}
-        {userPosition && (
-          <Marker position={userPosition} icon={userIcon}>
-            <Popup>
-              <div className="p-2 font-semibold">You are here!</div>
-            </Popup>
-          </Marker>
-        )}
+
         {/* Locate Button */}
-        <LocateButton onLocate={handleUserLocation} />
+        <LocationMarker />
       </MapContainer>
     </div>
   );

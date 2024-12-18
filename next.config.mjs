@@ -10,6 +10,7 @@ const nextConfig = {
       "randomuser.me",
     ],
   },
+  reactStrictMode: false,
 };
 
 export default nextConfig;
