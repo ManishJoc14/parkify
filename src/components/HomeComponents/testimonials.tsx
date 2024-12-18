@@ -60,12 +60,12 @@ export default function Testimonials() {
         {/* LEFT */}
         <div className="flex-1">
           <div className="flex items-center justify-start space-x-2 mb-1">
-            <span className="h-1 w-6 bg-rose-500 rounded-xl"></span>
-            <span className="text-muted-foreground rounded-lg px-2 py-1.5 text-sm sm:text-md font-medium">
-              Testimonials
+            <span className="h-1 w-8 bg-green-500 rounded-xl"></span>
+            <span className="text-muted-foreground rounded-lg px-2 py-1.5 text-md uppercase sm:text-md font-mont-bold">
+              Testimonials?
             </span>
           </div>
-          <h2 className="text-2xl text-start sm:text-3xl font-bold text-gray-800">
+          <h2 className="text-2xl text-start sm:text-3xl font-mont-bold text-gray-800">
             Over <span className="text-primary">1000+ Customers</span>
             <span className="block">
               {" "}
@@ -83,7 +83,7 @@ export default function Testimonials() {
               {testimonials.map((testimonial) => (
                 <div
                   key={testimonial.id}
-                  className="relative h-16 w-16 overflow-hidden rounded-full border-2 border-background"
+                  className="relative h-16 w-16 overflow-hidden border-2 rounded-full"
                 >
                   <Image
                     src={testimonial.image}
@@ -105,10 +105,10 @@ export default function Testimonials() {
         {/* RIGHT */}
         <div className="mt-12 relative flex-1">
           <div className="flex items-center flex-wrap justify-between gap-8 ">
-            <Card className="w-full max-w-sm order-2 mx-auto shadow-none relative">
+            <Card className="w-full max-w-sm order-2 mx-auto shadow-none border-0 relative">
               <CardContent className="p-6 z-10 relative rounded-lg bg-white">
-                <div className="space-y-2">
-                  <div className="flex flex-col sm:flex-row space-y-2">
+                <div className="space-y-4">
+                  <div className="flex flex-col gap-2 sm:flex-row items-center space-y-2">
                     {/* IMAGE */}
                     <div className="relative h-16 w-16 flex-shrink-0">
                       <Image
@@ -139,23 +139,23 @@ export default function Testimonials() {
                       </div>
                     </div>
                   </div>
-                  <p className="text-muted-foreground tracking-wide text-md sm:text-lg ">
+                  <p className="text-muted-foreground tracking-light text-sm sm:text-[1rem] ">
                     {testimonials[currentIndex].content}
                   </p>
                 </div>
               </CardContent>
-              <div className="absolute z-0 -inset-y-8 inset-x-10 rounded-lg bg-violet-600"></div>
+              <div className="absolute z-0 -inset-y-8 inset-x-10 rounded-lg bg-green-500"></div>
             </Card>
 
             <button
-              className=" bg-violet-600 order-4 xl:order-1 p-1 rounded-full"
+              className=" bg-green-500 order-4 xl:order-1 p-1 rounded-full"
               onClick={previousTestimonial}
             >
               <ChevronLeft className="h-8 w-8 text-white" />
             </button>
 
             <button
-              className="bg-violet-600 order-6 p-1 rounded-full"
+              className="bg-green-500 order-6 p-1 rounded-full"
               onClick={nextTestimonial}
             >
               <ChevronRight className="h-8 w-8 text-white" />

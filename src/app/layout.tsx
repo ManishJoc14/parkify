@@ -6,14 +6,19 @@ import "react-toastify/dist/ReactToastify.css";
 import { AuthProvider } from "@/context/authContext";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
+const MontserratPrimary = localFont({
+  src: "./fonts/Montserrat-Regular.ttf",
+  variable: "--font-primary-regular",
   weight: "100 900",
 });
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
+const MontserratBold = localFont({
+  src: "./fonts/Montserrat-Bold.ttf",
+  variable: "--font-primary-bold",
+  weight: "100 900",
+});
+const MontserratMedium = localFont({
+  src: "./fonts/Montserrat-Medium.ttf",
+  variable: "--font-primary-medium",
   weight: "100 900",
 });
 
@@ -33,7 +38,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${MontserratPrimary.variable} ${MontserratBold.variable} ${MontserratMedium.variable} antialiased`}
       >
         <ToastContainer />
         <GoogleOAuthProvider

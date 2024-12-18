@@ -16,6 +16,7 @@
     "@radix-ui/react-label": "^2.1.0",
     "@radix-ui/react-popover": "^1.1.2",
     "@radix-ui/react-radio-group": "^1.2.2",
+    "@radix-ui/react-scroll-area": "^1.2.2",
     "@radix-ui/react-select": "^2.1.2",
     "@radix-ui/react-separator": "^1.1.0",
     "@radix-ui/react-slider": "^1.2.1",
@@ -28,6 +29,7 @@
     "clsx": "^2.1.1",
     "cookies-next": "^5.0.2",
     "date-fns": "^3.6.0",
+    "leaflet": "^1.9.4",
     "lottie-react": "^2.4.0",
     "lucide-react": "^0.468.0",
     "next": "15.0.3",
@@ -35,6 +37,7 @@
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.54.1",
+    "react-leaflet": "^5.0.0",
     "react-toastify": "^10.0.6",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
@@ -42,6 +45,7 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@types/leaflet": "^1.9.15",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

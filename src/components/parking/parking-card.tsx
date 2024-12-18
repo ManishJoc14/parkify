@@ -3,6 +3,7 @@ import { Footprints, Info } from "lucide-react";
 import { Star } from "lucide-react";
 import { ParkingLocation } from "@/types/definitions";
 import { Button } from "../ui/button";
+import Link from "next/link";
 
 const ParkingCard = ({ parking }: { parking: ParkingLocation }) => {
   return (
@@ -74,7 +75,7 @@ const ParkingCard = ({ parking }: { parking: ParkingLocation }) => {
             variant="outline"
             className="px-2 py-1 text-xs font-mont-medium text-secondary-foreground hover:bg-primary/5 rounded-md transition-colors"
           >
-            View details
+            <Link href={`/parking/${parking.uuid}`}>View details</Link>
           </Button>
           <Button
             variant="default"

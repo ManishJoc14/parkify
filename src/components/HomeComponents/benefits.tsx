@@ -33,15 +33,15 @@ export default function Benefits() {
   ];
 
   return (
-    <section id="benefits" className="container mx-auto bg-accent py-16">
+    <section id="benefits" className="container mx-auto py-16">
       <div className="text-center">
         <div className="flex items-center justify-center space-x-2 mb-2">
-          <span className="h-1 w-6 bg-rose-500 rounded-xl"></span>
-          <span className="text-muted-foreground rounded-lg px-2 py-1.5 text-sm sm:text-md font-medium">
+          <span className="h-1 w-8 bg-green-500 rounded-xl"></span>
+          <span className="text-muted-foreground rounded-lg px-2 py-1.5 text-md uppercase sm:text-md font-mont-bold">
             Benefits of Parkify
           </span>
         </div>
-        <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+        <h2 className="text-3xl font-mont-bold tracking-tight sm:text-4xl">
           Exclusive Benefits of{" "}
           <p className="text-primary text-2xl sm:text-3xl">Parkify App</p>
         </h2>
@@ -56,7 +56,7 @@ export default function Benefits() {
             <div className="flex items-center justify-center h-12 w-12  sm:h-16 sm:w-16 rounded-full bg-primary">
               {benefit.icon}
             </div>
-            <h3 className="text-xl font-semibold">{benefit.title}</h3>
+            <h3 className="text-xl font-mont-medium">{benefit.title}</h3>
             <p className="text-md text-muted-foreground">
               {benefit.description}
             </p>

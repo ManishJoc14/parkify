@@ -35,6 +35,51 @@ export interface ParkingSpot {
   image_url: string;
 }
 
+export interface ParkingLocation {
+  uuid: string;
+  name: string;
+  coverImage: string;
+  description: string;
+  address: string;
+  ratePerHour: string;
+  latitude: number;
+  longitude: number;
+  postcode: string;
+  ratePerDay: string;
+  totalReviews: number;
+  averageRating: number;
+}
+
+export interface DetailedParkingLocation extends ParkingLocation {
+  description: string;
+  features: ParkingFeature[];
+  vehicleTypes: VehicleType[];
+  images: string[];
+  availableSpots: number;
+  cancellationPolicy: string;
+}
+
+export type SortOption = "rate_per_hour" | "average_rating" | "distance";
+
+export enum VehicleType {
+  SMALL = "Small Car",
+  MEDIUM = "Medium Car",
+  SUV = "Large Car (SUV)",
+  BIKE = "Bike",
+  TRUCK = "Truck",
+  MINIBUS = "Minibus",
+  VAN = "Van",
+}
+
+export enum ParkingFeature {
+  CCTV = "CCTV",
+  EV_CHARGING = "EV Charging",
+  SECURITY_LIGHTING = "Security Lighting",
+  HANDICAP_ACCESSIBLE = "Handicap Accessible",
+  COVERED = "Covered Parking",
+  GUARDS = "Security Guards",
+}
+
 export type Customer = {
   id: string;
   name: string;

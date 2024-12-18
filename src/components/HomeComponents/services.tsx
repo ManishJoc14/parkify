@@ -1,11 +1,13 @@
 import { services } from "@/data/services";
 import ServiceCardLarge from "./serviceCardLarge";
 import ServicesHeader from "./servicesHeader";
+import { LocationSearch } from "../parking/searchByLocation";
 
 export default function Services() {
   return (
     <div className="container mx-auto py-16">
       <ServicesHeader />
+      <LocationSearch />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 items-center gap-8 px-4 py-2 sm:px-16">
         {services.map((service, index) => (

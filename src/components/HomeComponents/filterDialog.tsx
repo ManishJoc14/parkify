@@ -1,9 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { Filter, Search } from "lucide-react";
+import { Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Dialog,
@@ -31,13 +30,17 @@ import { format } from "date-fns";
 
 export function FilterDialog() {
   const [open, setOpen] = React.useState(false);
-  const [date, setDate] = React.useState<Date>();
+  const [enterDate, setEnterDate] = React.useState<Date>();
+  const [exitDate, setExitDate] = React.useState<Date>();
   const [priceRange, setPriceRange] = React.useState([0]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="default" className="gap-2 bg-violet-600 hover:scale-95 transition-all">
+        <Button
+          variant="default"
+          className="gap-2 bg-violet-600 hover:scale-95 transition-all"
+        >
           <Filter className="h-4 w-4" />
           Filter
         </Button>
@@ -47,43 +50,59 @@ export function FilterDialog() {
           <DialogTitle>Filter Options</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          {/* Location Search */}
+          {/* Date Range Picker */}
           <div className="space-y-2">
-            <Label>Location</Label>
+            <Label>Date Range</Label>
             <div className="flex gap-2">
-              <Input
-                placeholder="Search location"
-                className="flex-1"
-                // startIcon={<MapPin className="h-4 w-4" />}
-              />
-              <Button variant="outline">Near Me</Button>
+              <div className="flex-1">
+                <Label>Enter After</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !enterDate && "text-muted-foreground"
+                      )}
+                    >
+                      {enterDate ? format(enterDate, "PPP") : "Pick a date"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={enterDate}
+                      onSelect={setEnterDate}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+              <div className="flex-1">
+                <Label>Exit Before</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !exitDate && "text-muted-foreground"
+                      )}
+                    >
+                      {exitDate ? format(exitDate, "PPP") : "Pick a date"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={exitDate}
+                      onSelect={setExitDate}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
             </div>
-          </div>
-
-          {/* Date Picker */}
-          <div className="space-y-2">
-            <Label>Date</Label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    "w-full justify-start text-left font-normal",
-                    !date && "text-muted-foreground"
-                  )}
-                >
-                  {date ? format(date, "PPP") : "Pick a date"}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={date}
-                  onSelect={setDate}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
           </div>
 
           {/* Price Range */}
@@ -102,9 +121,9 @@ export function FilterDialog() {
             </div>
           </div>
 
-          {/* Capacity */}
+          {/* Vehicle Type */}
           <div className="space-y-2">
-            <Label>Capacity</Label>
+            <Label>Vehicle Type</Label>
             <Select>
               <SelectTrigger>
                 <SelectValue placeholder="Select vehicle type" />
@@ -118,21 +137,13 @@ export function FilterDialog() {
             </Select>
           </div>
 
-          {/* Keyword Search */}
-          <div className="space-y-2">
-            <Label>Search</Label>
-            <div className="relative">
-              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input placeholder="Search by name" className="pl-8" />
-            </div>
-          </div>
-
           {/* Action Buttons */}
           <div className="flex justify-between pt-4">
             <Button
               variant="outline"
               onClick={() => {
-                setDate(undefined);
+                setEnterDate(undefined);
+                setExitDate(undefined);
                 setPriceRange([0]);
               }}
             >

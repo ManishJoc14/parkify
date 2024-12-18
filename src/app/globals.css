@@ -7,7 +7,7 @@ html {
 }
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-primary-regular);
 }
 
 @layer utilities {
@@ -24,8 +24,10 @@ body {
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
+    /* --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%; */
+    --primary: 142.1 70.6% 45.3%;
+    --primary-foreground: 140.6 84.2% 92.5%;
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
     --muted: 210 40% 96.1%;
@@ -36,7 +38,7 @@ body {
     --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
+    --ring: 142.1 70.6% 45.3%;
     --radius: 0.5rem;
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
@@ -86,6 +88,64 @@ body {
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+html {
+  scrollbar-width: thin;
+}
+
+::-webkit-scrollbar {
+  width: 12px; /* Width of the scrollbar */
+}
+
+::-webkit-scrollbar-thumb {
+  width: 12px;
+  border-radius: 10px;
+  background-color: #eee; /* Color of the scrollbar thumb */
+}
+
+.webkit-search::-webkit-scrollbar {
+  display: none; /* Hides the scrollbar */
+}
+
+.webkit-search::-webkit-scrollbar-thumb {
+  display: none; /* Hides the scrollbar thumb */
+}
+
+::-webkit-scrollbar-track {
+  background: #ccc; /* Color of the scrollbar track */
+  border-radius: 8px; /* Doesn't work directly, but you can style inner parts */
+}
+
+::selection {
+  background-color: #233554; /* Color when selecting text */
+  color: #ccd6f6; /* Text color when selected */
+}
+
+.AnimatedImage {
+  background-image: url("/images/step1.webp");
+  background-size: cover;
+  animation: changeImages 8s ease infinite;
+  aspect-ratio: 10/7;
+}
+
+.leaflet-popup-content {
+  width: 400px !important;
+}
+
+@keyframes changeImages {
+  0% {
+    background-image: url("/images/step1.webp");
+  }
+  33% {
+    background-image: url("/images/step2.webp");
+  }
+  66% {
+    background-image: url("/images/step3.webp");
+  }
+  100% {
+    background-image: url("/images/step4.webp");
   }
 }
 
