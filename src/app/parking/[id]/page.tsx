@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { useParams } from "next/navigation";
 import { ChevronLeft, Star, MapPin, Clock, Car } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -57,7 +56,7 @@ const mockDetailedLocation: DetailedParkingLocation = {
 
 //FIXME  fetch the parking details using the ID from params
 export default function ParkingBookingPage() {
-  const params = useParams();
+  // const params = useParams();
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
   const [vehicleType, setVehicleType] = useState<VehicleType>();
