@@ -55,7 +55,7 @@ export default function FeedbackForm() {
 
   if (isSubmitted) return <FeedbackSubmittedMessage />;
   return (
-    <div className="container mx-auto py-20 px-4">
+    <div id="feedback" className="container mx-auto py-20 px-4">
       <div className="flex justify-center flex-col gap-4">
         <h2 className="text-2xl sm:text-3xl flex justify-center font-mont-bold text-gray-800 mb-8 text-center">
           Leave Your Feedback <Feather className="text-green-600 ml-2" />
@@ -66,19 +66,21 @@ export default function FeedbackForm() {
           </div>
         )}
 
-        <div className="flex flex-col sm:flex-row gap-8 justify-center items-center">
+        <div className="flex flex-col md:flex-row gap-8 justify-center items-center">
           {/* LEFT SECTION */}
-
           <Image
             src={faqImage}
-            className=" flex-1 max-w-md aspect-square rounded-lg"
+            className=" flex-1 max-w-md w-full aspect-square rounded-lg"
             alt="feedback"
-            width={100}
+            width={200}
             height={300}
           />
 
           {/* RIGHT SECTION */}
-          <form onSubmit={handleSubmit} className="flex-1 max-w-xl space-y-4">
+          <form
+            onSubmit={handleSubmit}
+            className="flex-1 w-full sm:max-w-xl space-y-4"
+          >
             {/* NAME */}
             <div className="relative">
               <User

@@ -40,9 +40,9 @@ export default function FAQ() {
   ];
 
   return (
-    <div id="faq" className="container mx-auto bg-accent px-8 py-16">
+    <div id="faq" className="container mx-auto bg-accent px-4 py-16">
       {/* header */}
-      <div className="flex items-center justify-center px-16 mb-1">
+      <div className="flex items-center justify-center px-8 mb-1">
         <span className="h-1 w-8 bg-green-500 rounded-xl"></span>
         <span className="text-muted-foreground rounded-lg px-2 py-1.5 text-md uppercase sm:text-md font-mont-bold">
           FAQ
@@ -56,7 +56,7 @@ export default function FAQ() {
       <Accordion
         type="single"
         collapsible
-        className="space-y-4 py-6 max-w-3xl mx-auto"
+        className="space-y-4 py-6 max-w-4xl mx-auto"
       >
         {faqs.map((faq, index) => (
           <AccordionItem key={index} value={`faq-${index}`}>

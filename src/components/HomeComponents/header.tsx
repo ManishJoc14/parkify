@@ -9,6 +9,15 @@ import HeaderAuth from "../authComponents/header-auth";
 export default function Header() {
   const [isOpen, setIsOpen] = React.useState(false);
 
+  const navLinks = [
+    { href: "/", label: "Home" },
+    { href: "#how-it-works", label: "How It Works" },
+    { href: "#testimonials", label: "Testimonial" },
+    { href: "#benefits", label: "Benefits" },
+    { href: "#faq", label: "FAQ" },
+    { href: "#feedback", label: "Feedback" },
+  ];
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-transparent backdrop-blur-[20px]">
       <div className="container mx-auto flex h-16 items-baseline justify-between px-4">
@@ -19,36 +28,15 @@ export default function Header() {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-6">
-          <Link
-            href="/"
-            className="text-md font-semibold font-sans text-secondary-foreground hover:text-primary transition-colors"
-          >
-            Home
-          </Link>
-          <Link
-            href="#how-it-works"
-            className="text-md font-semibold font-sans text-secondary-foreground hover:text-primary transition-colors"
-          >
-            How It Works
-          </Link>
-          <Link
-            href="#benefits"
-            className="text-md font-semibold font-sans text-secondary-foreground hover:text-primary transition-colors"
-          >
-            Benefits
-          </Link>
-          <Link
-            href="#testimonials"
-            className="text-md font-semibold font-sans text-secondary-foreground hover:text-primary transition-colors"
-          >
-            Testimonial
-          </Link>
-          <Link
-            href="#faq"
-            className="text-md font-semibold font-sans text-secondary-foreground hover:text-primary transition-colors"
-          >
-            FAQ
-          </Link>
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="text-md font-semibold font-sans text-secondary-foreground hover:text-primary transition-colors"
+            >
+              {link.label}
+            </Link>
+          ))}
         </nav>
 
         {/* Desktop Login Button */}
@@ -66,41 +54,16 @@ export default function Header() {
           </SheetTrigger>
           <SheetContent side="right">
             <div className="flex flex-col space-y-4 mt-6">
-              <Link
-                href="/"
-                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                Home
-              </Link>
-              <Link
-                href="#how-it-works"
-                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                How It Works
-              </Link>
-              <Link
-                href="/benefits"
-                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                Benefits
-              </Link>
-              <Link
-                href="#testimonials"
-                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                Testimonial
-              </Link>
-              <Link
-                href="#faq"
-                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                FAQ
-              </Link>
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                  onClick={() => setIsOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              ))}
               <HeaderAuth />
             </div>
           </SheetContent>

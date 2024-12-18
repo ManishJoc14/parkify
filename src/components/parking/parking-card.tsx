@@ -7,14 +7,14 @@ import Link from "next/link";
 
 const ParkingCard = ({ parking }: { parking: ParkingLocation }) => {
   return (
-    <div className="relative flex w-full overflow-hidden bg-white rounded-lg hover:shadow-sm transition-all">
-      <div className="w-1/3">
+    <div className="relative flex flex-col sm:flex-row w-full overflow-hidden bg-white rounded-lg hover:shadow-sm transition-all">
+      <div className="w-full sm:w-1/3">
         <Image
           src={parking.coverImage}
           alt={parking.name}
-          height={144}
-          width={144}
-          className="h-full w-full object-cover"
+          height={100}
+          width={100}
+          className="h-full min-w-[100px] w-full object-cover"
         />
       </div>
       <div className="flex-1 p-4">

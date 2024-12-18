@@ -23,19 +23,23 @@ export default function Hero() {
             time and avoid the hassle of finding parking in busy areas.
           </p>
           <div className="flex flex-col gap-4 pt-4 min-[400px]:flex-row justify-center">
-            <Button
-              size="lg"
-              className="h-12 px-8 hover:scale-95 font-mont-medium transition-all"
-            >
-              <Link href="/parking"> Find Parking</Link>
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              className="h-12 px-8 hover:scale-95 font-mont-medium transition-all"
-            >
-              Learn More
-            </Button>
+            <Link href={"/parking"}>
+              <Button
+                size="lg"
+                className="h-12 px-8 hover:scale-95 font-mont-medium transition-all"
+              >
+                Find Parking
+              </Button>
+            </Link>
+            <Link href={"/parking"}>
+              <Button
+                variant="outline"
+                size="lg"
+                className="h-12 px-8 hover:scale-95 font-mont-medium transition-all"
+              >
+                Learn More
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

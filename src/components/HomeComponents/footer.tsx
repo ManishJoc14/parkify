@@ -15,7 +15,7 @@ export default function Footer() {
               Find and reserve parking spots with ease. Simplify your parking
               experience today.
             </p>
-            <div className="flex mt-4 space-x-4">
+            <div className="flex mt-4 space-x-4 flex-wrap">
               {/* <!-- Social Icons --> */}
               <Link
                 href="/"
@@ -45,7 +45,7 @@ export default function Footer() {
           </div>
 
           {/*  <!-- Company and Contact Section -->   */}
-          <div className="flex flex-row gap-8 justify-between">
+          <div className="flex flex-col sm:flex-row gap-8 justify-between">
             {/* <!-- Company Section --> */}
             <div>
               <h4 className="text-white text-lg font-semibold">Company</h4>

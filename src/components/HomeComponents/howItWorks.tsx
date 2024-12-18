@@ -42,30 +42,10 @@ export default function HowItWorks() {
       </h2>
 
       {/* Left Side: Services */}
-      <div className="flex flex-col justify-center items-center md:flex-row gap-2 lg:gap-4 mt-16">
-        <div className="AnimatedImage flex-1 rounded-lg"></div>
+      <div className="flex flex-col justify-center items-center lg:flex-row gap-2 lg:gap-4 mt-16">
+        <div className="AnimatedImage max-w-lg w-full h-full aspect-square flex-1 rounded-lg">
+        </div>
         <div className="space-y-2 relative">
-          {/* <Image
-            src={image1}
-            alt="users"
-            className="AnimatedImage"
-            height={500}
-            width={500}
-          /> */}
-
-          {/* {services.map((service, index) => (
-            <ServiceCardSmall
-              key={index}
-              image={service.image}
-              title={service.title}
-              distance={service.distance}
-              price={service.price}
-              rating={service.rating}
-              slots={service.slots}
-              location={service.location}
-            />
-          ))} */}
-
           {/* <div className="absolute inset-6 -left-8 sm:-left-16 md:inset-8 bg-violet-600 -z-10 rounded-2xl md:-left-10"></div> */}
         </div>
 
