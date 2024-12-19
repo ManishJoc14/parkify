@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { ChevronLeft, MapPin } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -25,6 +25,7 @@ import ParkingCard from "@/components/parking/parking-card";
 import Link from "next/link";
 import axiosInstance from "@/lib/axiosInstance";
 import ParkingCardSkeleton from "@/components/skeletons/parking-card-skeleton";
+import InfiniteScroll from "react-infinite-scroll-component";
 import clsx from "clsx";
 
 // Dynamically import the Map component
@@ -39,7 +40,6 @@ export default function SearchPage() {
   const [search, setSearch] = useState<string>("");
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [parkings, setParkings] = useState<ParkingLocation[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
   const [userPosition, setUserPosition] = useState<
     [number, number] | undefined
   >(undefined);
@@ -53,6 +53,28 @@ export default function SearchPage() {
   });
   const [ordering, setOrdering] = useState<OrderingOptions>("rate_per_hour");
   const [activeIndex, setActiveIndex] = useState<number>(-1);
+
+  // infinite scroll
+  const limit = 2;
+  const offset = useRef(0);
+  const next = useRef<string | null>("");
+
+  const fetchMoreData = async () => {
+    try {
+      const queryString = next.current?.slice(next.current?.indexOf("?") + 1);
+      // const offsetValue =
+      //   typeof next === "string" ? new URLSearchParams(next).get("offset") : 0;
+      // offset.current = parseInt(offsetValue || "0", 10);
+      const res = await axiosInstance.get(
+        `/public/parking-app/parking-spots?${queryString}`
+      );
+      next.current = res.data.next;
+      setParkings((prev) => [...prev, ...res.data.results]);
+    } catch (error) {
+      console.error("Failed to fetch parking spots:", error);
+      setParkings([]);
+    }
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (suggestions.length > 0) {
@@ -83,6 +105,27 @@ export default function SearchPage() {
     inputRef.current?.focus();
   };
 
+  const GetQueryParams = useCallback(() => {
+    return new URLSearchParams({
+      ...(userPosition && {
+        latitude: userPosition[0].toString(),
+        longitude: userPosition[1].toString(),
+      }),
+      ...(search && { search }),
+      ...(activeFilters &&
+        Object.fromEntries(
+          activeFilters.vehicle_type.flatMap((vehicle_type) => [
+            ["vehicle_type", vehicle_type],
+          ])
+        )),
+      ...(activeFilters &&
+        Object.fromEntries(
+          activeFilters.features.flatMap((feature) => [["features", feature]])
+        )),
+      ...(ordering && { ordering }),
+    });
+  }, [userPosition, search, activeFilters, ordering]);
+
   // Set user location
   useEffect(() => {
     if (navigator.geolocation) {
@@ -99,6 +142,7 @@ export default function SearchPage() {
   }, []);
 
   useEffect(() => {
+    if (!userPosition) return;
     // Fetch suggestions for the search query
     const fetchSuggestions = async () => {
       if (search.trim().length > 0) {
@@ -117,52 +161,34 @@ export default function SearchPage() {
 
     // Fetch parkings based on user position and search query and filters
     const fetchParkings = async () => {
-      setLoading(true);
       try {
-        const queryParams = new URLSearchParams({
-          ...(userPosition && {
-            latitude: userPosition[0].toString(),
-            longitude: userPosition[1].toString(),
-          }),
-          ...(search && { search }),
-          ...(activeFilters &&
-            Object.fromEntries(
-              activeFilters.vehicle_type.flatMap((vehicle_type) => [
-                ["vehicle_type", vehicle_type],
-              ])
-            )),
-          ...(activeFilters &&
-            Object.fromEntries(
-              activeFilters.features.flatMap((feature) => [
-                ["features", feature],
-              ])
-            )),
-          ...(ordering && { ordering }),
-        });
-
+        const queryParams = GetQueryParams();
         const res = await axiosInstance.get(
-          `/public/parking-app/parking-spots?${queryParams.toString()}`
+          `/public/parking-app/parking-spots?${queryParams.toString()}&limit=${limit}&offset=${
+            offset.current
+          }`
         );
-        setParkings(res.data.results || []);
+        setParkings(res.data.results);
+        next.current = res.data.next;
       } catch (error) {
         console.error("Failed to fetch parking spots:", error);
         setParkings([]);
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchSuggestions();
     fetchParkings();
-  }, [userPosition, search, activeFilters, ordering]);
+  }, [userPosition, search, activeFilters, ordering, offset, GetQueryParams]);
 
-  console.log(activeFilters);
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-1 sm:px-4 pb-6">
         <div className="flex flex-col lg:flex-row gap-1">
           {/* Left Section */}
-          <div className="space-y-4 overflow-y-scroll webkit-search h-screen flex-1 order-[2] p-4">
+          <div
+            id="scrollComponent"
+            className="space-y-4 overflow-y-scroll webkit-search h-screen flex-1 order-[2] p-4"
+          >
             <div className="rounded-lg mb-1">
               {/* Back to Home */}
               <Link href="/">
@@ -274,24 +300,29 @@ export default function SearchPage() {
               </h2>
             </div>
 
-            {/* Parking Cards */}
-            <div className="space-y-4 gap-4 overflow-y-hidden">
-              {loading ? (
-                <>
+            <InfiniteScroll
+              scrollableTarget="scrollComponent"
+              dataLength={parkings.length}
+              next={fetchMoreData}
+              hasMore={next.current !== null}
+              loader={
+                <div className="space-y-4 py-4">
                   <ParkingCardSkeleton />
                   <ParkingCardSkeleton />
-                  <ParkingCardSkeleton />
-                </>
-              ) : parkings.length > 0 ? (
-                parkings.map((parking) => (
-                  <ParkingCard key={parking.uuid} parking={parking} />
-                ))
-              ) : (
-                <div className="w-full h-40 bg-gray-200 rounded-lg flex items-center justify-center">
-                  <p className="text-gray-800">No parking spots available</p>
                 </div>
-              )}
-            </div>
+              }
+              endMessage={
+                <p className="text-center text-gray-500 text-sm py-6">
+                  No more parking spots available.
+                </p>
+              }
+            >
+              <div className="space-y-4 gap-4 overflow-y-hidden">
+                {parkings.map((parking) => (
+                  <ParkingCard key={parking.uuid} parking={parking} />
+                ))}
+              </div>
+            </InfiniteScroll>
           </div>
 
           {/* Map Section */}
