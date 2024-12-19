@@ -9,9 +9,9 @@ import {
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Icon, LatLng } from "leaflet";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ParkingCard from "./parking-card";
-import { ParkingLocation } from "@/types/definitions";
+import { DetailedParkingLocation, ParkingLocation } from "@/types/definitions";
 
 // Default marker icon for locations
 const icon = new Icon({
@@ -33,7 +33,8 @@ const userIcon = new Icon({
 });
 
 interface MapProps {
-  locations: ParkingLocation[];
+  locations: ParkingLocation[] | DetailedParkingLocation[];
+  userPosition: [number, number] | undefined;
 }
 
 function LocationMarker() {
@@ -55,35 +56,11 @@ function LocationMarker() {
   );
 }
 
-export default function Map({ locations }: MapProps) {
-  const [center, setCenter] = useState<[number, number]>([
-    27.681826, 85.335422,
-  ]);
-  const [userPosition, setUserPosition] = useState<[number, number] | null>(
-    null
-  );
-
-  // Fetch initial geolocation
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setCenter([latitude, longitude]);
-          setUserPosition([latitude, longitude]);
-          console.log(userPosition);
-        },
-        (error) => {
-          console.error("Error getting user location:", error);
-        }
-      );
-    }
-  }, []);
-
+export default function Map({ locations, userPosition }: MapProps) {
   return (
     <div className="relative w-full h-full">
       <MapContainer
-        center={center}
+        center={userPosition}
         zoom={15}
         style={{ height: "100%", width: "100%" }}
         className="rounded-lg shadow-md"
