@@ -61,7 +61,13 @@ export interface DetailedParkingLocation extends ParkingLocation {
   cancellationPolicy: string;
 }
 
-export type SortOption = "rate_per_hour" | "average_rating" | "distance";
+export type OrderingOptions =
+  | "rate_per_hour"
+  | "-rate_per_hour"
+  | "average_rating"
+  | "-average_rating"
+  | "distance"
+  | "-distance";
 
 export enum VehicleType {
   SMALL = "Small Car",

@@ -55,7 +55,7 @@ const ParkingCard = ({ parking }: { parking: ParkingLocation }) => {
         <hr />
 
         {/* Walking Time & Guaranteed */}
-        <div className="flex items-center justify-between gap-4 mb-2 py-2">
+        <div className="flex items-center justify-between gap-4 py-3">
           <div className="flex items-center gap-2">
             <Footprints className="h-3 w-3" />
             <span className="text-xs">

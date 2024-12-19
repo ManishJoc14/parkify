@@ -17,7 +17,7 @@ import {
 import type {
   ParkingFeature,
   ParkingLocation,
-  SortOption,
+  OrderingOptions,
   VehicleType,
 } from "@/types/definitions";
 import { FiltersDialog } from "@/components/parking/filters-dialog";
@@ -36,7 +36,6 @@ const Map = dynamic(() => import("@/components/parking/map"), {
 });
 
 export default function SearchPage() {
-  const [sort, setSort] = useState<SortOption>("rate_per_hour");
   const [search, setSearch] = useState<string>("");
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [parkings, setParkings] = useState<ParkingLocation[]>([]);
@@ -46,15 +45,15 @@ export default function SearchPage() {
   >(undefined);
   const inputRef = useRef<HTMLInputElement>(null);
   const [activeFilters, setActiveFilters] = useState<{
-    vehicles: VehicleType[];
+    vehicle_type: VehicleType[];
     features: ParkingFeature[];
   }>({
-    vehicles: [],
+    vehicle_type: [],
     features: [],
   });
+  const [ordering, setOrdering] = useState<OrderingOptions>("rate_per_hour");
   const [activeIndex, setActiveIndex] = useState<number>(-1);
 
-  console.log(activeFilters);
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (suggestions.length > 0) {
       if (e.key === "ArrowDown") {
@@ -84,7 +83,7 @@ export default function SearchPage() {
     inputRef.current?.focus();
   };
 
-  // Get user location
+  // Set user location
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -116,7 +115,7 @@ export default function SearchPage() {
       }
     };
 
-    // Fetch parkings based on user position and search query
+    // Fetch parkings based on user position and search query and filters
     const fetchParkings = async () => {
       setLoading(true);
       try {
@@ -126,6 +125,19 @@ export default function SearchPage() {
             longitude: userPosition[1].toString(),
           }),
           ...(search && { search }),
+          ...(activeFilters &&
+            Object.fromEntries(
+              activeFilters.vehicle_type.flatMap((vehicle_type) => [
+                ["vehicle_type", vehicle_type],
+              ])
+            )),
+          ...(activeFilters &&
+            Object.fromEntries(
+              activeFilters.features.flatMap((feature) => [
+                ["features", feature],
+              ])
+            )),
+          ...(ordering && { ordering }),
         });
 
         const res = await axiosInstance.get(
@@ -142,8 +154,9 @@ export default function SearchPage() {
 
     fetchSuggestions();
     fetchParkings();
-  }, [userPosition, search]);
+  }, [userPosition, search, activeFilters, ordering]);
 
+  console.log(activeFilters);
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-1 sm:px-4 pb-6">
@@ -152,14 +165,14 @@ export default function SearchPage() {
           <div className="space-y-4 overflow-y-scroll webkit-search h-screen flex-1 order-[2] p-4">
             <div className="rounded-lg mb-1">
               {/* Back to Home */}
-              <Button variant="ghost" className="mb-4">
-                <Link href="/">
+              <Link href="/">
+                <Button variant="ghost" className="mb-4">
                   <p className="flex items-center gap-2">
                     <ChevronLeft />
                     <span>Back to Home</span>
                   </p>
-                </Link>
-              </Button>
+                </Button>
+              </Link>
 
               {/* Search Input */}
               <div className="relative">
@@ -207,10 +220,12 @@ export default function SearchPage() {
             {/* Filters and Sorting */}
             <div className="flex flex-col gap-1">
               <div className="flex gap-2">
-                <FiltersDialog onFiltersChange={setActiveFilters} />
+                <FiltersDialog setActiveFilters={setActiveFilters} />
                 <Select
-                  value={sort}
-                  onValueChange={(value) => setSort(value as SortOption)}
+                  value={ordering}
+                  onValueChange={(value) =>
+                    setOrdering(value as OrderingOptions)
+                  }
                 >
                   <SelectTrigger className="w-[220px] flex-1">
                     <SelectValue placeholder="Sort by" />
@@ -220,9 +235,11 @@ export default function SearchPage() {
                       <SelectLabel className="font-mont-bold text-primary">
                         Rate per hour
                       </SelectLabel>
-                      <SelectItem value="rate_per_hour">Low to High</SelectItem>
+                      <SelectItem value="rate_per_hour">
+                        Price: Low to High
+                      </SelectItem>
                       <SelectItem value="-rate_per_hour">
-                        High to Low
+                        Price: High to Low
                       </SelectItem>
                     </SelectGroup>
 
@@ -231,10 +248,10 @@ export default function SearchPage() {
                         Average Rating
                       </SelectLabel>
                       <SelectItem value="average_rating">
-                        Low to High
+                        Ratings: Low to High
                       </SelectItem>
                       <SelectItem value="-average_rating">
-                        High to Low
+                        Ratings: High to Low
                       </SelectItem>
                     </SelectGroup>
 
@@ -242,8 +259,12 @@ export default function SearchPage() {
                       <SelectLabel className="font-mont-bold text-primary">
                         Distance
                       </SelectLabel>
-                      <SelectItem value="distance">Near to Far</SelectItem>
-                      <SelectItem value="-distance">Far to Near</SelectItem>
+                      <SelectItem value="distance">
+                        Distance: Near to Far
+                      </SelectItem>
+                      <SelectItem value="-distance">
+                        Distance: Far to Near
+                      </SelectItem>
                     </SelectGroup>
                   </SelectContent>
                 </Select>
@@ -267,7 +288,7 @@ export default function SearchPage() {
                 ))
               ) : (
                 <div className="w-full h-40 bg-gray-200 rounded-lg flex items-center justify-center">
-                  <p className="text-gray-500">No parking spots available</p>
+                  <p className="text-gray-800">No parking spots available</p>
                 </div>
               )}
             </div>

@@ -1,6 +1,4 @@
-"use client";
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,26 +14,25 @@ import { Separator } from "@/components/ui/separator";
 import { ParkingFeature, VehicleType } from "@/types/definitions";
 
 interface FiltersDialogProps {
-  onFiltersChange?: (filters: {
-    vehicles: VehicleType[];
+  setActiveFilters?: (filters: {
+    vehicle_type: VehicleType[];
     features: ParkingFeature[];
   }) => void;
 }
 
-export function FiltersDialog({ onFiltersChange }: FiltersDialogProps) {
+export function FiltersDialog({ setActiveFilters }: FiltersDialogProps) {
   const [open, setOpen] = useState(false);
   const [selectedVehicles, setSelectedVehicles] = useState<VehicleType[]>([]);
   const [selectedFeatures, setSelectedFeatures] = useState<ParkingFeature[]>(
     []
   );
 
-  const handleApplyFilters = () => {
-    onFiltersChange?.({
-      vehicles: selectedVehicles,
+  useEffect(() => {
+    setActiveFilters?.({
+      vehicle_type: selectedVehicles,
       features: selectedFeatures,
     });
-    setOpen(false);
-  };
+  }, [selectedVehicles, setActiveFilters, selectedFeatures]);
 
   const handleClearFilters = () => {
     setSelectedVehicles([]);
@@ -76,24 +73,27 @@ export function FiltersDialog({ onFiltersChange }: FiltersDialogProps) {
                 Display parking spaces that accommodate
               </p>
               <div className="grid grid-cols-2 gap-4">
-                {Object.values(VehicleType).map((vehicle) => (
-                  <div key={vehicle} className="flex items-center space-x-2">
+                {Object.entries(VehicleType).map(([key, value]) => (
+                  <div
+                    key={key}
+                    className="flex items-center space-x-2 cursor-pointer"
+                  >
                     <Checkbox
-                      id={vehicle}
-                      checked={selectedVehicles.includes(vehicle)}
+                      id={key}
+                      checked={selectedVehicles.includes(key as VehicleType)}
                       onCheckedChange={(checked) => {
-                        setSelectedVehicles(
+                        setSelectedVehicles((prev) =>
                           checked
-                            ? [...selectedVehicles, vehicle]
-                            : selectedVehicles.filter((v) => v !== vehicle)
+                            ? [...prev, key as VehicleType]
+                            : prev.filter((v) => v !== key)
                         );
                       }}
                     />
                     <label
-                      htmlFor={vehicle}
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      htmlFor={key}
+                      className="text-sm cursor-pointer font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                     >
-                      {vehicle}
+                      {value}
                     </label>
                   </div>
                 ))}
@@ -107,25 +107,28 @@ export function FiltersDialog({ onFiltersChange }: FiltersDialogProps) {
               <p className="text-sm text-muted-foreground">
                 Show spaces that include these features
               </p>
-              <div className="grid gap-4 grid-cols-2">
-                {Object.values(ParkingFeature).map((feature) => (
-                  <div key={feature} className="flex items-center space-x-2">
+              <div className="grid grid-cols-2 gap-4">
+                {Object.entries(ParkingFeature).map(([key, value]) => (
+                  <div
+                    key={key}
+                    className="flex items-center space-x-2 cursor-pointer"
+                  >
                     <Checkbox
-                      id={feature}
-                      checked={selectedFeatures.includes(feature)}
+                      id={key}
+                      checked={selectedFeatures.includes(key as ParkingFeature)}
                       onCheckedChange={(checked) => {
-                        setSelectedFeatures(
+                        setSelectedFeatures((prev) =>
                           checked
-                            ? [...selectedFeatures, feature]
-                            : selectedFeatures.filter((f) => f !== feature)
+                            ? [...prev, key as ParkingFeature]
+                            : prev.filter((f) => f !== key)
                         );
                       }}
                     />
                     <label
-                      htmlFor={feature}
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      htmlFor={key}
+                      className="text-sm cursor-pointer font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                     >
-                      {feature}
+                      {value}
                     </label>
                   </div>
                 ))}
@@ -136,18 +139,18 @@ export function FiltersDialog({ onFiltersChange }: FiltersDialogProps) {
 
         <div className="flex items-center gap-4 pt-6">
           <Button
-            variant="outline"
-            className="flex-1 font-mont-medium"
+            variant="default"
+            className="flex-1 font-mont-bold bg-red-500 hover:bg-red-700"
             onClick={handleClearFilters}
           >
-            Clear
+            Clear Filters
           </Button>
-          <Button
+          {/* <Button
             className="flex-1 font-mont-medium bg-emerald-500 hover:bg-emerald-600"
             onClick={handleApplyFilters}
           >
             Apply filters
-          </Button>
+          </Button> */}
         </div>
       </DialogContent>
     </Dialog>

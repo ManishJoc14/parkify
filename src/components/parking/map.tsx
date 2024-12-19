@@ -57,6 +57,8 @@ function LocationMarker() {
 }
 
 export default function Map({ locations, userPosition }: MapProps) {
+  if (!userPosition) return null;
+
   return (
     <div className="relative w-full h-full">
       <MapContainer

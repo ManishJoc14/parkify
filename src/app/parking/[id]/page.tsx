@@ -91,14 +91,14 @@ export default function ParkingBookingPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 sm:px-8 py-8">
-        <Button variant="ghost" className="mb-4">
-          <Link href="/parking">
+        <Link href="/parking">
+          <Button variant="ghost" className="mb-4">
             <p className="flex items-center gap-2">
               <ChevronLeft />
               <span>Back to parking</span>
             </p>
-          </Link>
-        </Button>
+          </Button>
+        </Link>
 
         {/* Map showing the parking location */}
         <div className="h-[65vh] mt-2 mb-4">
