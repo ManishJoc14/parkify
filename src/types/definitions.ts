@@ -52,15 +52,6 @@ export interface ParkingLocation {
   averageRating: number;
 }
 
-export interface DetailedParkingLocation extends ParkingLocation {
-  description: string;
-  features: ParkingFeature[];
-  vehicleTypes: VehicleType[];
-  images: string[];
-  availableSpots: number;
-  cancellationPolicy: string;
-}
-
 export type OrderingOptions =
   | "rate_per_hour"
   | "-rate_per_hour"
@@ -86,6 +77,39 @@ export enum ParkingFeature {
   HANDICAP_ACCESSIBLE = "Handicap Accessible",
   COVERED = "Covered Parking",
   GUARDS = "Security Guards",
+}
+
+export interface ParkingDetailed {
+  name: string;
+  coverImage: string;
+  description: string;
+  address: string;
+  ratePerHour: string;
+  ratePerDay: string;
+  totalReviews: number;
+  averageRating: number;
+  vehiclesCapacity: {
+    vehicleType: string;
+    capacity: number;
+  }[];
+  features: {
+    feature: string;
+  }[];
+  availabilities: {
+    day: string;
+    startTime: string;
+    endTime: string;
+  }[];
+  reviews: {
+    reviewer: {
+      uuid: string;
+      fullName: string;
+      photo: string | null;
+    };
+    rating: number;
+    comments: string;
+    createdAt: string;
+  }[];
 }
 
 export type Customer = {

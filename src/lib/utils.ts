@@ -107,3 +107,44 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
     totalPages,
   ];
 };
+
+export function getDayInNumber(day: string) {
+  switch (day.toLowerCase()) {
+    case "sunday":
+      return 0;
+    case "monday":
+      return 1;
+    case "tuesday":
+      return 2;
+    case "wednesday":
+      return 3;
+    case "thursday":
+      return 4;
+    case "friday":
+      return 5;
+    case "saturday":
+      return 6;
+  }
+}
+
+export const timeAgo = (timestamp: string): string => {
+  const now = new Date();
+  const date = new Date(timestamp);
+
+  const diffMs = now.getTime() - date.getTime(); // Difference in milliseconds
+  const diffSec = Math.floor(diffMs / 1000); // Seconds
+  const diffMin = Math.floor(diffSec / 60); // Minutes
+  const diffHours = Math.floor(diffMin / 60); // Hours
+  const diffDays = Math.floor(diffHours / 24); // Days
+  const diffWeeks = Math.floor(diffDays / 7); // Weeks
+  const diffMonths = Math.floor(diffDays / 30); // Approx. months
+  const diffYears = Math.floor(diffDays / 365); // Approx. years
+
+  if (diffSec < 60) return `${diffSec} seconds ago`;
+  if (diffMin < 60) return `${diffMin} minutes ago`;
+  if (diffHours < 24) return `${diffHours} hours ago`;
+  if (diffDays < 7) return `${diffDays} days ago`;
+  if (diffWeeks < 4) return `${diffWeeks} weeks ago`;
+  if (diffMonths < 12) return `${diffMonths} months ago`;
+  return `${diffYears} years ago`;
+};

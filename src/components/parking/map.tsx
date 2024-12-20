@@ -10,18 +10,18 @@ import {
 import "leaflet/dist/leaflet.css";
 import { Icon, LatLng } from "leaflet";
 import { useState } from "react";
-import ParkingCard from "./parking-card";
-import { DetailedParkingLocation, ParkingLocation } from "@/types/definitions";
+// import ParkingCard from "./parking-card";
+// import { ParkingDetailed, ParkingLocation } from "@/types/definitions";
 
 // Default marker icon for locations
-const icon = new Icon({
-  iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
-  iconRetinaUrl:
-    "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-});
+// const icon = new Icon({
+//   iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
+//   iconRetinaUrl:
+//     "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png",
+//   shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
+//   iconSize: [25, 41],
+//   iconAnchor: [12, 41],
+// });
 
 // Special icon for user location
 const userIcon = new Icon({
@@ -33,7 +33,7 @@ const userIcon = new Icon({
 });
 
 interface MapProps {
-  locations: ParkingLocation[] | DetailedParkingLocation[];
+  // parking: ParkingLocation[] | ParkingDetailed[];
   userPosition: [number, number] | undefined;
 }
 
@@ -56,7 +56,7 @@ function LocationMarker() {
   );
 }
 
-export default function Map({ locations, userPosition }: MapProps) {
+export default function Map({ userPosition }: MapProps) {
   if (!userPosition) return null;
 
   return (
@@ -73,18 +73,17 @@ export default function Map({ locations, userPosition }: MapProps) {
         />
 
         {/* NOTE - Parking Locations */}
-        {locations.map((location) => (
+        {/* {parking.map((location, index) => (
           <Marker
-            key={location.uuid}
+            key={index}
             position={[location.latitude, location.longitude]}
             icon={icon}
           >
             <Popup>
-              {/* Popup content */}
-              <ParkingCard parking={location} />
+              <ParkingCard parking={parking} />
             </Popup>
           </Marker>
-        ))}
+        ))} */}
 
         {/* Locate Button */}
         <LocationMarker />

@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { ChevronLeft, Star, MapPin, Car } from "lucide-react";
+import { ChevronLeft, Star, MapPin, Calendar, Clock } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -17,63 +17,91 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import {
-  DetailedParkingLocation,
   VehicleType,
+  ParkingDetailed,
   ParkingFeature,
-  ParkingLocation,
 } from "@/types/definitions";
 import Link from "next/link";
 import Map from "@/components/parking/map";
+import { useParams } from "next/navigation";
+import axiosInstance from "@/lib/axiosInstance";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import clsx from "clsx";
+import { getDayInNumber, timeAgo } from "@/lib/utils";
 
-const parkingLocationProps: ParkingLocation = {
-  uuid: "b119eb52-fa1e-4780-bbd4-dad0e63981a3",
-  name: "GB Parking",
-  coverImage:
-    "https://img.freepik.com/premium-photo/parking-garage-underground_63253-3690.jpg?ga=GA1.1.491433875.1733571796&semt=ais_hybrid",
-  description: "This is gb parking",
-  address: "Kathmandu, Nepal",
-  ratePerHour: "100.00",
-  latitude: 27.6860328,
-  longitude: 85.258531,
-  postcode: "10400",
-  ratePerDay: "299.00",
-  totalReviews: 1,
-  averageRating: 2.0,
+const GetVehicleTypeIcon = ({ vehicleType }: { vehicleType: VehicleType }) => {
+  switch (vehicleType) {
+    case VehicleType.SMALL:
+      return <p>🚗</p>;
+    case VehicleType.MEDIUM:
+      return <p>🚙</p>;
+    case VehicleType.SUV:
+      return <p>🚘</p>;
+    case VehicleType.BIKE:
+      return <p>🚌</p>;
+    case VehicleType.TRUCK:
+      return <p>🚛</p>;
+    case VehicleType.MINIBUS:
+      return <p>🚐</p>;
+    case VehicleType.VAN:
+      return <p>🚚</p>;
+    default:
+      return <p>🚗</p>;
+  }
 };
 
-// Mock data for a detailed parking location
-const extraParkingDetails = {
-  description:
-    "Secure and convenient parking in the heart of Kathmandu. Perfect for both short-term and long-term parking needs.",
-  features: [
-    ParkingFeature.CCTV,
-    ParkingFeature.SECURITY_LIGHTING,
-    ParkingFeature.COVERED,
-  ],
-  vehicleTypes: [VehicleType.SMALL, VehicleType.MEDIUM, VehicleType.SUV],
-  images: [
-    "https://img.freepik.com/premium-photo/parking-garage-underground_63253-3690.jpg?ga=GA1.1.491433875.1733571796&semt=ais_hybrid",
-    "https://img.freepik.com/premium-photo/group-people-parking-lot_1048944-6810552.jpg?ga=GA1.1.491433875.1733571796&semt=ais_hybrid",
-  ],
-  availableSpots: 15,
-  cancellationPolicy:
-    "Free cancellation up to 24 hours before your booking start time",
+const GetFeatureTypeIcon = ({
+  parkingFeature,
+}: {
+  parkingFeature: ParkingFeature;
+}) => {
+  switch (parkingFeature) {
+    case ParkingFeature.CCTV:
+      return <p>📹</p>;
+    case ParkingFeature.EV_CHARGING:
+      return <p>🔌</p>;
+    case ParkingFeature.SECURITY_LIGHTING:
+      return <p>💡</p>;
+    case ParkingFeature.HANDICAP_ACCESSIBLE:
+      return <p>♿</p>;
+    case ParkingFeature.COVERED:
+      return <p>🏠</p>;
+    case ParkingFeature.GUARDS:
+      return <p>👮</p>;
+    default:
+      <p>✅</p>;
+  }
 };
 
 export default function ParkingBookingPage() {
+  const id = useParams().id;
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
   const [vehicleType, setVehicleType] = useState<VehicleType>();
   const [userPosition, setUserPosition] = useState<
     [number, number] | undefined
   >(undefined);
+  const [parkingDetailed, setParkingDetailed] =
+    useState<ParkingDetailed | null>(null);
 
-  const detailedParkingLocationData: DetailedParkingLocation = {
-    ...parkingLocationProps,
-    ...extraParkingDetails,
-  };
+  useEffect(() => {
+    async function fetchParkingDetails() {
+      try {
+        const res = await axiosInstance.get(
+          `/public/parking-app/parking-spots/${id}`
+        );
+        setParkingDetailed(res.data);
+      } catch (error) {
+        console.error("Error fetching parking details:", error);
+      }
+    }
+    fetchParkingDetails();
+  }, [id]);
 
-  // Get user location
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -88,192 +116,354 @@ export default function ParkingBookingPage() {
     }
   }, []);
 
+  if (!parkingDetailed) {
+    return <LoadingSpinner />;
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 sm:px-8 py-8">
-        <Link href="/parking">
-          <Button variant="ghost" className="mb-4">
-            <p className="flex items-center gap-2">
-              <ChevronLeft />
-              <span>Back to parking</span>
-            </p>
-          </Button>
-        </Link>
-
-        {/* Map showing the parking location */}
-        <div className="h-[65vh] mt-2 mb-4">
-          <Map
-            userPosition={userPosition}
-            locations={[detailedParkingLocationData]}
-          />
-        </div>
-
-        <div className="grid lg:grid-cols-[2fr,1fr] gap-8">
-          <div>
-            {/* NAME */}
-            <h1 className="text-3xl font-mont-bold mb-4">
-              {detailedParkingLocationData.name}
+      {/* Cover Image section START */}
+      <div className="relative w-full h-[70vh]">
+        <Image
+          src={
+            parkingDetailed.coverImage ||
+            "/placeholder.svg?height=600&width=1200"
+          }
+          alt={parkingDetailed.name}
+          layout="fill"
+          objectFit="cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-black bg-opacity-40 flex items-end">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <h1 className="text-4xl font-mont-bold text-white mb-2">
+              {parkingDetailed.name}
             </h1>
-
-            {/* RATINGS & ADDRESS */}
-            <div className="flex justify-between gap-4 mb-4">
-              {/* RATINGS */}
-              <div
-                className="flex justify-between flex-col sm:flex-row "
-                aria-label="Star Rating"
-              >
-                <div className="flex items-center gap-1">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <Star
-                      key={star}
-                      className={`h-4 w-4 ${
-                        star <=
-                        Math.floor(detailedParkingLocationData.averageRating)
-                          ? "fill-yellow-400 text-yellow-400"
-                          : "fill-gray-200 text-gray-200"
-                      }`}
-                      aria-label={
-                        star <=
-                        Math.floor(detailedParkingLocationData.averageRating)
-                          ? "Filled Star"
-                          : "Empty Star"
-                      }
-                    />
-                  ))}
-                </div>
-                <span className="ml-1 text-gray-600">
-                  ({detailedParkingLocationData.totalReviews} reviews)
-                </span>
-              </div>
-
-              {/* ADDRESS */}
-              <div className="flex items-center">
-                <MapPin className="h-5 w-5 text-primary" />
-                <span className="ml-1 font-mont-bold text-gray-500 hover:text-gray-700 transition">
-                  {detailedParkingLocationData.address}
-                </span>
-              </div>
-            </div>
-
-            {/* IMAGES */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 py-3 mb-4">
-              {detailedParkingLocationData.images.map((image, index) => (
-                <div
-                  key={index}
-                  className="aspect-video relative rounded-lg overflow-hidden hover:scale-105 transition-transform"
-                >
-                  <Image
-                    src={image}
-                    alt={`Parking Image ${index + 1}`}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              ))}
-            </div>
-
-            {/* DESCRIPTION */}
-            <p className="text-gray-700 mb-6">
-              {detailedParkingLocationData.description}
-            </p>
-
-            {/* FEATURES AND VEHICLE TYPES DETAILS */}
-            <div className="flex flex-col gap-8 sm:flex-row sm:gap-16">
-              {/* FEATURES */}
-              <div>
-                <h2 className="text-2xl font-mont-medium mb-4">Features</h2>
-                <ul className="grid mb-6">
-                  {detailedParkingLocationData.features.map((feature) => (
-                    <li key={feature} className="flex items-center">
-                      <span className="mr-2 text-primary" aria-hidden="true">
-                        ✔
-                      </span>
-                      <span className="text-gray-700">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div>
-                {/* VEHICLE TYPES */}
-                <h2 className="text-2xl font-mont-medium  mb-4">
-                  Accepted Vehicle Types
-                </h2>
-                <ul className="grid mb-6">
-                  {detailedParkingLocationData.vehicleTypes.map(
-                    (vehicleType) => (
-                      <li key={vehicleType} className="flex items-center">
-                        <Car className="w-5 h-5 mr-2 text-primary" />
-                        <span className="text-gray-700">{vehicleType}</span>
-                      </li>
-                    )
-                  )}
-                </ul>
-              </div>
+            <div className="flex items-center text-md text-white">
+              <MapPin className="h-5 w-5 mr-2" />
+              <span>{parkingDetailed.address}</span>
             </div>
           </div>
+        </div>
+      </div>
+      {/* Cover Image section END */}
 
-          {/* BOOKING CARD */}
-          <div className="mt-8">
-            <Card>
-              <CardHeader>
-                <CardTitle className="font-mont-bold">
-                  Book This Space
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* BACK BUTTON START */}
+        <Link href="/parking">
+          <Button variant="ghost" className="mb-8">
+            <ChevronLeft className="mr-2 h-5 w-5" />
+            Back to parking
+          </Button>
+        </Link>
+        {/* BACK BUTTON END */}
+
+        <div className="grid lg:grid-cols-[1fr,400px] gap-2">
+          <ScrollArea className="h-full sm:pr-6">
+            <div className="space-y-8">
+              <Card className="overflow-hidden">
+                <CardHeader className="p-6">
+                  <Tabs defaultValue="details">
+                    <TabsList className="grid w-full grid-cols-4 mb-6">
+                      <TabsTrigger value="details">Details</TabsTrigger>
+                      <TabsTrigger value="features">Features</TabsTrigger>
+                      <TabsTrigger value="availability">
+                        Availability
+                      </TabsTrigger>
+                      <TabsTrigger value="reviews">Reviews</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="details">
+                      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div className="flex flex-col gap-1">
+                          <span className="text-2xl font-mont-bold">
+                            {parkingDetailed.name}
+                          </span>
+                          <span className="text-sm inline-flex">
+                            <MapPin className="h-4 w-4 mr-2" />
+                            {parkingDetailed.address}
+                          </span>
+                        </div>
+                        <span className="font-mont-bold text-lg">
+                          £{parkingDetailed.ratePerHour}
+                          <span className="text-primary text-sm">/hr</span>
+                        </span>
+                      </div>
+                      <hr className="my-3" />
+
+                      <p className="text-gray-700 text-lg mb-8">
+                        {parkingDetailed.description}
+                      </p>
+                      <h3 className="font-mont-medium text-lg mb-2">
+                        Vehicle Capacity
+                      </h3>
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        {parkingDetailed.vehiclesCapacity.map(
+                          (vehicle, index) => (
+                            <div
+                              key={index}
+                              className="flex items-center bg-gray-100 hover:bg-gray-200 transition-all rounded-lg p-4"
+                            >
+                              <GetVehicleTypeIcon
+                                vehicleType={vehicle.vehicleType as VehicleType}
+                              />
+                              <span className="text-sm pl-1">
+                                {vehicle.vehicleType} ({vehicle.capacity})
+                              </span>
+                            </div>
+                          )
+                        )}
+                      </div>
+                    </TabsContent>
+                    <TabsContent value="features">
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        {parkingDetailed.features.map((feat, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center bg-gray-100 hover:bg-gray-200 transition-all rounded-lg p-4"
+                          >
+                            <GetFeatureTypeIcon
+                              parkingFeature={feat.feature as ParkingFeature}
+                            />
+                            <span className="text-sm  pl-1">
+                              {feat.feature}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </TabsContent>
+                    <TabsContent value="availability">
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        {parkingDetailed.availabilities.map((slot, index) => (
+                          <div
+                            key={index}
+                            className={clsx(
+                              "flex flex-col justify-center bg-gray-100 hover:bg-gray-200 transition-all rounded-lg p-4",
+                              {
+                                "bg-green-300":
+                                  getDayInNumber(slot.day) ===
+                                  new Date().getDay(),
+                              }
+                            )}
+                          >
+                            <div className="flex items-center mt-1">
+                              <Calendar className="w-5 h-5 mr-2 text-primary" />
+                              <span className="text-lg font-mont-medium">
+                                {slot.day}
+                              </span>
+                            </div>
+                            <div className="flex items-center mt-1">
+                              <Clock className="w-5 h-5 mr-2 text-gray-500" />
+                              <span className="text-gray-600">
+                                {slot.startTime} - {slot.endTime}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </TabsContent>
+                    <TabsContent value="reviews">
+                      <div className="space-y-4">
+                        {/* NOTE - header for reviews  */}
+                        {/* <div>
+                          <div className="flex flex-col justify-center">
+                            <div className="flex gap-1">
+                              {[1, 2, 3, 4, 5].map((star) => (
+                                <Star
+                                  key={star}
+                                  className={`h-5 w-5 ${
+                                    star <=
+                                    Math.floor(parkingDetailed.averageRating)
+                                      ? "fill-yellow-400 text-yellow-400"
+                                      : "fill-gray-200 text-gray-200"
+                                  }`}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                          <h3>
+                            <span className="font-mont-medium">
+                              Total Reviews:{" "}
+                            </span>
+                            {parkingDetailed.totalReviews}
+                          </h3>
+                          <h3>
+                            <span className="font-mont-medium">
+                              Average Rating:{" "}
+                            </span>
+                            {parkingDetailed.averageRating.toFixed(1)}{" "}
+                          </h3>
+                        </div> 
+                        <hr /> */}
+                        <div className="flex flex-col gap-4 justify-start">
+                          {parkingDetailed.reviews.map((review, index) => (
+                            <Card
+                              key={review.reviewer.uuid}
+                              className="w-full order-2 mx-auto shadow-none border-none relative"
+                            >
+                              <CardContent className="p-0 z-10 bg-white hover:bg-gray-100 py-2 transition-all relative rounded-lg">
+                                <div className="space-y-4">
+                                  <div className="flex flex-col gap-2 sm:flex-row items-center space-y-2">
+                                    {/* IMAGE */}
+                                    <div className="relative h-16 w-16 flex-shrink-0">
+                                      <Image
+                                        src={
+                                          review.reviewer.photo ||
+                                          "/placeholder.svg?height=64&width=64"
+                                        }
+                                        alt={"User"}
+                                        fill
+                                        className="rounded-full object-cover"
+                                      />
+                                    </div>
+
+                                    {/* NAME and STARS */}
+                                    <div className="ml-2 transition-all">
+                                      <div className="flex">
+                                        {[1, 2, 3, 4, 5].map((star) => (
+                                          <Star
+                                            key={star}
+                                            className={`h-5 w-5 ${
+                                              star <= Math.floor(review.rating)
+                                                ? "fill-yellow-400 text-yellow-400"
+                                                : "fill-gray-200 text-gray-200"
+                                            }`}
+                                          />
+                                        ))}
+                                      </div>
+                                      <h3 className="font-mont-medium">
+                                        {review.reviewer.fullName ||
+                                          "Anonymous"}
+                                      </h3>
+
+                                      <p className="text-xs text-gray-400">
+                                        {timeAgo(review.createdAt)}
+                                      </p>
+                                      <p className="text-gray-600 tracking-light mt-2 text-md ">
+                                        {review.comments}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </CardContent>
+                              <hr
+                                className={clsx("block mt-4", {
+                                  hidden:
+                                    parkingDetailed.reviews.length - 1 ===
+                                    index,
+                                })}
+                              />
+                            </Card>
+                          ))}
+                        </div>
+                      </div>
+                    </TabsContent>
+                  </Tabs>
+                </CardHeader>
+                <CardContent className="pt-2 px-6"></CardContent>
+              </Card>
+
+              {/* MAP CARD START */}
+              <Card>
+                <CardContent className="p-0">
+                  <div className="h-[70vh]">
+                    <Map userPosition={userPosition} />
+                  </div>
+                </CardContent>
+              </Card>
+              {/* MAP CARD END */}
+            </div>
+          </ScrollArea>
+
+          {/* BOOKING FORM  */}
+          <div>
+            <Card className="sticky mt-6 md:mt-0 top-6">
+              <CardHeader className="p-6 pb-0">
+                <CardTitle className="text-xl font-mont-bold">
+                  Book Your Parking
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <hr className="my-4" />
+              <CardContent className="px-6 pb-6">
                 <form className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="start-date">Entry Time</Label>
-                    <DateTimePicker value={startDate} onChange={setStartDate} />
+                  <div>
+                    <Label className="text-md font-mont-medium">
+                      Entry Time
+                    </Label>
+                    <DateTimePicker
+                      className="mt-1"
+                      value={startDate}
+                      onChange={setStartDate}
+                    />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="end-date">Exit Time</Label>
-                    <DateTimePicker value={endDate} onChange={setEndDate} />
+                  <div>
+                    <Label className="text-md font-mont-medium">
+                      Exit Time
+                    </Label>
+                    <DateTimePicker
+                      className="mt-1"
+                      value={endDate}
+                      onChange={setEndDate}
+                    />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="vehicle-type">Vehicle Type</Label>
+                  <div>
+                    <Label className="text-md font-mont-medium">
+                      Vehicle Type
+                    </Label>
                     <Select
                       value={vehicleType}
                       onValueChange={(value) =>
                         setVehicleType(value as VehicleType)
                       }
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="mt-1 w-full">
                         <SelectValue placeholder="Select vehicle type" />
                       </SelectTrigger>
                       <SelectContent>
-                        {detailedParkingLocationData.vehicleTypes.map(
-                          (type) => (
-                            <SelectItem key={type} value={type}>
-                              {type}
+                        {parkingDetailed.vehiclesCapacity.map(
+                          (vehicle, index) => (
+                            <SelectItem key={index} value={vehicle.vehicleType}>
+                              {vehicle.vehicleType}
                             </SelectItem>
                           )
                         )}
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="license-plate">License Plate</Label>
-                    <Input id="license-plate" placeholder="e.g., ABC-1234" />
+                  <div>
+                    <Label className="text-lg mb-2 font-mont-medium">
+                      License Plate
+                    </Label>
+                    <Input
+                      className="mt-1"
+                      placeholder="Enter your license plate"
+                    />
+                  </div>
+                  <div className="flex items-center space-x-2 pb-2">
+                    <Checkbox id="terms" />
+                    <label
+                      htmlFor="terms"
+                      className="text-sm font-medium  font-mont-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      I agree to the terms and conditions
+                    </label>
                   </div>
                   <Separator />
-                  <div className="flex justify-between items-center font-semibold text-gray-800">
+                  <div className="flex justify-between items-center text-md font-mont-medium py-2">
                     <span>Total Price</span>
-                    <span className="text-2xl text-primary font-mont-bold">
-                      £{detailedParkingLocationData.ratePerHour}/hr
+                    <span className="text-md font-mont-bold">
+                      £{parkingDetailed.ratePerHour}
+                      <span className="text-primary text-sm">/hr</span>
                     </span>
                   </div>
-                  <Button className="w-full font-mont-bold bg-primary hover:bg-primary/90 transition-colors">
+                  <Button
+                    type="submit"
+                    className="w-full font-mont-medium text-lg py-6"
+                  >
                     Book Now
                   </Button>
                 </form>
               </CardContent>
             </Card>
-            {/* CANCELLATION POLICY */}
-            <div className="mt-4 text-sm  text-gray-600 flex flex-col items-start gap-1">
-              <p>{detailedParkingLocationData.cancellationPolicy}</p>
-            </div>
           </div>
         </div>
       </div>
