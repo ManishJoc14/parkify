@@ -1,7 +1,13 @@
+"use client";
+
+import axiosInstance from "@/lib/axiosInstance";
 import { ChevronRight, Facebook, Instagram, X, Youtube } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
+import { toast } from "react-toastify";
 
 export default function Footer() {
+  const [email, setEmail] = useState("");
   const socialLinks = [
     { href: "/", icon: Facebook },
     { href: "/", icon: X },
@@ -11,32 +17,54 @@ export default function Footer() {
 
   const companyLinks = [
     { href: "/", label: "Home" },
-    { href: "/", label: "Features" },
-    { href: "/", label: "Services" },
-    { href: "/", label: "About Us" },
-    { href: "/", label: "Contact Us" },
+    { href: "#how-it-works", label: "How It Works" },
+    { href: "#testimonials", label: "Testimonial" },
+    { href: "#benefits", label: "Benefits" },
+    { href: "#faq", label: "FAQ" },
+    { href: "#feedback", label: "Feedback" },
   ];
 
   const contactDetails = [
-    { content: "📞 98123000" },
+    { content: "📞 +44 207946" },
+    { content: "📌 London, UK" },
     {
       content: "🌐",
-      link: { href: "#", label: "www.parkify.com" },
+      link: { href: "#", label: "www.parkify.co.uk" },
     },
     {
       content: "✉️",
-      link: { href: "mailto:info@bookmyspot.com", label: "info@parkify.com" },
+      link: { href: "mailto:info@parkify.co.uk", label: "info@parkify.co.uk" },
     },
-    { content: "📌 Banehswor, Kathmandu" },
   ];
+
+  const handleNewsletterSubmit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
+    e.preventDefault();
+
+    try {
+      const res = await axiosInstance.post(
+        "/public/website-app/newsletter/subscribe",
+        {
+          email,
+        }
+      );
+      toast.success(res.data.message);
+      setEmail("");
+    } catch {
+      toast.error("Failed to subscribe to the newsletter. Please try again.");
+    }
+
+    setEmail("");
+  };
 
   return (
     <footer className="bg-gray-900 text-gray-300 p-2">
-      <div className="container mx-auto px-4 py-8 flex flex-col md:flex-row justify-between gap-8">
+      <div className="container mx-auto px-4 py-8 flex flex-col md:flex-row justify-between gap-16">
         {/* Brand Section */}
         <div>
           <h3 className="text-2xl text-white font-mont-bold">
-            <span className="text-3xl">🚗</span>Parkify
+            <span className="text-3xl">{/* FIXME - LOGO */}</span>Parkify
           </h3>
           <p className="mt-2 text-sm">
             Find and reserve parking spots with ease. Simplify your parking
@@ -56,14 +84,14 @@ export default function Footer() {
         </div>
 
         {/* Company and Contact Section */}
-        <div className="flex flex-col sm:flex-row gap-10 justify-between">
+        <div className="flex flex-col sm:flex-row gap-16 justify-between">
           {/* Company Section */}
-          <div>
-            <h4 className="text-white text-lg font-semibold">Company</h4>
+          <div className="min-w-fit">
+            <h4 className="text-white text-lg font-mont-bold">Company</h4>
             <ul className="mt-2 space-y-2">
               {companyLinks.map((link, index) => (
                 <li key={index}>
-                  <Link href={link.href} className="hover:underline">
+                  <Link href={link.href} className="hover:text-primary">
                     {link.label}
                   </Link>
                 </li>
@@ -73,13 +101,16 @@ export default function Footer() {
 
           {/* Contact Section */}
           <div>
-            <h4 className="text-white text-lg font-semibold">Contact</h4>
+            <h4 className="text-white text-lg font-mont-bold">Contact</h4>
             <ul className="mt-2 space-y-2 text-sm">
               {contactDetails.map((detail, index) => (
                 <li key={index} className="text-nowrap">
                   {detail.content}{" "}
                   {detail.link && (
-                    <Link href={detail.link.href} className="hover:underline">
+                    <Link
+                      href={detail.link.href}
+                      className="hover:text-primary"
+                    >
                       {detail.link.label}
                     </Link>
                   )}
@@ -91,17 +122,20 @@ export default function Footer() {
 
         {/* Newsletter Section */}
         <div>
-          <h4 className="text-white text-lg font-semibold">
+          <h4 className="text-white text-lg font-mont-bold">
             Get the latest updates
           </h4>
           <p className="mt-2 text-sm">
             Sign up for our newsletter to stay informed about the latest offers
             and updates.
           </p>
-          <form className="mt-4 flex">
+          <form className="mt-4 flex" onSubmit={handleNewsletterSubmit}>
             <input
               type="email"
               placeholder="Email address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
               className="px-4 py-2 w-full text-gray-800 rounded-l-md focus:outline-none"
             />
             <button
@@ -116,7 +150,7 @@ export default function Footer() {
 
       <div className="border-t border-gray-700 mt-8 py-4 text-center">
         <p className="text-sm">
-          © 2024 Book My Spot. All Rights Reserved. |{" "}
+          © 2024 Parkify. All Rights Reserved. |{" "}
           <Link href="/" className="hover:underline">
             Terms & Conditions
           </Link>{" "}

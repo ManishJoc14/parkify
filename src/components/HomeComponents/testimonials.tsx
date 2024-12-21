@@ -1,45 +1,28 @@
 "use client";
 
-import * as React from "react";
-import Image from "next/image";
-import { ChevronLeft, ChevronRight, Star } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { ChevronLeft, ChevronRight, Star, User } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-
-const testimonials = [
-  {
-    id: 1,
-    name: "Shane Lee",
-    role: "Business Owner",
-    image:
-      "https://img.freepik.com/free-photo/young-bearded-man-with-striped-shirt_273609-5677.jpg?ga=GA1.1.491433875.1733571796&semt=ais_hybrid",
-    content:
-      "I loved this parking app. As someone with a busy schedule, booking a spot quickly saves me so much time. The interface is easy to use, and I love how reliable it is. Highly recommended!",
-    rating: 5,
-  },
-  {
-    id: 2,
-    name: "Emily Chen",
-    role: "Daily Commuter",
-    image:
-      "https://img.freepik.com/free-photo/horizontal-portrait-smiling-happy-young-pleasant-looking-female-wears-denim-shirt-stylish-glasses-with-straight-blonde-hair-expresses-positiveness-poses_176420-13176.jpg?ga=GA1.1.491433875.1733571796&semt=ais_hybrid",
-    content:
-      "Parking in the city used to be a nightmare, but this app makes it simple. I love the transparent pricing and how quickly I can find spots. The process is seamless and stress-free.",
-    rating: 5,
-  },
-  {
-    id: 3,
-    name: "Marcus Johnson",
-    role: "Student",
-    image:
-      "https://img.freepik.com/free-photo/cute-smiling-young-man-with-bristle-looking-satisfied_176420-18989.jpg?ga=GA1.1.491433875.1733571796&semt=ais_hybrid",
-    content:
-      "This app has been a lifesaver for me as a student. Booking spots is quick and easy, and the ability to extend my time from my phone is super convenient. It's efficient and reliable!",
-    rating: 5,
-  },
-];
+import axiosInstance from "@/lib/axiosInstance";
+import { Feedback } from "@/types/definitions";
 
 export default function Testimonials() {
-  const [currentIndex, setCurrentIndex] = React.useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [testimonials, setTestimonials] = useState<Feedback[] | null>(null);
+
+  useEffect(() => {
+    async function fetchTestimonials() {
+      const res = await axiosInstance.get("/public/website-app/feedbacks");
+      setTestimonials(res.data.reverse());
+    }
+    try {
+      fetchTestimonials();
+    } catch {
+      console.log("Error fetching testimonials");
+    }
+  }, []);
+
+  if (!testimonials) return <p>Loading...</p>;
 
   const nextTestimonial = () => {
     setCurrentIndex((prev) => (prev + 1) % testimonials.length);
@@ -51,6 +34,13 @@ export default function Testimonials() {
     );
   };
 
+  const calculateAverageRating = () => {
+    const totalRating = testimonials.reduce(
+      (acc, curr) => acc + curr.rating,
+      0
+    );
+    return totalRating / testimonials.length;
+  };
   return (
     <section
       id="testimonials"
@@ -79,25 +69,36 @@ export default function Testimonials() {
           </p>
 
           <div className="mt-8 flex flex-col items-start space-y-2">
-            <div className="flex -space-x-4">
-              {testimonials.map((testimonial) => (
+            {/* <div className="flex -space-x-4">
+              {testimonials.map((testimonial, index) => (
                 <div
-                  key={testimonial.id}
+                  key={index}
                   className="relative h-16 w-16 overflow-hidden border-2 rounded-full"
                 >
                   <Image
-                    src={testimonial.image}
-                    alt={testimonial.name}
+                    src={testimonial?.image}
+                    alt={testimonial.fullName}
                     fill
                     className="object-cover"
                   />
                 </div>
               ))}
-            </div>
+            </div> */}
             <div className="flex items-center space-x-1">
-              <Star className="h-7 w-7 fill-yellow-500 text-accent" />
-              <span className="font-semibold">4.9</span>
-              <span className="text-muted-foreground">(20000 Reviews)</span>
+              <span className="font-semibold"></span>
+              {[1, 2, 3, 4, 5].map((star) => (
+                <Star
+                  key={star}
+                  className={`h-6 w-6 ${
+                    star <= Math.floor(calculateAverageRating())
+                      ? "fill-yellow-400 text-yellow-400"
+                      : "fill-gray-200 text-gray-200"
+                  }`}
+                />
+              ))}
+              <span className="text-muted-foreground">
+                ({testimonials.length} Reviews)
+              </span>
             </div>
           </div>
         </div>
@@ -110,37 +111,36 @@ export default function Testimonials() {
                 <div className="space-y-4">
                   <div className="flex flex-col gap-2 sm:flex-row items-center space-y-2">
                     {/* IMAGE */}
-                    <div className="relative h-16 w-16 flex-shrink-0">
-                      <Image
-                        src={testimonials[currentIndex].image}
-                        alt={testimonials[currentIndex].name}
-                        fill
-                        className="rounded-full object-cover"
-                      />
+                    <div className="relative h-16 w-16 p-2 border-primary/60 border rounded-full flex-shrink-0">
+                      <User className="h-12 w-12 text-primary" />
                     </div>
 
                     {/* NAME and ROLE and STARS */}
                     <div className="ml-2">
                       <div>
-                        <h3 className="font-semibold">
-                          {testimonials[currentIndex].name}
+                        <h3 className="font-mont-bold">
+                          {testimonials[currentIndex].fullName || "Anonymous"}
                         </h3>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-sm font-mont-regular text-muted-foreground">
                           {testimonials[currentIndex].role}
                         </p>
                       </div>
-                      <div className="flex">
-                        {[...Array(5)].map((_, i) => (
+                      <div className="flex gap-1 mt-1">
+                        {[1, 2, 3, 4, 5].map((star) => (
                           <Star
-                            key={i}
-                            className="h-7 w-7 fill-yellow-500 text-white"
+                            key={star}
+                            className={`h-6 w-6 ${
+                              star <= testimonials[currentIndex].rating
+                                ? "fill-yellow-400 text-yellow-400"
+                                : "fill-gray-200 text-gray-200"
+                            }`}
                           />
                         ))}
                       </div>
                     </div>
                   </div>
                   <p className="text-muted-foreground tracking-light text-sm sm:text-[1rem] ">
-                    {testimonials[currentIndex].content}
+                    {testimonials[currentIndex].message}
                   </p>
                 </div>
               </CardContent>

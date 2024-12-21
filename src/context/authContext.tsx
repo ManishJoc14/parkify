@@ -127,13 +127,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       if (res) {
         const {
           message,
-          status,
           tokens: { refresh, access },
           ...fetchedUser
         } = res.data;
         setUser(fetchedUser);
         setIsAuthenticated(true);
-        toast.success(`${status} : ${message}`);
+        toast.success(message);
         localStorage.setItem("accessToken", access);
         localStorage.setItem("refreshToken", refresh);
         redirectToDashboard(res.data.roles[0]);

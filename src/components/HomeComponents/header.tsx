@@ -19,11 +19,11 @@ export default function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-transparent backdrop-blur-[20px]">
-      <div className="container mx-auto flex h-16 items-baseline justify-between px-4">
-        <Link href="/" className="flex items-baseline">
-          <span className="h-8 text-4xl">🚗</span>
-          <span className="text-xl font-semibold">Parkify</span>
+    <header className="sticky top-0 z-50 w-full border-b bg-gray-900 text-white">
+      <div className="container mx-auto flex h-16 items-center justify-between px-4">
+        <Link href="/" className="flex items-center">
+          <span className="h-8 text-4xl">{/* FIXME - LOGO */}</span>
+          <span className="text-xl font-mont-bold">Parkify</span>
         </Link>
 
         {/* Desktop Navigation */}
@@ -32,7 +32,7 @@ export default function Header() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-md font-semibold font-sans text-secondary-foreground hover:text-primary transition-colors"
+              className="text-sm font-mont-medium text-white hover:text-primary transition-colors"
             >
               {link.label}
             </Link>
@@ -58,7 +58,7 @@ export default function Header() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                  className="text-sm font-mont-medium text-white hover:text-primary transition-colors"
                   onClick={() => setIsOpen(false)}
                 >
                   {link.label}

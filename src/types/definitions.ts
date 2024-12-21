@@ -37,6 +37,14 @@ export interface ParkingSpot {
   image_url: string;
 }
 
+export interface Feedback {
+  fullName: string;
+  email: string;
+  role: string;
+  rating: number;
+  message: string;
+}
+
 export interface ParkingLocation {
   uuid: string;
   name: string;

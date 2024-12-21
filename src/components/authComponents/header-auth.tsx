@@ -19,7 +19,7 @@ export default function HeaderAuth() {
       </Button>
     </div>
   ) : (
-    <Button asChild size="sm" variant={"outline"}>
+    <Button asChild size="sm" variant={"default"} className="font-mont-bold text-white px-4 py-3">
       <Link href="/login">Sign in</Link>
     </Button>
   );

@@ -15,19 +15,15 @@ import {
 import FeedbackSubmittedMessage from "./feedbackSubmittedMessage";
 import Image from "next/image";
 import faqImage from "/public/images/faqs.webp";
-
-interface FormData {
-  name: string;
-  email: string;
-  ratings: number;
-  message: string;
-}
+import axiosInstance from "@/lib/axiosInstance";
+import { Feedback } from "@/types/definitions";
 
 export default function FeedbackForm() {
-  const [formData, setFormData] = useState<FormData>({
-    name: "",
+  const [formData, setFormData] = useState<Feedback>({
+    fullName: "",
     email: "",
-    ratings: 1,
+    role: "",
+    rating: 1,
     message: "",
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -41,15 +37,23 @@ export default function FeedbackForm() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     try {
       setLoading(true);
-      // await sumbmitFeedback()
-      setIsSubmitted(true);
-      setLoading(false);
+      const res = await axiosInstance.post(
+        "/public/website-app/feedback/create",
+        formData
+      );
+
+      if (res.status === 201) {
+        setIsSubmitted(true);
+      }
     } catch (error) {
       setError((error as { message: string }).message);
       console.log((error as { message: string }).message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -79,7 +83,7 @@ export default function FeedbackForm() {
           {/* RIGHT SECTION */}
           <form
             onSubmit={handleSubmit}
-            className="flex-1 w-full sm:max-w-xl space-y-4"
+            className="flex-1 w-full sm:max-w-xl space-y-3"
           >
             {/* NAME */}
             <div className="relative">
@@ -90,8 +94,8 @@ export default function FeedbackForm() {
               <Input
                 type="text"
                 placeholder="Your Name"
-                value={formData.name}
-                name="name"
+                value={formData.fullName}
+                name="fullName"
                 onChange={handleChange}
                 className="pl-10 h-12  flex item-center"
                 disabled={loading}
@@ -117,6 +121,24 @@ export default function FeedbackForm() {
               />
             </div>
 
+            {/* ROLE */}
+            <div className="relative">
+              <User
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                size={20}
+              />
+              <Input
+                type="text"
+                placeholder="Your Role"
+                value={formData.role}
+                name="role"
+                onChange={handleChange}
+                className="pl-10 h-12  flex item-center"
+                disabled={loading}
+                required
+              />
+            </div>
+
             {/* Ratings */}
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2">
@@ -124,8 +146,9 @@ export default function FeedbackForm() {
               </span>
 
               <Select
+                required
                 onValueChange={(value) =>
-                  setFormData((prev) => ({ ...prev, ratings: parseInt(value) }))
+                  setFormData((prev) => ({ ...prev, rating: parseInt(value) }))
                 }
                 defaultValue="2"
               >
@@ -153,13 +176,14 @@ export default function FeedbackForm() {
                 name="message"
                 onChange={handleChange}
                 rows={6}
+                required
                 placeholder="Type your message here..."
                 className="pl-10 flex item-center"
               />
             </div>
 
             <Button
-              type="button"
+              type="submit"
               size="lg"
               className="h-12 w-full font-mont-medium px-8 hover:scale-[0.99] transition-all"
             >
