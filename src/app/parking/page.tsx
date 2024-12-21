@@ -319,7 +319,11 @@ export default function SearchPage() {
             >
               <div className="space-y-4 gap-4 overflow-y-hidden">
                 {parkings.map((parking) => (
-                  <ParkingCard key={parking.uuid} parking={parking} />
+                  <ParkingCard
+                    id={undefined}
+                    key={parking.uuid}
+                    parking={parking}
+                  />
                 ))}
               </div>
             </InfiniteScroll>
@@ -328,8 +332,11 @@ export default function SearchPage() {
           {/* Map Section */}
           <div className="w-full h-full sticky flex-[2] top-4 order-[3] sm:order-[10]">
             <div className="bg-white rounded-lg shadow-sm p-4 h-screen">
-              {/* locations={parkings} */}
-              <Map userPosition={userPosition} />
+              <Map
+                id={undefined}
+                parking={parkings}
+                userPosition={userPosition}
+              />
             </div>
           </div>
         </div>

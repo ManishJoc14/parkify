@@ -366,7 +366,11 @@ export default function ParkingBookingPage() {
               <Card>
                 <CardContent className="p-0">
                   <div className="h-[70vh]">
-                    <Map userPosition={userPosition} />
+                    <Map
+                      id={id as string}
+                      parking={[parkingDetailed]}
+                      userPosition={userPosition}
+                    />
                   </div>
                 </CardContent>
               </Card>
