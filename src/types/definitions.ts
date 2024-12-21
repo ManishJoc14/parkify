@@ -86,6 +86,8 @@ export interface ParkingDetailed {
   address: string;
   ratePerHour: string;
   ratePerDay: string;
+  latitude: number;
+  longitude: number;
   totalReviews: number;
   averageRating: number;
   vehiclesCapacity: {

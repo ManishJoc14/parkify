@@ -1,11 +1,17 @@
 import Image from "next/image";
 import { Footprints, Info } from "lucide-react";
 import { Star } from "lucide-react";
-import { ParkingLocation } from "@/types/definitions";
+import { ParkingDetailed, ParkingLocation } from "@/types/definitions";
 import { Button } from "../ui/button";
 import Link from "next/link";
 
-const ParkingCard = ({ parking }: { parking: ParkingLocation }) => {
+const ParkingCard = ({
+  id,
+  parking,
+}: {
+  id: string | undefined;
+  parking: ParkingDetailed | ParkingLocation;
+}) => {
   return (
     <div className="relative flex flex-col sm:flex-row w-full overflow-hidden bg-white rounded-lg hover:shadow-sm transition-all">
       <div className="w-full sm:w-1/3">
@@ -69,19 +75,19 @@ const ParkingCard = ({ parking }: { parking: ParkingLocation }) => {
         </div>
 
         <hr />
-        {/* BUTTONS  */}
-        <div className="flex justify-between gap-2 pt-2">
-          {/* <Button
-            variant="outline"
-            className="px-2 py-1 text-xs font-mont-medium text-secondary-foreground hover:bg-primary/5 rounded-md transition-colors"
+        {/* BUTTON  */}
+        <div className="flex pt-2">
+          <Link
+            href={`/parking/${"uuid" in parking ? parking.uuid : id}`}
+            className="flex-1"
           >
-          </Button> */}
-          <Button
-            variant="default"
-            className="px-4  w-full py-2 text-xs font-mont-medium bg-primary text-white rounded-md hover:bg-primary/90 transition-colors"
-          >
-          <Link href={`/parking/${parking?.uuid}`}>Book Now</Link>
-          </Button>
+            <Button
+              variant="default"
+              className="px-4 py-2 w-full text-xs font-mont-medium bg-primary text-white rounded-md hover:bg-primary/90 transition-colors"
+            >
+              Book Now
+            </Button>
+          </Link>
         </div>
       </div>
     </div>

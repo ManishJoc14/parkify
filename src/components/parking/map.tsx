@@ -1,62 +1,65 @@
-"use client";
-
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Popup,
-  useMapEvents,
-} from "react-leaflet";
+import { useEffect } from "react";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import { Icon } from "leaflet";
+import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { Icon, LatLng } from "leaflet";
-import { useState } from "react";
-// import ParkingCard from "./parking-card";
-// import { ParkingDetailed, ParkingLocation } from "@/types/definitions";
+import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
+import "leaflet-routing-machine/dist/leaflet-routing-machine.js";
+import ParkingCard from "./parking-card";
+import { ParkingLocation, ParkingDetailed } from "@/types/definitions";
 
-// Default marker icon for locations
-// const icon = new Icon({
-//   iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
-//   iconRetinaUrl:
-//     "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png",
-//   shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
-//   iconSize: [25, 41],
-//   iconAnchor: [12, 41],
-// });
-
-// Special icon for user location
+// Define user and parking icons
 const userIcon = new Icon({
-  iconUrl: "https://cdn-icons-png.flaticon.com/512/1077/1077012.png", // Custom user location icon
-  iconRetinaUrl: "https://cdn-icons-png.flaticon.com/512/684/684908.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
+  iconUrl: "https://cdn-icons-png.flaticon.com/512/1077/1077012.png",
   iconSize: [35, 35],
   iconAnchor: [17, 35],
 });
 
+const parkingIcon = new Icon({
+  iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+});
+
+// Custom hook to add the routing control after the map has loaded
+function RoutingControl({
+  userPosition,
+  parking,
+}: {
+  userPosition: [number, number];
+  parking: ParkingLocation[] | ParkingDetailed[];
+}) {
+  const map = useMap(); // Get the map instance using the hook
+
+  useEffect(() => {
+    if (!userPosition || !parking.length) return;
+
+    const { latitude, longitude } = parking[0]; // First parking location
+
+    const routingControl = L.Routing.control({
+      waypoints: [
+        L.latLng(latitude, longitude), // Parking position
+        L.latLng(userPosition[0], userPosition[1]), // User's position
+      ],
+      routeWhileDragging: true,
+    }).addTo(map); // Add routing control to the map
+
+    // Cleanup routing control when the component is unmounted or dependencies change
+    return () => {
+      routingControl.remove();
+    };
+  }, [userPosition, parking, map]);
+
+  return null;
+}
+
 interface MapProps {
-  // parking: ParkingLocation[] | ParkingDetailed[];
+  id: string | undefined;
+  parking: ParkingLocation[] | ParkingDetailed[];
   userPosition: [number, number] | undefined;
 }
 
-function LocationMarker() {
-  const [position, setPosition] = useState<LatLng | null>(null);
-  const map = useMapEvents({
-    click() {
-      map.locate();
-    },
-    locationfound(e) {
-      setPosition(e.latlng);
-      map.flyTo(e.latlng, map.getZoom() + 2);
-    },
-  });
-
-  return position === null ? null : (
-    <Marker position={position} icon={userIcon}>
-      <Popup>You are here</Popup>
-    </Marker>
-  );
-}
-
-export default function Map({ userPosition }: MapProps) {
+export default function Map({ id, parking, userPosition }: MapProps) {
   if (!userPosition) return null;
 
   return (
@@ -72,112 +75,29 @@ export default function Map({ userPosition }: MapProps) {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-        {/* NOTE - Parking Locations */}
-        {/* {parking.map((location, index) => (
+        {/* User Marker */}
+        <Marker position={userPosition} icon={userIcon}>
+          <Popup>You are here</Popup>
+        </Marker>
+
+        {/* Parking Markers */}
+        {parking.map((location, index) => (
           <Marker
             key={index}
             position={[location.latitude, location.longitude]}
-            icon={icon}
+            icon={parkingIcon}
           >
             <Popup>
-              <ParkingCard parking={parking} />
+              <ParkingCard id={id} parking={location} />
             </Popup>
           </Marker>
-        ))} */}
+        ))}
 
-        {/* Locate Button */}
-        <LocationMarker />
+        {/* NOTE  - if there is id , it is in detailed page so we can so Routings */}
+        {id ? (
+          <RoutingControl userPosition={userPosition} parking={parking} />
+        ) : null}
       </MapContainer>
     </div>
   );
 }
-
-// "use client";
-
-// import { useState, useCallback } from "react";
-// import {
-//   GoogleMap,
-//   useJsApiLoader,
-//   Marker,
-//   InfoWindow,
-// } from "@react-google-maps/api";
-// import type { ParkingLocation } from "@/types/definitions";
-
-// interface MapProps {
-//   locations: ParkingLocation[];
-// }
-
-// const containerStyle = {
-//   width: "100%",
-//   height: "100%",
-// };
-
-// const center = {
-//   lat: 27.7172,
-//   lng: 85.324,
-// };
-
-// export default function Map({ locations }: MapProps) {
-//   const { isLoaded } = useJsApiLoader({
-//     id: "google-map-script",
-//     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
-//   });
-
-//   const [map, setMap] = useState<google.maps.Map | null>(null);
-//   const [selectedLocation, setSelectedLocation] =
-//     useState<ParkingLocation | null>(null);
-
-//   const onLoad = useCallback(
-//     (map: google.maps.Map) => {
-//       const bounds = new window.google.maps.LatLngBounds(center);
-//       locations.forEach(({ latitude, longitude }) =>
-//         bounds.extend({ lat: latitude, lng: longitude })
-//       );
-//       map.fitBounds(bounds);
-//       setMap(map);
-//     },
-//     [locations]
-//   );
-
-//   const onUnmount = useCallback(() => {
-//     setMap(null);
-//   }, []);
-
-//   return isLoaded ? (
-//     <GoogleMap
-//       mapContainerStyle={containerStyle}
-//       center={center}
-//       zoom={14}
-//       onLoad={onLoad}
-//       onUnmount={onUnmount}
-//     >
-//       {locations.map((location) => (
-//         <Marker
-//           key={location.uuid}
-//           position={{ lat: location.latitude, lng: location.longitude }}
-//           onClick={() => setSelectedLocation(location)}
-//         />
-//       ))}
-
-//       {selectedLocation && (
-//         <InfoWindow
-//           position={{
-//             lat: selectedLocation.latitude,
-//             lng: selectedLocation.longitude,
-//           }}
-//           onCloseClick={() => setSelectedLocation(null)}
-//         >
-//           <div className="p-2">
-//             <h3 className="font-semibold">{selectedLocation.name}</h3>
-//             <p className="text-sm text-gray-600">{selectedLocation.address}</p>
-//             <p className="text-lg font-bold mt-1">
-//               £{parseFloat(selectedLocation.ratePerHour).toFixed(2)}/hr
-//             </p>
-//           </div>
-//         </InfoWindow>
-//       )}
-//     </GoogleMap>
-//   ) : (
-//     <div>Loading...</div>
-//   );
-// }
