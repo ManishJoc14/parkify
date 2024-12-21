@@ -7,8 +7,6 @@ import { useAuth } from "@/context/authContext";
 export default function HeaderAuth() {
   const { user, logout } = useAuth();
 
-  console.log(user);
-
   return user ? (
     <div className="flex items-center gap-4">
       <Link href={`/${user.roles[0]}dashboard`}>
@@ -19,7 +17,7 @@ export default function HeaderAuth() {
       </Button>
     </div>
   ) : (
-    <Button asChild size="sm" variant={"outline"}>
+    <Button asChild size="sm" variant={"secondary"}>
       <Link href="/login">Sign in</Link>
     </Button>
   );

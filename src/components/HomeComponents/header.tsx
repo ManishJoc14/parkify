@@ -19,11 +19,11 @@ export default function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-transparent backdrop-blur-[20px]">
+    <header className="sticky top-0 z-50 w-full border-b bg-gray-900 backdrop-blur-[20px]">
       <div className="container mx-auto flex h-16 items-baseline justify-between px-4">
         <Link href="/" className="flex items-baseline">
           <span className="h-8 text-4xl">🚗</span>
-          <span className="text-xl font-semibold">Parkify</span>
+          <span className="text-xl font-semibold text-white">Parkify</span>
         </Link>
 
         {/* Desktop Navigation */}
@@ -32,7 +32,7 @@ export default function Header() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-md font-semibold font-sans text-secondary-foreground hover:text-primary transition-colors"
+              className="text-md font-semibold font-sans text-white hover:text-primary transition-colors"
             >
               {link.label}
             </Link>
@@ -47,7 +47,7 @@ export default function Header() {
         {/* Mobile Menu */}
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
-            <button className="md:hidden mt-3">
+            <button className="md:hidden mt-3 text-white">
               <Menu className="h-8 w-8" />
               <span className="sr-only">Toggle menu</span>
             </button>
