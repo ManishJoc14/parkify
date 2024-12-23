@@ -41,6 +41,25 @@ export default function Testimonials() {
     );
     return totalRating / testimonials.length;
   };
+
+  if (testimonials.length === 0)
+    return (
+      <section
+        id="testimonials"
+        className="container mx-auto py-32 px-8 md:px-16 bg-accent"
+      >
+        <div className="text-center">
+          <h2 className="text-2xl font-mont-bold text-gray-800">
+            No Testimonials Available
+          </h2>
+          <p className="text-muted-foreground mt-4 text-md">
+            We currently do not have any testimonials to display. Please check
+            back later.
+          </p>
+        </div>
+      </section>
+    );
+
   return (
     <section
       id="testimonials"

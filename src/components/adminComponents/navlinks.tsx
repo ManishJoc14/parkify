@@ -1,6 +1,6 @@
 "use client";
 
-import { HomeIcon, Settings, Users, ParkingCircleIcon } from "lucide-react";
+import { HomeIcon, Settings } from "lucide-react";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -13,8 +13,6 @@ const links = [
     href: "/admin/parking-spots",
     icon: Settings,
   },
-  { name: "Customers", href: "/admin/customers", icon: Users },
-  { name: "Add parking", href: "/admin/add-parking", icon: ParkingCircleIcon },
 ];
 
 export default function NavLinks() {
@@ -28,9 +26,9 @@ export default function NavLinks() {
             key={link.name}
             href={link.href}
             className={clsx(
-              "flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3",
+              "flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-mont-medium hover:bg-primary/10 hover:text-primary transition-all md:flex-none md:justify-start md:p-2 md:px-3",
               {
-                "bg-sky-100 text-blue-600": pathname.includes(link.href),
+                "bg-primary/10 text-primary": pathname.includes(link.href),
               }
             )}
           >

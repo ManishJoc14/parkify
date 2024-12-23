@@ -26,18 +26,9 @@ export default function Hero() {
             <Link href={"/parking"}>
               <Button
                 size="lg"
-                className="h-12 px-8 hover:scale-95 font-mont-medium transition-all"
+                className="h-12 px-10 hover:scale-95 font-mont-medium transition-all"
               >
                 Find Parking
-              </Button>
-            </Link>
-            <Link href={"/parking"}>
-              <Button
-                variant="outline"
-                size="lg"
-                className="h-12 px-8 hover:scale-95 font-mont-medium transition-all"
-              >
-                Learn More
               </Button>
             </Link>
           </div>

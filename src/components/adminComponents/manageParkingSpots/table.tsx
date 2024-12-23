@@ -3,56 +3,59 @@ import {
   UpdateParkingSpot,
   DeleteParkingSpot,
 } from "@/components/adminComponents/manageParkingSpots/buttons";
-
-import ParkingSpotStatus from "@/components/adminComponents/manageParkingSpots/status";
 import { formatCurrency } from "@/lib/utils";
-
-import { ParkingSpotFormData } from "../addParkingForm/parkingSpotSchema";
+import { AdminParkingSpot } from "@/types/definitions";
 
 export default function ParkingSpotsTable({
   data,
 }: {
-  data: ParkingSpotFormData[];
+  data: AdminParkingSpot[];
 }) {
+  const headers = [
+    { key: "name", label: "Parking Spot" },
+    { key: "ratePerHour", label: "Rate/hr" },
+    { key: "ratePerDay", label: "Rate/day" },
+    { key: "address", label: "Address" },
+  ];
+
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
-          {/* Responsive List View */}
           <div className="md:hidden">
-            {data?.map((spot: ParkingSpotFormData) => (
+            {data?.map((spot) => (
               <div
-                key={spot.spotName}
+                key={spot.id}
                 className="mb-2 w-full rounded-md bg-white p-4"
               >
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
                     <div className="mb-2 flex items-center">
                       <Image
-                        src={spot.spotPhotos?.[0] || "/default-image.jpg"}
+                        src={spot.coverImage || "/default-image.jpg"}
                         className="mr-2 rounded-full"
                         width={28}
                         height={28}
-                        alt={`Parking spot ${spot.spotName}`}
+                        alt={`Parking spot ${spot.name}`}
                       />
-                      <p>{spot.spotName}</p>
+                      <p>{spot.name}</p>
                     </div>
                     <p className="text-sm text-gray-500">
-                      Type: {spot.parkingType} | Rate:{" "}
-                      {formatCurrency(spot.costPerUnit)}
+                      Rate (Per Hour):{" "}
+                      {formatCurrency(parseFloat(spot.ratePerHour))} | Rate (Per
+                      Day): {formatCurrency(parseFloat(spot.ratePerDay))}
                     </p>
                   </div>
-                  <ParkingSpotStatus
-                    status={spot.isAvailable ? "Available" : "Occupied"}
-                  />
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
-                    <p className="text-sm">Address: {spot.fullAddress}</p>
+                    <p className="text-sm">
+                      Address: {spot.address}, {spot.postcode}
+                    </p>
                   </div>
                   <div className="flex justify-end gap-2">
-                    <UpdateParkingSpot id={spot.spotName} />
-                    <DeleteParkingSpot id={spot.spotName} />
+                    <UpdateParkingSpot id={spot.id} />
+                    <DeleteParkingSpot id={spot.id} />
                   </div>
                 </div>
               </div>
@@ -63,21 +66,15 @@ export default function ParkingSpotsTable({
           <table className="hidden min-w-full text-gray-900 md:table">
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
-                <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-                  Parking Spot
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Type
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Rate
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Address
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Status
-                </th>
+                {headers.map((header) => (
+                  <th
+                    key={header.key}
+                    scope="col"
+                    className="px-4 py-5 font-mont-medium sm:pl-6"
+                  >
+                    {header.label}
+                  </th>
+                ))}
                 <th scope="col" className="relative py-3 pl-6 pr-3">
                   <span className="sr-only">Edit</span>
                 </th>
@@ -86,39 +83,34 @@ export default function ParkingSpotsTable({
             <tbody className="bg-white">
               {data?.map((spot) => (
                 <tr
-                  key={spot.spotName}
+                  key={spot.id}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
                       <Image
-                        src={spot.spotPhotos?.[0] || "/default-image.jpg"}
-                        className="rounded-full"
-                        width={28}
-                        height={28}
-                        alt={`Parking spot ${spot.spotName}`}
+                        src={spot.coverImage || "/default-image.jpg"}
+                        className="rounded-full h-8 w-8"
+                        width={32}
+                        height={32}
+                        alt={`Parking spot ${spot.name}`}
                       />
-                      <p>{spot.spotName}</p>
+                      <p>{spot.name}</p>
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {spot.parkingType}
+                    {formatCurrency(parseFloat(spot.ratePerHour))}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {formatCurrency(spot.costPerUnit)} {spot.rateType}
+                    {formatCurrency(parseFloat(spot.ratePerDay))}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {spot.fullAddress}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    <ParkingSpotStatus
-                      status={spot.isAvailable ? "Available" : "Occupied"}
-                    />
+                    {spot.address}, {spot.postcode}
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                      <UpdateParkingSpot id={spot.spotName} />
-                      <DeleteParkingSpot id={spot.spotName} />
+                      <UpdateParkingSpot id={spot.id} />
+                      <DeleteParkingSpot id={spot.id} />
                     </div>
                   </td>
                 </tr>
