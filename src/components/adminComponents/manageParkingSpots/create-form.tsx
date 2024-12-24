@@ -23,6 +23,7 @@ import axiosInstance from "@/lib/axiosInstance";
 import { toast } from "react-toastify";
 import Image from "next/image";
 import { Trash2 } from "lucide-react";
+import MapInAdminPage from "./mapInAdminPage";
 
 export default function CreateParkingSpotForm() {
   const [userPosition, setUserPosition] = useState<[number, number] | null>(
@@ -50,6 +51,12 @@ export default function CreateParkingSpotForm() {
       vehiclesCapacity: [{ vehicleType: "SMALL", capacity: 1 }],
     },
   });
+
+  const setLocation = (latitude: number, longitude: number) => {
+    setUserPosition([latitude, longitude]);
+    setValue("latitude", latitude);
+    setValue("longitude", longitude);
+  };
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -232,6 +239,12 @@ export default function CreateParkingSpotForm() {
             </div>
             <div className="space-y-2">
               <Label className="font-mont-medium">Location</Label>
+
+              <MapInAdminPage
+                latitude={userPosition?.[0] ?? 0}
+                longitude={userPosition?.[1] ?? 0}
+                setLocation={setLocation}
+              />
               {userPosition ? (
                 <p>
                   <span className="font-mont-medium text-sm">Latitude</span>:{" "}

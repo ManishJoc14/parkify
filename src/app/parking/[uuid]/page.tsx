@@ -5,17 +5,7 @@ import Image from "next/image";
 import { ChevronLeft, Star, MapPin, Calendar, Clock } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DateTimePicker } from "@/components/ui/date-time-picker";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   VehicleType,
   ParkingDetailed,
@@ -28,10 +18,9 @@ import axiosInstance from "@/lib/axiosInstance";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
 import clsx from "clsx";
 import { getDayInNumber, timeAgo } from "@/lib/utils";
+import BookingForm from "@/components/parking/booking-form";
 
 const GetVehicleTypeIcon = ({ vehicleType }: { vehicleType: VehicleType }) => {
   switch (vehicleType) {
@@ -78,10 +67,7 @@ const GetFeatureTypeIcon = ({
 };
 
 export default function ParkingBookingPage() {
-  const id = useParams().id;
-  const [startDate, setStartDate] = useState<Date>();
-  const [endDate, setEndDate] = useState<Date>();
-  const [vehicleType, setVehicleType] = useState<VehicleType>();
+  const uuid = useParams().uuid;
   const [userPosition, setUserPosition] = useState<
     [number, number] | undefined
   >(undefined);
@@ -92,7 +78,7 @@ export default function ParkingBookingPage() {
     async function fetchParkingDetails() {
       try {
         const res = await axiosInstance.get(
-          `/public/parking-app/parking-spots/${id}`
+          `/public/parking-app/parking-spots/${uuid}`
         );
         setParkingDetailed(res.data);
       } catch (error) {
@@ -100,7 +86,7 @@ export default function ParkingBookingPage() {
       }
     }
     fetchParkingDetails();
-  }, [id]);
+  }, [uuid]);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -119,6 +105,7 @@ export default function ParkingBookingPage() {
   if (!parkingDetailed) {
     return <LoadingSpinner />;
   }
+  console.log("rendereing booking Page");
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -367,7 +354,7 @@ export default function ParkingBookingPage() {
                 <CardContent className="p-0">
                   <div className="h-[70vh]">
                     <Map
-                      id={id as string}
+                      uuid={uuid as string}
                       parking={[parkingDetailed]}
                       userPosition={userPosition}
                     />
@@ -380,94 +367,10 @@ export default function ParkingBookingPage() {
 
           {/* BOOKING FORM  */}
           <div>
-            <Card className="sticky mt-6 md:mt-0 top-6">
-              <CardHeader className="p-6 pb-0">
-                <CardTitle className="text-xl font-mont-bold">
-                  Book Your Parking
-                </CardTitle>
-              </CardHeader>
-              <hr className="my-4" />
-              <CardContent className="px-6 pb-6">
-                <form className="space-y-4">
-                  <div>
-                    <Label className="text-md font-mont-medium">
-                      Entry Time
-                    </Label>
-                    <DateTimePicker
-                      className="mt-1"
-                      value={startDate}
-                      onChange={setStartDate}
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-md font-mont-medium">
-                      Exit Time
-                    </Label>
-                    <DateTimePicker
-                      className="mt-1"
-                      value={endDate}
-                      onChange={setEndDate}
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-md font-mont-medium">
-                      Vehicle Type
-                    </Label>
-                    <Select
-                      value={vehicleType}
-                      onValueChange={(value) =>
-                        setVehicleType(value as VehicleType)
-                      }
-                    >
-                      <SelectTrigger className="mt-1 w-full">
-                        <SelectValue placeholder="Select vehicle type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {parkingDetailed.vehiclesCapacity.map(
-                          (vehicle, index) => (
-                            <SelectItem key={index} value={vehicle.vehicleType}>
-                              {vehicle.vehicleType}
-                            </SelectItem>
-                          )
-                        )}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label className="text-lg mb-2 font-mont-medium">
-                      License Plate
-                    </Label>
-                    <Input
-                      className="mt-1"
-                      placeholder="Enter your license plate"
-                    />
-                  </div>
-                  <div className="flex items-center space-x-2 pb-2">
-                    <Checkbox id="terms" />
-                    <label
-                      htmlFor="terms"
-                      className="text-sm font-medium  font-mont-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      I agree to the terms and conditions
-                    </label>
-                  </div>
-                  <Separator />
-                  <div className="flex justify-between items-center text-md font-mont-medium py-2">
-                    <span>Total Price</span>
-                    <span className="text-md font-mont-bold">
-                      £{parkingDetailed.ratePerHour}
-                      <span className="text-primary text-sm">/hr</span>
-                    </span>
-                  </div>
-                  <Button
-                    type="submit"
-                    className="w-full font-mont-medium text-lg py-6"
-                  >
-                    Book Now
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
+            <BookingForm
+              id={parkingDetailed.id}
+              parkingDetailed={parkingDetailed}
+            />
           </div>
         </div>
       </div>

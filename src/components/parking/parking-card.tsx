@@ -75,7 +75,7 @@ const ParkingCard = ({
         </div>
 
         <hr />
-        {/* BUTTON  */}
+        {/* BUTTON to open detailed page */}
         <div className="flex pt-2">
           <Link
             href={`/parking/${"uuid" in parking ? parking.uuid : id}`}

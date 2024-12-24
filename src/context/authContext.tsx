@@ -70,10 +70,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const redirectToDashboard = (role: string) => {
     if (role === "Owner") {
-      router.push("/admin/dashboard");
+      router.push("/admin/parking-spots");
     }
     if (role === "Driver") {
-      router.push("/driver/dashboard");
+      router.push("/parking");
     }
   };
 

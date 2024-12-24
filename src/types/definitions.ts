@@ -98,6 +98,7 @@ export enum DayOfWeek {
 }
 
 export interface ParkingDetailed {
+  id: number;
   name: string;
   coverImage: string;
   description: string;
@@ -130,4 +131,42 @@ export interface ParkingDetailed {
     comments: string;
     createdAt: string;
   }[];
+}
+
+export enum BookingStatus {
+  PENDING = "Pending",
+  CONFIRMED = "Confirmed",
+  COMPLETED = "Completed",
+  CANCELLED = "Cancelled",
+}
+
+export enum PaymentStatus {
+  UNPAID = "unpaid",
+  PAID = "paid",
+}
+
+export interface BookingResponse {
+  message: string;
+  bookingNo: string;
+  status: BookingStatus;
+  startTime: string;
+  endTime: string;
+  paymentStatus: PaymentStatus;
+}
+
+export interface Booking {
+  id: number;
+  status: BookingStatus;
+  bookingNo: string;
+  startTime: string;
+  endTime: string;
+  amount: string;
+  paymentStatus: string;
+  vehicleNo: string;
+  vehicle: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  parkingSpot: number;
+  user: number;
 }

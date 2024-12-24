@@ -1,5 +1,5 @@
 "use client";
-import { useForm, useFieldArray, Controller } from "react-hook-form";
+import { useForm, useFieldArray, Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { parkingSpotSchema, ParkingSpotFormData } from "./parkingSpotSchema";
 import { Button } from "@/components/ui/button";
@@ -23,6 +23,7 @@ import { toast } from "react-toastify";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Trash2 } from "lucide-react";
+import MapInAdminPage from "./mapInAdminPage";
 
 export default function EditParkingSpotForm({
   parkingSpotId,
@@ -53,26 +54,15 @@ export default function EditParkingSpotForm({
     },
   });
   const router = useRouter();
-  const [userPosition, setUserPosition] = useState<[number, number] | null>(
-    null
-  );
   const [previewImage, setPreviewImage] = useState<null | string>(null);
 
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setUserPosition([latitude, longitude]);
-          setValue("latitude", latitude);
-          setValue("longitude", longitude);
-        },
-        (error) => {
-          console.error("Error getting user location:", error);
-        }
-      );
-    }
-  }, [setValue]);
+  const setLocation = (latitude: number, longitude: number) => {
+    setValue("latitude", latitude);
+    setValue("longitude", longitude);
+  };
+
+  const latitude = useWatch({ control, name: "latitude" });
+  const longitude = useWatch({ control, name: "longitude" });
 
   const {
     fields: availabilityFields,
@@ -283,12 +273,17 @@ export default function EditParkingSpotForm({
             </div>
             <div className="space-y-2">
               <Label className="font-mont-medium">Location</Label>
-              {userPosition ? (
+              <MapInAdminPage
+                latitude={latitude ?? 0}
+                longitude={longitude ?? 0}
+                setLocation={setLocation}
+              />
+              {latitude && longitude ? (
                 <p>
                   <span className="font-mont-medium text-sm">Latitude</span>:{" "}
-                  {userPosition[0]},{" "}
+                  {latitude},{" "}
                   <span className="font-mont-medium text-sm">Longitude</span>:{" "}
-                  {userPosition[1]}
+                  {longitude}
                 </p>
               ) : (
                 <p>Fetching location...</p>

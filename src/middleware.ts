@@ -13,7 +13,7 @@ export function middleware(request: NextRequest) {
   console.log(role, request.cookies.get("isLoggedIn")?.value);
 
   const isRestrictedPath =
-    pathname.startsWith("/admin") || pathname.startsWith("/driver");
+    pathname.startsWith("/admin") || pathname.startsWith("/parking");
 
   // Block access to admin or driver routes unless logged in
   if (!isLoggedIn && isRestrictedPath) {
@@ -23,14 +23,14 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  // "driver trying to access admin route, redirecting to /driver/dashboard"
+  // "driver trying to access admin route, redirecting to /parking"
   if (role === "Driver" && pathname.startsWith("/admin")) {
-    return NextResponse.redirect(new URL("/driver/dashboard", request.url));
+    return NextResponse.redirect(new URL("/parking", request.url));
   }
 
-  // "Admin trying to access driver route, redirecting to /admin/dashboard"
-  if (role === "Owner" && pathname.startsWith("/driver")) {
-    return NextResponse.redirect(new URL("/admin/dashboard", request.url));
+  // "Admin trying to access driver route, redirecting to /admin/bookings"
+  if (role === "Owner" && pathname.startsWith("/parking")) {
+    return NextResponse.redirect(new URL("/admin/bookings", request.url));
   }
 
   return NextResponse.next();

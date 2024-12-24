@@ -28,7 +28,6 @@ export function DeleteParkingSpot({ id }: { id: string }) {
   return (
     <>
       <form>
-        {/* <form action={deleteInvoiceWithId}> */}
         <button className="rounded-md border p-2 hover:bg-gray-100">
           <p className="hidden">{id}</p>
           <span className="sr-only">Delete</span>

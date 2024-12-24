@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import { Icon } from "leaflet";
@@ -54,12 +56,12 @@ function RoutingControl({
 }
 
 interface MapProps {
-  id: string | undefined;
+  uuid: string | undefined;
   parking: ParkingLocation[] | ParkingDetailed[];
   userPosition: [number, number] | undefined;
 }
 
-export default function Map({ id, parking, userPosition }: MapProps) {
+export default function Map({ uuid, parking, userPosition }: MapProps) {
   if (!userPosition) return null;
 
   return (
@@ -88,13 +90,13 @@ export default function Map({ id, parking, userPosition }: MapProps) {
             icon={parkingIcon}
           >
             <Popup>
-              <ParkingCard id={id} parking={location} />
+              <ParkingCard id={uuid} parking={location} />
             </Popup>
           </Marker>
         ))}
 
-        {/* NOTE  - if there is id , it is in detailed page so we can so Routings */}
-        {id ? (
+        {/* NOTE  - if there is uuid , it is in detailed page so we can show Routings */}
+        {uuid ? (
           <RoutingControl userPosition={userPosition} parking={parking} />
         ) : null}
       </MapContainer>

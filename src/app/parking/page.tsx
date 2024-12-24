@@ -333,7 +333,7 @@ export default function SearchPage() {
           <div className="w-full h-full sticky flex-[2] top-4 order-[3] sm:order-[10]">
             <div className="bg-white rounded-lg shadow-sm p-4 h-screen">
               <Map
-                id={undefined}
+                uuid={undefined}
                 parking={parkings}
                 userPosition={userPosition}
               />

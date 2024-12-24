@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { createCanvas } from "canvas";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -7,12 +8,80 @@ export function cn(...inputs: ClassValue[]) {
 
 import { UseFormReturn } from "react-hook-form";
 import { SignUpFormData } from "@/app/(auth-pages)/login/AuthModal";
+import {
+  BookingResponse,
+  BookingStatus,
+  ParkingDetailed,
+  VehicleType,
+} from "@/types/definitions";
 
 export const formatCurrency = (amount: number) => {
   return amount.toLocaleString("en-GB", {
     style: "currency",
     currency: "GBP",
   });
+};
+
+export function getVehicleTypeKey(value: string): string | undefined {
+  const entries = Object.entries(VehicleType);
+  for (const [key, val] of entries) {
+    if (val === value) {
+      return key;
+    }
+  }
+}
+
+export function getBookingKey(value: string): string | undefined {
+  const entries = Object.entries(BookingStatus);
+  for (const [key, val] of entries) {
+    if (val === value) {
+      return key;
+    }
+  }
+}
+
+export function getStatusColor(status: string) {
+  switch (status) {
+    case "PENDING":
+      return "bg-yellow-50 text-yellow-900";
+    case "CONFIRMED":
+      return "bg-green-50 text-green-900";
+    case "COMPLETED":
+      return "bg-blue-50 text-blue-900";
+    case "CANCELLED":
+      return "bg-red-50 text-red-900";
+    default:
+      return "";
+  }
+}
+
+export const calculateAmount = (
+  parkingDetailed: ParkingDetailed,
+  start: string,
+  end: string
+) => {
+  if (start && end) {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    const hours = Math.max(
+      0,
+      (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60)
+    );
+    if (hours <= 24) {
+      return (hours * parseFloat(parkingDetailed.ratePerHour))
+        .toFixed(2)
+        .toString();
+    } else {
+      let calculateAmount =
+        parseFloat(parkingDetailed.ratePerDay) * (hours / 24);
+      const remainingHours = hours % 24;
+      if (remainingHours > 0) {
+        calculateAmount +=
+          remainingHours * parseFloat(parkingDetailed.ratePerHour);
+      }
+      return calculateAmount.toFixed(2).toString();
+    }
+  }
 };
 
 export const splitName = (
@@ -100,3 +169,73 @@ export const timeAgo = (timestamp: string): string => {
   if (diffMonths < 12) return `${diffMonths} months ago`;
   return `${diffYears} years ago`;
 };
+
+/**
+ * Generates a parking token image based on the API response.
+ * @param response API response containing parking booking details.
+ * @param amount Amount paid for the parking (optional, can be passed separately).
+ * @param vehicleNo Vehicle number (optional, can be passed separately).
+ * @param vehicle Vehicle type (optional, can be passed separately).
+ * @returns A base64 string of the generated token image.
+ */
+export function generateParkingToken(
+  response: BookingResponse,
+  amount: string,
+  vehicleNo: string,
+  vehicle: VehicleType
+): string {
+  // Destructure the response
+  const { bookingNo, startTime, endTime, status, paymentStatus } = response;
+
+  // Create a canvas
+  const canvas = createCanvas(600, 420);
+  const ctx = canvas.getContext("2d");
+
+  // Background with a light gradient
+  const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+  gradient.addColorStop(0, "#f9f9f9");
+  gradient.addColorStop(1, "#e9e9e9");
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Draw a border
+  ctx.strokeStyle = "#cccccc";
+  ctx.lineWidth = 5;
+  ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
+
+  // Title
+  ctx.fillStyle = "#333333";
+  ctx.font = "bold 28px Arial";
+  ctx.textAlign = "center";
+  ctx.fillText("Parkify", canvas.width / 2, 50);
+
+  // Separator
+  ctx.strokeStyle = "#dddddd";
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(20, 70);
+  ctx.lineTo(canvas.width - 20, 70);
+  ctx.stroke();
+
+  // Draw details
+  ctx.textAlign = "left";
+  ctx.font = "18px Arial";
+  ctx.fillStyle = "#555555";
+  ctx.fillText(`Booking No: ${bookingNo}`, 30, 100); // Booking number
+  ctx.fillText(`Vehicle No: ${vehicleNo}`, 30, 140); // Vehicle number
+  ctx.fillText(`Vehicle Type: ${vehicle}`, 30, 180); // Vehicle type
+  ctx.fillText(`Start Time: ${new Date(startTime).toLocaleString()}`, 30, 220); // Start time
+  ctx.fillText(`End Time: ${new Date(endTime).toLocaleString()}`, 30, 260); // End time
+  ctx.fillText(`Amount: £${amount}`, 30, 300); // Amount
+  ctx.fillText(`Status: ${status}`, 30, 330); // Booking status
+  ctx.fillText(`Payment Status: ${paymentStatus}`, 30, 360); // Payment status
+
+  // Footer
+  ctx.fillStyle = "#777777";
+  ctx.font = "italic 16px Arial";
+  ctx.textAlign = "center";
+  ctx.fillText("Thank you for using our service!", canvas.width / 2, 400);
+
+  // Return the image as a base64 string
+  return canvas.toDataURL();
+}
