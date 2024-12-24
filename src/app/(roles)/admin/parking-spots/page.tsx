@@ -59,35 +59,42 @@ export default function Page() {
   };
 
   return (
-    <div className="w-full">
-      <div className="flex w-full items-center justify-between">
-        <h1 className="text-2xl">Manage Parking Spots</h1>
-      </div>
-      <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <div className="relative flex flex-1 flex-shrink-0">
-          <label htmlFor="search" className="sr-only">
-            Search
-          </label>
-          <input
-            className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
-            placeholder="Search parking spots.."
-            onChange={(e) => {
-              handleSearch(e.target.value);
-            }}
-          />
-          <SearchIcon className="absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+    <>
+      <div className="w-full">
+        <div className="flex w-full items-center justify-between">
+          <h1 className="text-2xl">Manage Parking Spots</h1>
         </div>
-        <DynamicCreateParkingSpot />
+        <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
+          <div className="relative flex flex-1 flex-shrink-0">
+            <label htmlFor="search" className="sr-only">
+              Search
+            </label>
+            <input
+              className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+              placeholder="Search parking spots.."
+              onChange={(e) => {
+                handleSearch(e.target.value);
+              }}
+            />
+            <SearchIcon className="absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+          </div>
+          <DynamicCreateParkingSpot />
+        </div>
+        {parkingSpots ? (
+          <Table data={parkingSpots} />
+        ) : (
+          <ParkingsTableSkeleton />
+        )}
+        <div className="mt-5 flex w-full justify-center">
+          <Pagination
+            title="Total parking spots: "
+            next={next}
+            previous={previous}
+            total={total}
+            handlePagination={fetchData}
+          />
+        </div>
       </div>
-      {parkingSpots ? <Table data={parkingSpots} /> : <ParkingsTableSkeleton />}
-      <div className="mt-5 flex w-full justify-center">
-        <Pagination
-          next={next}
-          previous={previous}
-          total={total}
-          handlePagination={fetchData}
-        />
-      </div>
-    </div>
+    </>
   );
 }

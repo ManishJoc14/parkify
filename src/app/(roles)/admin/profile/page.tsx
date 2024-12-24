@@ -22,6 +22,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import axiosInstance from "@/lib/axiosInstance";
 import { toast } from "react-toastify";
 import { Badge } from "@/components/ui/badge";
+import { ProfileSkeleton } from "@/components/adminComponents/profile/profileSkeleton";
 
 const profileSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -120,7 +121,7 @@ export default function EditProfilePage() {
   };
 
   if (loading || !profile) {
-    return <p>Loading...</p>;
+    return <ProfileSkeleton />;
   }
 
   return (

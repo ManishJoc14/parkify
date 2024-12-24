@@ -1,8 +1,20 @@
 "use client";
 
-import EditParkingSpotForm from "@/components/adminComponents/manageParkingSpots/edit-form";
 import Breadcrumbs from "@/components/adminComponents/manageParkingSpots/breadcrumbs";
 import { useParams } from "next/navigation";
+import CreateFormSkeleton from "@/components/adminComponents/skeletons";
+import dynamic from "next/dynamic";
+
+const DynamicEditParkingSpotForm = dynamic(
+  () =>
+    import("@/components/adminComponents/manageParkingSpots/edit-form").then(
+      (mod) => mod.default
+    ),
+  {
+    ssr: false,
+    loading: () => <CreateFormSkeleton />,
+  }
+);
 
 export default function EdiParkingPage() {
   const id = useParams().id;
@@ -16,7 +28,7 @@ export default function EdiParkingPage() {
       <Breadcrumbs breadcrumbs={breadcrumbs} />
 
       <div className="mt-10">
-        <EditParkingSpotForm parkingSpotId={id as string} />
+        <DynamicEditParkingSpotForm parkingSpotId={id as string} />
       </div>
     </main>
   );

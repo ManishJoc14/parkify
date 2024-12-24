@@ -5,6 +5,7 @@ interface PaginationProps {
   previous: string | null;
   total: number;
   handlePagination: (url: string) => void;
+  title: string;
 }
 
 const Pagination: React.FC<PaginationProps> = ({
@@ -12,6 +13,7 @@ const Pagination: React.FC<PaginationProps> = ({
   previous,
   total,
   handlePagination,
+  title,
 }) => {
   const handleNext = () => {
     if (next) handlePagination(next);
@@ -35,7 +37,7 @@ const Pagination: React.FC<PaginationProps> = ({
         Previous
       </button>
       <div className="text-sm text-gray-700">
-        <span>Total Parking Spots: </span>
+        <span>{title}</span>
         <strong>{total}</strong>
       </div>
       <button

@@ -2,9 +2,6 @@
 
 import { Feather, Mail, Text, User } from "lucide-react";
 import { useState } from "react";
-import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
-import { Button } from "../ui/button";
 import {
   Select,
   SelectContent,
@@ -17,6 +14,9 @@ import Image from "next/image";
 import faqImage from "/public/images/faqs.webp";
 import axiosInstance from "@/lib/axiosInstance";
 import { Feedback } from "@/types/definitions";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 
 export default function FeedbackForm() {
   const [formData, setFormData] = useState<Feedback>({

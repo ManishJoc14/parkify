@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import BookingsTable from "@/components/adminComponents/Bookings/table";
-import { ParkingsTableSkeleton } from "@/components/adminComponents/skeletons";
+import { BookingsTableSkeleton } from "@/components/adminComponents/skeletons";
 import axiosInstance from "@/lib/axiosInstance";
 import { Booking } from "@/types/definitions";
 import Pagination from "@/components/adminComponents/manageParkingSpots/pagination";
@@ -62,9 +62,10 @@ export default function BookingsPage() {
           <SearchIcon className="absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
         </div>
       </div>
-      {bookings ? <BookingsTable data={bookings} /> : <ParkingsTableSkeleton />}
+      {bookings ? <BookingsTable data={bookings} /> : <BookingsTableSkeleton />}
       <div className="mt-5 flex w-full justify-center">
         <Pagination
+          title="Total bookings: "
           next={next}
           previous={previous}
           total={total}

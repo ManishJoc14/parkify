@@ -1,6 +1,7 @@
 "use client";
 
 import Breadcrumbs from "@/components/adminComponents/manageParkingSpots/breadcrumbs";
+import CreateFormSkeleton from "@/components/adminComponents/skeletons";
 import dynamic from "next/dynamic";
 
 const DynamicCreateParkingSpotForm = dynamic(
@@ -10,9 +11,7 @@ const DynamicCreateParkingSpotForm = dynamic(
     ),
   {
     ssr: false,
-    loading: () => (
-      <div className="w-full h-full bg-gray-100 animate-pulse rounded-lg" />
-    ),
+    loading: () => <CreateFormSkeleton />,
   }
 );
 

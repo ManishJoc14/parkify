@@ -25,7 +25,7 @@ export default function BookingsTable({ data }: { data: Booking[] }) {
               >
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
-                    <p className="font-semibold">
+                    <p className="font-mont-medium">
                       Booking No: {booking.bookingNo}
                     </p>
                     <p className="text-sm text-gray-500">
@@ -53,7 +53,7 @@ export default function BookingsTable({ data }: { data: Booking[] }) {
                   <th
                     key={header.key}
                     scope="col"
-                    className="px-4 py-5 font-mont-medium sm:pl-6"
+                    className="px-4 py-5 font-mont-medium whitespace-nowrap sm:pl-6"
                   >
                     {header.label}
                   </th>

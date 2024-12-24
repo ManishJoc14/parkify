@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export const config = {
-  matcher: ["/admin/:path*", "/driver/:path*"],
+  matcher: ["/admin/:path*", "/parking/:path*"],
 };
 
 export function middleware(request: NextRequest) {
