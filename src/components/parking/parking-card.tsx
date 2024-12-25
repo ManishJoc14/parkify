@@ -15,13 +15,22 @@ const ParkingCard = ({
   return (
     <div className="relative flex flex-col sm:flex-row w-full overflow-hidden bg-white rounded-lg hover:shadow-sm transition-all">
       <div className="w-full sm:w-1/3">
-        <Image
-          src={parking.coverImage}
-          alt={parking.name}
-          height={100}
-          width={100}
-          className="h-full min-w-[100px] w-full object-cover"
-        />
+        {parking.coverImage ? (
+          <Image
+            src={parking.coverImage}
+            alt={parking.name}
+            height={100}
+            width={100}
+            className="h-full min-w-[100px] w-full object-cover"
+          />
+        ) : (
+          <div className="h-full min-w-[100px] w-full flex justify-center items-center bg-gray-200">
+            {parking?.name
+              .split(" ")
+              .map((n) => n.charAt(0).toUpperCase())
+              .join("")}
+          </div>
+        )}
       </div>
       <div className="flex-1 p-4">
         {/* header */}

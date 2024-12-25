@@ -24,12 +24,14 @@ import { toast } from "react-toastify";
 import Image from "next/image";
 import { Trash2 } from "lucide-react";
 import MapInAdminPage from "./mapInAdminPage";
+import { useRouter } from "next/navigation";
 
 export default function CreateParkingSpotForm() {
   const [userPosition, setUserPosition] = useState<[number, number] | null>(
     null
   );
   const [previewImage, setPreviewImage] = useState<null | string>(null);
+  const router = useRouter();
 
   const {
     register,
@@ -101,9 +103,7 @@ export default function CreateParkingSpotForm() {
     name: "vehiclesCapacity",
   });
 
-  console.log(errors);
   const onSubmit = async (data: ParkingSpotFormData) => {
-    console.log(data);
 
     const formData = new FormData();
 
@@ -137,6 +137,8 @@ export default function CreateParkingSpotForm() {
 
       if (res.status === 201) {
         toast.success(res.data.message);
+        router.push("/admin/parking-spots");
+
       }
     } catch (error) {
       console.error("Error in creating parking spot", error);

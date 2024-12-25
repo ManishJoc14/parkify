@@ -167,7 +167,7 @@ export default function EditParkingSpotForm({
 
       if (res.status === 200) {
         toast.success(res.data.message);
-        router.refresh();
+        router.push("/admin/parking-spots");
       }
     } catch (error) {
       console.error("Error updating parking spot:", error);

@@ -2,7 +2,13 @@ import { formatCurrency, getStatusColor, TimeOnly } from "@/lib/utils";
 import { Booking, VehicleType } from "@/types/definitions";
 import StatusUpdateButton from "./statusUpdateButton";
 
-export default function BookingsTable({ data }: { data: Booking[] }) {
+export default function BookingsTable({
+  data,
+  fetchBookings,
+}: {
+  data: Booking[];
+  fetchBookings: (url: string) => void;
+}) {
   const headers = [
     { key: "bookingNo", label: "Booking No" },
     { key: "status", label: "Status" },
@@ -32,7 +38,10 @@ export default function BookingsTable({ data }: { data: Booking[] }) {
                       Status: {booking.status}
                     </p>
                   </div>
-                  <StatusUpdateButton booking={booking} />
+                  <StatusUpdateButton
+                    fetchBookings={fetchBookings}
+                    booking={booking}
+                  />
                 </div>
                 <div className="pt-4 text-sm">
                   <p>Start: {TimeOnly(booking.startTime)}</p>
@@ -92,7 +101,10 @@ export default function BookingsTable({ data }: { data: Booking[] }) {
                     {VehicleType[booking.vehicle as keyof typeof VehicleType]})
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    <StatusUpdateButton booking={booking} />
+                    <StatusUpdateButton
+                      fetchBookings={fetchBookings}
+                      booking={booking}
+                    />
                   </td>
                 </tr>
               ))}

@@ -117,16 +117,17 @@ export default function ParkingBookingPage() {
     <div className="min-h-screen bg-gray-50">
       {/* Cover Image section START */}
       <div className="relative w-full h-[70vh]">
-        <Image
-          src={
-            parkingDetailed.coverImage ||
-            "/placeholder.svg?height=600&width=1200"
-          }
-          alt={parkingDetailed.name}
-          layout="fill"
-          objectFit="cover"
-          priority
-        />
+        {parkingDetailed.coverImage ? (
+          <Image
+            src={parkingDetailed.coverImage}
+            alt={parkingDetailed?.name}
+            layout="fill"
+            objectFit="cover"
+            priority
+          />
+        ) : (
+          <div className="h-full min-w-[100px] w-full bg-gray-100"></div>
+        )}
         <div className="absolute inset-0 bg-black bg-opacity-40 flex items-end">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <h1 className="text-4xl font-mont-bold text-white mb-2">
@@ -276,7 +277,12 @@ export default function ParkingBookingPage() {
                                         />
                                       ) : (
                                         <div className="w-full rounded-full h-full bg-gray-100 flex items-center justify-center">
-                                          {review.reviewer.fullName[0]}
+                                          {review?.reviewer?.fullName
+                                            .split(" ")
+                                            .map((n) =>
+                                              n.charAt(0).toUpperCase()
+                                            )
+                                            .join("")}
                                         </div>
                                       )}
                                     </div>

@@ -136,9 +136,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           tokens: { refresh, access },
           ...fetchedUser
         } = res.data;
+        toast.success(message);
         setUser(fetchedUser);
         setIsAuthenticated(true);
-        toast.success(message);
         localStorage.setItem("accessToken", access);
         localStorage.setItem("refreshToken", refresh);
         redirectToDashboard(res.data.roles[0]);
@@ -251,25 +251,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const logout = async () => {
     try {
-      router.push("/login");
+      router.push("/");
       const access = localStorage?.getItem("accessToken");
       const refresh = localStorage?.getItem("refreshToken");
 
-      await axiosInstance.post(
-        "/public/user-app/users/logout",
-        { refreshToken: refresh },
-        {
-          headers: {
-            Authorization: `Bearer ${access}`,
-          },
-        }
-      );
-
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
-      setUser(null);
-      setIsAuthenticated(false);
-      router.push("/");
+      axiosInstance
+        .post(
+          "/public/user-app/users/logout",
+          { refreshToken: refresh },
+          {
+            headers: {
+              Authorization: `Bearer ${access}`,
+            },
+          }
+        )
+        .then(() => {
+          toast.info("Successfully logged out!!");
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+          setUser(null);
+          setIsAuthenticated(false);
+        })
+        .catch((error) => {
+          console.error("Error signing out:", error);
+          throw error;
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     } catch (error) {
       console.error("Error signing out:", error);
       throw error;

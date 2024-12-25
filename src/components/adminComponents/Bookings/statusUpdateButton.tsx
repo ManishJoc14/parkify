@@ -12,7 +12,13 @@ import {
 import axiosInstance from "@/lib/axiosInstance";
 import { getBookingKey } from "@/lib/utils";
 
-export default function StatusUpdateButton({ booking }: { booking: Booking }) {
+export default function StatusUpdateButton({
+  booking,
+  fetchBookings,
+}: {
+  booking: Booking;
+  fetchBookings: (url: string) => void;
+}) {
   const [status, setStatus] = useState(booking.status);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -29,6 +35,7 @@ export default function StatusUpdateButton({ booking }: { booking: Booking }) {
         }
       );
       setStatus(newStatus as BookingStatus);
+      fetchBookings("/admin/parking-spot-app/bookings?limit=4");
     } catch (error) {
       console.error("Error updating booking status:", error);
     } finally {

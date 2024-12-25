@@ -62,7 +62,11 @@ export default function BookingsPage() {
           <SearchIcon className="absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
         </div>
       </div>
-      {bookings ? <BookingsTable data={bookings} /> : <BookingsTableSkeleton />}
+      {bookings ? (
+        <BookingsTable data={bookings} fetchBookings={fetchBookings} />
+      ) : (
+        <BookingsTableSkeleton />
+      )}
       <div className="mt-5 flex w-full justify-center">
         <Pagination
           title="Total bookings: "
