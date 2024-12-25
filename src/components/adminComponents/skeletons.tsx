@@ -293,7 +293,7 @@ export default function CreateFormSkeleton() {
             <Skeleton className="h-6 w-32" />
             {[...Array(2)].map((_, i) => (
               <div key={i} className="flex justify-between">
-                {[...Array(2)].map((_, j) => (
+                {[...Array(3)].map((_, j) => (
                   <Skeleton key={j} className="h-10 w-56" />
                 ))}
               </div>

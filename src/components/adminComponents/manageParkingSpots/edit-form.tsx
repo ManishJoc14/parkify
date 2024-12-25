@@ -24,6 +24,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Trash2 } from "lucide-react";
 import MapInAdminPage from "./mapInAdminPage";
+import CreateFormSkeleton from "../skeletons";
 
 export default function EditParkingSpotForm({
   parkingSpotId,
@@ -63,6 +64,9 @@ export default function EditParkingSpotForm({
 
   const latitude = useWatch({ control, name: "latitude" });
   const longitude = useWatch({ control, name: "longitude" });
+  const features = useWatch({ control, name: "features" });
+  const availabilities = useWatch({ control, name: "availabilities" });
+  const vehiclesCapacity = useWatch({ control, name: "vehiclesCapacity" });
 
   const {
     fields: availabilityFields,
@@ -171,11 +175,33 @@ export default function EditParkingSpotForm({
     }
   };
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
+  const Delete = async (url: string) => {
+    try {
+      await axiosInstance.delete(url, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
+    } catch (error) {
+      console.error("Error deleting parking spot:", error);
+    }
+  };
 
-  console.log(errors);
+  const deleteAvailability = (id: number) => {
+    Delete(`/admin/parking-spot-app/availability/${id}/delete/`);
+  };
+
+  const deleteFeature = async (id: number) => {
+    Delete(`/admin/parking-spot-app/features/${id}/delete/`);
+  };
+
+  const deleteVehicleCapacity = async (id: number) => {
+    Delete(`/admin/parking-spot-app/vehicle-capacity/${id}/delete/`);
+  };
+
+  if (loading) {
+    return <CreateFormSkeleton />;
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -334,6 +360,10 @@ export default function EditParkingSpotForm({
                     id={key}
                     checked={featureFields.some((f) => f.feature === key)}
                     onCheckedChange={(checked) => {
+                      const feat = features.find((f) => f.feature === key);
+                      if (feat?.id) {
+                        deleteFeature(feat.id);
+                      }
                       if (checked) {
                         appendFeature({
                           feature: key as keyof typeof ParkingFeature,
@@ -442,7 +472,13 @@ export default function EditParkingSpotForm({
                     type="button"
                     variant="destructive"
                     size="icon"
-                    onClick={() => removeAvailability(index)}
+                    onClick={() => {
+                      const availability = availabilities[index];
+                      if (availability?.id) {
+                        deleteAvailability(availability.id);
+                      }
+                      removeAvailability(index);
+                    }}
                     disabled={availabilityFields.length === 1}
                   >
                     <Trash2 className="h-4 w-4" />
@@ -535,7 +571,13 @@ export default function EditParkingSpotForm({
                     type="button"
                     variant="destructive"
                     size="icon"
-                    onClick={() => removeVehicle(index)}
+                    onClick={() => {
+                      const vehicle = vehiclesCapacity[index];
+                      if (vehicle?.id) {
+                        deleteVehicleCapacity(vehicle.id);
+                      }
+                      removeVehicle(index);
+                    }}
                     disabled={vehicleFields.length === 1}
                   >
                     <Trash2 className="h-4 w-4" />
