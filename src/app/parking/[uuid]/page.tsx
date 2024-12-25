@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import { ChevronLeft, Star, MapPin, Calendar, Clock } from "lucide-react";
 
@@ -21,6 +21,7 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import clsx from "clsx";
 import { getDayInNumber, timeAgo } from "@/lib/utils";
 import BookingForm from "@/components/parking/booking-form";
+import ParkingSpotReviewForm from "@/components/parking/create-review-form";
 
 const GetVehicleTypeIcon = ({ vehicleType }: { vehicleType: VehicleType }) => {
   switch (vehicleType) {
@@ -74,19 +75,24 @@ export default function ParkingBookingPage() {
   const [parkingDetailed, setParkingDetailed] =
     useState<ParkingDetailed | null>(null);
 
-  useEffect(() => {
-    async function fetchParkingDetails() {
-      try {
-        const res = await axiosInstance.get(
-          `/public/parking-app/parking-spots/${uuid}`
-        );
-        setParkingDetailed(res.data);
-      } catch (error) {
-        console.error("Error fetching parking details:", error);
-      }
+  const fetchParkingDetails = useCallback(async () => {
+    try {
+      const res = await axiosInstance.get(
+        `/public/parking-app/parking-spots/${uuid}`
+      );
+      setParkingDetailed(res.data);
+    } catch (error) {
+      console.error("Error fetching parking details:", error);
     }
-    fetchParkingDetails();
   }, [uuid]);
+
+  const refresh = () => {
+    fetchParkingDetails();
+  };
+
+  useEffect(() => {
+    fetchParkingDetails();
+  }, [fetchParkingDetails]);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -250,41 +256,10 @@ export default function ParkingBookingPage() {
                     </TabsContent>
                     <TabsContent value="reviews">
                       <div className="space-y-4">
-                        {/* NOTE - header for reviews  */}
-                        {/* <div>
-                          <div className="flex flex-col justify-center">
-                            <div className="flex gap-1">
-                              {[1, 2, 3, 4, 5].map((star) => (
-                                <Star
-                                  key={star}
-                                  className={`h-5 w-5 ${
-                                    star <=
-                                    Math.floor(parkingDetailed.averageRating)
-                                      ? "fill-yellow-400 text-yellow-400"
-                                      : "fill-gray-200 text-gray-200"
-                                  }`}
-                                />
-                              ))}
-                            </div>
-                          </div>
-                          <h3>
-                            <span className="font-mont-medium">
-                              Total Reviews:{" "}
-                            </span>
-                            {parkingDetailed.totalReviews}
-                          </h3>
-                          <h3>
-                            <span className="font-mont-medium">
-                              Average Rating:{" "}
-                            </span>
-                            {parkingDetailed.averageRating.toFixed(1)}{" "}
-                          </h3>
-                        </div> 
-                        <hr /> */}
                         <div className="flex flex-col gap-4 justify-start">
                           {parkingDetailed.reviews.map((review, index) => (
                             <Card
-                              key={review.reviewer.uuid}
+                              key={review.reviewer.uuid + index}
                               className="w-full order-2 mx-auto shadow-none border-none relative"
                             >
                               <CardContent className="p-0 z-10 bg-white hover:bg-gray-100 py-2 transition-all relative rounded-lg">
@@ -292,15 +267,18 @@ export default function ParkingBookingPage() {
                                   <div className="flex flex-col gap-2 sm:flex-row items-center space-y-2">
                                     {/* IMAGE */}
                                     <div className="relative h-16 w-16 flex-shrink-0">
-                                      <Image
-                                        src={
-                                          review.reviewer.photo ||
-                                          "/placeholder.svg?height=64&width=64"
-                                        }
-                                        alt={"User"}
-                                        fill
-                                        className="rounded-full object-cover"
-                                      />
+                                      {review.reviewer.photo ? (
+                                        <Image
+                                          src={review.reviewer.photo}
+                                          alt={"User"}
+                                          fill
+                                          className="rounded-full object-cover"
+                                        />
+                                      ) : (
+                                        <div className="w-full rounded-full h-full bg-gray-100 flex items-center justify-center">
+                                          {review.reviewer.fullName[0]}
+                                        </div>
+                                      )}
                                     </div>
 
                                     {/* NAME and STARS */}
@@ -342,6 +320,11 @@ export default function ParkingBookingPage() {
                             </Card>
                           ))}
                         </div>
+                        <br />
+                        <ParkingSpotReviewForm
+                          parkingSpotId={parkingDetailed.id}
+                          refresh={refresh}
+                        />
                       </div>
                     </TabsContent>
                   </Tabs>

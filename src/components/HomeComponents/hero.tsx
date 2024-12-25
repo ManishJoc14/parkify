@@ -11,7 +11,7 @@ export default function Hero() {
           </div>
           <div className="flex items-center">
             <span className="h-1 w-8 bg-green-500 rounded-xl"></span>
-            <span className="text-muted-foreground rounded-lg px-2 py-1.5 text-sm uppercase sm:text-md font-mont-bold">
+            <span className="text-muted-foreground rounded-lg px-2 py-1.5 text-sm uppercase sm:text-md font-mont-semibold">
               Parkify the best parking finder
             </span>
           </div>

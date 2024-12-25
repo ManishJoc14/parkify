@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { X, Mail } from "lucide-react";
+import { useAuth } from "@/context/authContext";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -11,8 +12,8 @@ interface AuthModalProps {
 const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { forgetPassword } = useAuth();
 
   useEffect(() => {
     if (!isOpen) {
@@ -29,9 +30,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     setIsLoading(true);
 
     try {
-      // await resetPassword(email);
-      setMessage("Check your email to reset password");
-      onClose();
+      await forgetPassword(email);
     } catch (err) {
       setError((err as { message: string }).message);
     } finally {
@@ -57,7 +56,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           </button>
 
           <div className="p-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">
+            <h2 className="text-2xl font-mont-semibold text-gray-800 mb-4 text-center">
               Forget Password
             </h2>
 
@@ -67,16 +66,12 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               </div>
             )}
 
-            {!error && message && (
-              <div className="mb-4 p-3 bg-green-100 text-green-700 rounded-lg text-sm">
-                {message}
-              </div>
-            )}
-
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <div>
                 <div className="my-2">
-                  <p className="px-2 text-sm bg-white text-gray-500 ">Email</p>
+                  <p className="px-2 text-sm bg-white font-mont-medium text-gray-500 ">
+                    Email
+                  </p>
                 </div>
                 <div className="relative">
                   <Mail
@@ -97,10 +92,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
               <button
                 type="submit"
-                className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-primary/90 font-mont-medium text-white py-2 rounded-lg hover:bg-primary transition disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={isLoading}
               >
-                {isLoading ? "Please wait..." : "Submit"}
+                {isLoading ? "Please wait..." : "Request Reset"}
               </button>
             </form>
           </div>

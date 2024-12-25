@@ -2,7 +2,13 @@
 
 import { User } from "@/types/definitions";
 import { useRouter } from "next/navigation";
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { setCookie, deleteCookie } from "cookies-next";
 import { toast } from "react-toastify";
 import axiosInstance from "@/lib/axiosInstance";
@@ -17,7 +23,7 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   isAuthenticated: boolean;
-  signInWithGoogle: (toke: string) => Promise<void>;
+  signInWithGoogle: (token: string, role: string) => Promise<void>;
   signInWithEmail: (
     signInForm: UseFormReturn<SignInFormData>,
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
@@ -29,7 +35,8 @@ interface AuthContextType {
     data: SignUpFormData,
     setError: React.Dispatch<React.SetStateAction<string>>
   ) => Promise<void>;
-  resetPassword: (email: string) => Promise<void>;
+  fetchUser: () => Promise<void>;
+  forgetPassword: (email: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -78,23 +85,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   // eslint-disable-next-line
-  const signInWithGoogle = async (access_token: string) => {
+  const signInWithGoogle = async (access_token: string, role: string) => {
     try {
       const res = await axiosInstance.post(
         "/public/user-app/users/social/auth",
         {
           thirdPartyApp: "GOOGLE",
           authToken: access_token,
+          accountType: role,
         }
       );
-
       setUser(res?.data);
       setIsAuthenticated(true);
       toast.success("Succesfully logged in!!");
       localStorage.setItem("accessToken", res.data?.tokens.access);
       localStorage.setItem("refreshToken", res.data?.tokens.refresh);
-      // redirectToDashboard(res.data.roles[0]);
-      redirectToDashboard("Owner");
+      redirectToDashboard(res.data.roles[0]);
     } catch (error) {
       setLoading(false);
       console.error("Error signing in with Google:", error);
@@ -211,27 +217,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  const resetPassword = async (email: string) => {
+  const forgetPassword = async (email: string) => {
     try {
-      //   await sendPasswordResetEmail(auth, email);
+      const res = await axiosInstance.post(
+        "/public/user-app/users/forget-password-request",
+        {
+          email,
+          redirectUrl: "/auth/callback/reset-password",
+        }
+      );
+
+      if (res.status === 200) {
+        toast.success(res.data.message);
+      }
     } catch (error) {
       console.error("Error sending password reset email:", error, email);
       throw new Error("Failed to send password reset email. Try again later.");
     }
   };
 
-  //   const fetchUser = async () => {
-  //     const access = localStorage.getItem("accessToken");
-  //     const refresh = localStorage.getItem("refreshToken");
+  const fetchUser = useCallback(async () => {
+    const access = localStorage.getItem("accessToken");
+    const refresh = localStorage.getItem("refreshToken");
 
-  //     if (!access && !refresh) router.push("/login");
-  //     const res = await axiosInstance.get("/public/user-app/users/profile", {
-  //       headers: {
-  //         Authorization: `Bearer ${access}`,
-  //       },
-  //     });
-  //     setUser(res?.data);
-  //   };
+    if (!access && !refresh) router.push("/login");
+    const res = await axiosInstance.get("/public/user-app/users/profile", {
+      headers: {
+        Authorization: `Bearer ${access}`,
+      },
+    });
+    setUser(res?.data);
+  }, [router]);
 
   const logout = async () => {
     try {
@@ -271,7 +287,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         signInWithGoogle,
         signInWithEmail,
         signUpWithEmail,
-        resetPassword,
+        fetchUser,
+        forgetPassword,
         logout,
       }}
     >

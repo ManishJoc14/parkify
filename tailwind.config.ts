@@ -9,6 +9,7 @@ const config: Config = {
       fontFamily: {
         ["mont-regular"]: "var(--font-primary-regular)",
         ["mont-bold"]: "var(--font-primary-bold)",
+        ["mont-semibold"]: "var(--font-primary-semibold)",
         ["mont-medium"]: "var(--font-primary-medium)",
       },
       colors: {

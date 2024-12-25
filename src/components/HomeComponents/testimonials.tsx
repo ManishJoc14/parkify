@@ -70,7 +70,7 @@ export default function Testimonials() {
         <div className="flex-1">
           <div className="flex items-center justify-start space-x-2 mb-1">
             <span className="h-1 w-8 bg-green-500 rounded-xl"></span>
-            <span className="text-muted-foreground rounded-lg px-2 py-1.5 text-md uppercase sm:text-md font-mont-bold">
+            <span className="text-muted-foreground rounded-lg px-2 py-1.5 text-md uppercase sm:text-md font-mont-semibold">
               Testimonials?
             </span>
           </div>

@@ -18,9 +18,9 @@ export default function FeedbackSubmittedMessage() {
               d="M5 13l4 4L19 7"
             />
           </svg>
-          <h1 className="text-2xl font-semibold text-gray-800">Thank you!</h1>
+          <h1 className="text-2xl font-mont-bold text-gray-800">Thank you!</h1>
         </div>
-        <p className="text-gray-600 text-center">
+        <p className="text-gray-600 pl-3 font-mont-medium text-center">
           Your feedback has been submitted successfully.
         </p>
       </div>

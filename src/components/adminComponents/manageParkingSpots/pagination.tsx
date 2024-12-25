@@ -30,7 +30,7 @@ const Pagination: React.FC<PaginationProps> = ({
         disabled={!previous}
         className={`px-4 py-2 rounded-md ${
           previous
-            ? "bg-blue-500 text-white hover:bg-blue-600"
+            ? "bg-primary text-white hover:bg-primary/80"
             : "bg-gray-300 text-gray-500 cursor-not-allowed"
         }`}
       >
@@ -45,7 +45,7 @@ const Pagination: React.FC<PaginationProps> = ({
         disabled={!next}
         className={`px-4 py-2 rounded-md ${
           next
-            ? "bg-blue-500 text-white hover:bg-blue-600"
+            ? "bg-primary text-white hover:bg-primary/80"
             : "bg-gray-300 text-gray-500 cursor-not-allowed"
         }`}
       >

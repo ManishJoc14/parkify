@@ -63,7 +63,7 @@ export default function Footer() {
       <div className="container mx-auto px-4 py-8 flex flex-col md:flex-row justify-between gap-16">
         {/* Brand Section */}
         <div>
-          <h3 className="text-2xl text-white font-mont-bold">
+          <h3 className="text-2xl text-white font-mont-semibold">
             <span className="text-3xl">{/* FIXME - LOGO */}</span>Parkify
           </h3>
           <p className="mt-2 text-sm">
@@ -87,7 +87,7 @@ export default function Footer() {
         <div className="flex flex-col sm:flex-row gap-16 justify-between">
           {/* Company Section */}
           <div className="min-w-fit">
-            <h4 className="text-white text-lg font-mont-bold">Company</h4>
+            <h4 className="text-white text-lg font-mont-semibold">Company</h4>
             <ul className="mt-2 space-y-2">
               {companyLinks.map((link, index) => (
                 <li key={index}>
@@ -101,7 +101,7 @@ export default function Footer() {
 
           {/* Contact Section */}
           <div>
-            <h4 className="text-white text-lg font-mont-bold">Contact</h4>
+            <h4 className="text-white text-lg font-mont-semibold">Contact</h4>
             <ul className="mt-2 space-y-2 text-sm">
               {contactDetails.map((detail, index) => (
                 <li key={index} className="text-nowrap">
@@ -122,7 +122,7 @@ export default function Footer() {
 
         {/* Newsletter Section */}
         <div>
-          <h4 className="text-white text-lg font-mont-bold">
+          <h4 className="text-white text-lg font-mont-semibold">
             Get the latest updates
           </h4>
           <p className="mt-2 text-sm">

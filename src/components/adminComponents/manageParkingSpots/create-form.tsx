@@ -150,7 +150,7 @@ export default function CreateParkingSpotForm() {
         <CardContent className="space-y-10 py-8">
           {/* Basic Details */}
           <div className="space-y-4">
-            <h3 className="text-lg font-mont-bold">Basic Details</h3>
+            <h3 className="text-lg font-mont-semibold">Basic Details</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-3">
                 <div className="space-y-2">
@@ -262,7 +262,7 @@ export default function CreateParkingSpotForm() {
 
           {/* Pricing */}
           <div className="space-y-4">
-            <h3 className="text-lg font-mont-bold">Pricing</h3>
+            <h3 className="text-lg font-mont-semibold">Pricing</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label className="font-mont-medium" htmlFor="ratePerHour">
@@ -293,7 +293,7 @@ export default function CreateParkingSpotForm() {
 
           {/* Features */}
           <div className="space-y-4">
-            <h3 className="text-lg font-mont-bold">Features</h3>
+            <h3 className="text-lg font-mont-semibold">Features</h3>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {Object.entries(ParkingFeature).map(([key, value]) => (
                 <div key={key} className="flex items-center space-x-2">
@@ -333,7 +333,7 @@ export default function CreateParkingSpotForm() {
 
           {/* Availabilities */}
           <div className="space-y-4">
-            <h3 className="text-lg font-mont-bold">Availabilities</h3>
+            <h3 className="text-lg font-mont-semibold">Availabilities</h3>
             {availabilityFields.map((field, index) => (
               <div
                 key={field.id}
@@ -419,7 +419,7 @@ export default function CreateParkingSpotForm() {
               </div>
             ))}
             <Button
-              className="font-mont-medium text-white"
+              className="font-mont-semibold text-white"
               type="button"
               onClick={() =>
                 appendAvailability({
@@ -429,7 +429,7 @@ export default function CreateParkingSpotForm() {
                 })
               }
             >
-              Add More Availability
+              Add More
             </Button>
             {errors.availabilities && (
               <p className="text-red-500 text-sm">
@@ -442,7 +442,7 @@ export default function CreateParkingSpotForm() {
 
           {/* Vehicles Capacity */}
           <div className="space-y-4">
-            <h3 className="text-lg font-mont-bold">Vehicles Capacity</h3>
+            <h3 className="text-lg font-mont-semibold">Vehicles Capacity</h3>
             {vehicleFields.map((field, index) => (
               <div
                 key={field.id}
@@ -512,7 +512,7 @@ export default function CreateParkingSpotForm() {
               </div>
             ))}
             <Button
-              className="font-mont-medium text-white"
+              className="font-mont-semibold text-white"
               type="button"
               onClick={() => {
                 appendVehicle({
@@ -521,7 +521,7 @@ export default function CreateParkingSpotForm() {
                 });
               }}
             >
-              Add More Vehicle Capacity
+              Add More
             </Button>
             {errors?.vehiclesCapacity && (
               <p className="text-red-500 text-sm">
@@ -533,7 +533,11 @@ export default function CreateParkingSpotForm() {
       </Card>
 
       <div className="flex justify-end">
-        <Button className="font-mont-medium text-white" type="submit" size="lg">
+        <Button
+          className="font-mont-semibold text-white"
+          type="submit"
+          size="lg"
+        >
           Submit
         </Button>
       </div>

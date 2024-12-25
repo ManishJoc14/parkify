@@ -25,7 +25,10 @@ export interface User {
   fullName?: string;
   bio?: string;
   redirectUrl?: string;
+  uuid?: string;
+  status?: string;
 }
+
 
 export interface AdminParkingSpot {
   id: string;

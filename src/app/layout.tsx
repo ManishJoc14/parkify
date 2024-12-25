@@ -16,6 +16,11 @@ const MontserratBold = localFont({
   variable: "--font-primary-bold",
   weight: "100 900",
 });
+const MontserratSemiBold = localFont({
+  src: "./fonts/Montserrat-SemiBold.ttf",
+  variable: "--font-primary-semibold",
+  weight: "100 900",
+});
 const MontserratMedium = localFont({
   src: "./fonts/Montserrat-Medium.ttf",
   variable: "--font-primary-medium",
@@ -38,7 +43,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${MontserratPrimary.variable} ${MontserratBold.variable} ${MontserratMedium.variable} antialiased`}
+        className={`${MontserratPrimary.variable} ${MontserratBold.variable}  ${MontserratSemiBold.variable} ${MontserratMedium.variable} antialiased`}
       >
         <ToastContainer />
         <GoogleOAuthProvider

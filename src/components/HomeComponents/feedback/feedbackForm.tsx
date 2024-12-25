@@ -17,6 +17,7 @@ import { Feedback } from "@/types/definitions";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { revalidatePath } from "next/cache";
 
 export default function FeedbackForm() {
   const [formData, setFormData] = useState<Feedback>({
@@ -48,6 +49,7 @@ export default function FeedbackForm() {
 
       if (res.status === 201) {
         setIsSubmitted(true);
+        revalidatePath("/");
       }
     } catch (error) {
       setError((error as { message: string }).message);
@@ -185,7 +187,7 @@ export default function FeedbackForm() {
             <Button
               type="submit"
               size="lg"
-              className="h-12 w-full font-mont-medium px-8 hover:scale-[0.99] transition-all"
+              className="h-12 w-full font-mont-semibold px-8 hover:scale-[0.99] transition-all"
             >
               Submit
             </Button>

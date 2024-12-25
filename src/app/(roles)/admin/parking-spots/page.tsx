@@ -8,6 +8,7 @@ import { AdminParkingSpot } from "@/types/definitions";
 import Pagination from "@/components/adminComponents/manageParkingSpots/pagination";
 import { SearchIcon } from "lucide-react";
 import dynamic from "next/dynamic";
+import { Input } from "@/components/ui/input";
 
 const DynamicCreateParkingSpot = dynamic(
   () =>
@@ -62,14 +63,14 @@ export default function Page() {
     <>
       <div className="w-full">
         <div className="flex w-full items-center justify-between">
-          <h1 className="text-2xl">Manage Parking Spots</h1>
+          <h1 className="text-2xl font-mont-semibold">Manage Parking Spots</h1>
         </div>
         <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
           <div className="relative flex flex-1 flex-shrink-0">
             <label htmlFor="search" className="sr-only">
               Search
             </label>
-            <input
+            <Input
               className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
               placeholder="Search parking spots.."
               onChange={(e) => {

@@ -62,9 +62,6 @@ export default function SearchPage() {
   const fetchMoreData = async () => {
     try {
       const queryString = next.current?.slice(next.current?.indexOf("?") + 1);
-      // const offsetValue =
-      //   typeof next === "string" ? new URLSearchParams(next).get("offset") : 0;
-      // offset.current = parseInt(offsetValue || "0", 10);
       const res = await axiosInstance.get(
         `/public/parking-app/parking-spots?${queryString}`
       );

@@ -1,13 +1,27 @@
 "use client";
 
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import HeaderAuth from "../authComponents/header-auth";
+import { useAuth } from "@/context/authContext";
 
 export default function Header() {
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const { user, fetchUser } = useAuth();
+
+  useEffect(() => {
+    if (user) return;
+    if (
+      !(
+        localStorage.getItem("accessToken") &&
+        localStorage.getItem("refreshToken")
+      )
+    )
+      return;
+    fetchUser();
+  }, [fetchUser, user]);
 
   const navLinks = [
     { href: "/", label: "Home" },
@@ -23,7 +37,7 @@ export default function Header() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="flex items-center">
           <span className="h-8 text-4xl">{/* FIXME - LOGO */}</span>
-          <span className="text-xl font-mont-bold">Parkify</span>
+          <span className="text-xl font-mont-semibold">Parkify</span>
         </Link>
 
         {/* Desktop Navigation */}

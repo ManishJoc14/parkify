@@ -209,7 +209,7 @@ export default function EditParkingSpotForm({
         <CardContent className="space-y-10 py-8">
           {/* Basic Details */}
           <div className="space-y-4">
-            <h3 className="text-lg font-mont-bold">Basic Details</h3>
+            <h3 className="text-lg font-mont-semibold">Basic Details</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-3">
                 <div className="space-y-2">

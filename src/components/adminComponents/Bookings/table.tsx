@@ -1,4 +1,4 @@
-import { formatCurrency, formatDateToLocal, getStatusColor } from "@/lib/utils";
+import { formatCurrency, getStatusColor, TimeOnly } from "@/lib/utils";
 import { Booking, VehicleType } from "@/types/definitions";
 import StatusUpdateButton from "./statusUpdateButton";
 
@@ -35,8 +35,8 @@ export default function BookingsTable({ data }: { data: Booking[] }) {
                   <StatusUpdateButton booking={booking} />
                 </div>
                 <div className="pt-4 text-sm">
-                  <p>Start: {formatDateToLocal(booking.startTime)}</p>
-                  <p>End: {formatDateToLocal(booking.endTime)}</p>
+                  <p>Start: {TimeOnly(booking.startTime)}</p>
+                  <p>End: {TimeOnly(booking.endTime)}</p>
                   <p>Amount: {formatCurrency(parseFloat(booking.amount))}</p>
                   <p>
                     Vehicle: {booking.vehicleNo} ({booking.vehicle})
@@ -53,14 +53,14 @@ export default function BookingsTable({ data }: { data: Booking[] }) {
                   <th
                     key={header.key}
                     scope="col"
-                    className="px-4 py-5 font-mont-medium whitespace-nowrap sm:pl-6"
+                    className="px-4 py-5 font-mont-semibold whitespace-nowrap sm:pl-6"
                   >
                     {header.label}
                   </th>
                 ))}
               </tr>
             </thead>
-            <tbody className="bg-white">
+            <tbody className="bg-white font-mont-medium">
               {data?.map((booking) => (
                 <tr
                   key={booking.id}
@@ -79,10 +79,10 @@ export default function BookingsTable({ data }: { data: Booking[] }) {
                     </span>{" "}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {formatDateToLocal(booking.startTime)}
+                    {TimeOnly(booking.startTime)}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {formatDateToLocal(booking.endTime)}
+                    {TimeOnly(booking.endTime)}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {formatCurrency(parseFloat(booking.amount))}

@@ -14,7 +14,7 @@ export default function SideNav() {
         className="mb-2 flex flex-col justify-start rounded-md bg-primary pt-6 px-4 pb-4"
         href="/"
       >
-        <div className="w-32 text-xl sm:text-3xl pb-1 text-white font-mont-bold md:w-40 ">
+        <div className="w-32 text-xl sm:text-3xl pb-1 text-white font-mont-semibold md:w-40 ">
           Parkify
         </div>
         <span className="text-md text-white/80">{user?.fullName}</span>
@@ -23,12 +23,11 @@ export default function SideNav() {
         <NavLinks />
         <div className="hidden h-auto w-full grow rounded-md bg-gray-50 md:block"></div>
         <form>
-          <div className="flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-primary md:flex-none md:justify-start md:p-2 md:px-3">
-            <button
-              type="submit"
-              className="flex justify-center gap-2"
-              onClick={logout}
-            >
+          <div
+            onClick={logout}
+            className="flex h-[48px] cursor-pointer w-full grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-mont-medium hover:bg-primary/10 hover:text-primary md:flex-none md:justify-start md:p-2 md:px-3"
+          >
+            <button type="submit" className="flex justify-center gap-2">
               <LogOutIcon />
               SignOut
             </button>

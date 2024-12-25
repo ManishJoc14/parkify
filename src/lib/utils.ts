@@ -148,6 +148,10 @@ export function getDayInNumber(day: string) {
   }
 }
 
+export const TimeOnly = (date: string) => {
+  return new Date(date).toLocaleTimeString();
+};
+
 export const timeAgo = (timestamp: string): string => {
   const now = new Date();
   const date = new Date(timestamp);

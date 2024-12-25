@@ -19,7 +19,7 @@ export default function StatusUpdateButton({ booking }: { booking: Booking }) {
   const handleStatusChange = async (newStatus: string) => {
     setIsLoading(true);
     try {
-      await axiosInstance.patch(
+      await axiosInstance.put(
         `/admin/parking-spot-app/bookings/${booking.id}/update-status`,
         { status: newStatus },
         {
@@ -42,7 +42,7 @@ export default function StatusUpdateButton({ booking }: { booking: Booking }) {
       onValueChange={handleStatusChange}
       disabled={isLoading}
     >
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger className="w-[145px]">
         <SelectValue placeholder="Update status" />
       </SelectTrigger>
       <SelectContent>

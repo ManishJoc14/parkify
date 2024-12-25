@@ -125,7 +125,7 @@ export default function EditProfilePage() {
   }
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
+    <Card className="w-full">
       <CardContent className="py-8 px-8">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -140,7 +140,7 @@ export default function EditProfilePage() {
                 </AvatarFallback>
               </Avatar>
               <div>
-                <h2 className="text-2xl font-mont-bold">{profile.fullName}</h2>
+                <h2 className="text-2xl font-mont-semibold">{profile.fullName}</h2>
                 <p className="text-muted-foreground">{profile.email}</p>
               </div>
             </div>
@@ -151,7 +151,7 @@ export default function EditProfilePage() {
                 name="firstName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="font-mont-medium">
+                    <FormLabel className="font-mont-semibold">
                       First Name
                     </FormLabel>
                     <FormControl>
@@ -166,7 +166,7 @@ export default function EditProfilePage() {
                 name="middleName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="font-mont-medium">
+                    <FormLabel className="font-mont-semibold">
                       Middle Name
                     </FormLabel>
                     <FormControl>
@@ -181,7 +181,7 @@ export default function EditProfilePage() {
                 name="lastName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="font-mont-medium">
+                    <FormLabel className="font-mont-semibold">
                       Last Name
                     </FormLabel>
                     <FormControl>
@@ -196,7 +196,7 @@ export default function EditProfilePage() {
                 name="phoneNo"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="font-mont-medium">
+                    <FormLabel className="font-mont-semibold">
                       Phone Number
                     </FormLabel>
                     <FormControl>
@@ -207,13 +207,13 @@ export default function EditProfilePage() {
                 )}
               />
               <FormItem>
-                <FormLabel className="font-mont-medium">Email</FormLabel>
+                <FormLabel className="font-mont-semibold">Email</FormLabel>
                 <FormControl>
                   <Input value={profile.email} disabled />
                 </FormControl>
               </FormItem>
               <FormItem>
-                <FormLabel className="font-mont-medium">Date Joined</FormLabel>
+                <FormLabel className="font-mont-semibold">Date Joined</FormLabel>
                 <FormControl>
                   <Input
                     value={new Date(profile.dateJoined).toLocaleDateString()}
@@ -228,7 +228,7 @@ export default function EditProfilePage() {
               name="bio"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-mont-medium">Bio</FormLabel>
+                  <FormLabel className="font-mont-semibold">Bio</FormLabel>
                   <FormControl>
                     <Textarea
                       {...field}
@@ -250,7 +250,7 @@ export default function EditProfilePage() {
               name="photo"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-mont-medium">
+                  <FormLabel className="font-mont-semibold">
                     Profile Photo
                   </FormLabel>
                   <FormControl>
@@ -274,20 +274,20 @@ export default function EditProfilePage() {
             <Separator />
 
             <div className="space-y-2">
-              <h3 className="text-lg font-mont-medium">Account Information</h3>
+              <h3 className="text-lg font-mont-semibold">Account Information</h3>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <span className="font-mont-medium">User ID:</span>{" "}
+                  <span className="font-mont-semibold">User ID:</span>{" "}
                   <Badge variant="secondary">{profile.id}</Badge>
                 </div>
                 <div>
-                  <span className="font-mont-medium">Roles:</span>{" "}
+                  <span className="font-mont-semibold">Roles:</span>{" "}
                   <Badge variant="secondary">
                     {profile.roles.join(", ").toUpperCase()}
                   </Badge>
                 </div>
                 <div>
-                  <span className="font-mont-medium">Email Verified:</span>{" "}
+                  <span className="font-mont-semibold">Email Verified:</span>{" "}
                   <Badge
                     variant={
                       profile.isEmailVerified ? "default" : "destructive"
@@ -297,7 +297,7 @@ export default function EditProfilePage() {
                   </Badge>
                 </div>
                 <div>
-                  <span className="font-mont-medium">Phone Verified:</span>{" "}
+                  <span className="font-mont-semibold">Phone Verified:</span>{" "}
                   <Badge
                     variant={
                       profile.isPhoneVerified ? "default" : "destructive"
@@ -310,7 +310,7 @@ export default function EditProfilePage() {
             </div>
 
             <div className="flex justify-end py-4">
-              <Button type="submit" className="font-mont-medium" size="lg">
+              <Button type="submit" className="font-mont-semibold" size="lg">
                 Update Profile
               </Button>
             </div>

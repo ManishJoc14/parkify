@@ -70,7 +70,7 @@ export default function ParkingSpotsTable({
                   <th
                     key={header.key}
                     scope="col"
-                    className="px-4 py-5 font-mont-medium sm:pl-6"
+                    className="px-4 py-5 font-mont-semibold sm:pl-6"
                   >
                     {header.label}
                   </th>
@@ -80,7 +80,7 @@ export default function ParkingSpotsTable({
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white">
+            <tbody className="bg-white font-mont-medium">
               {data?.map((spot) => (
                 <tr
                   key={spot.id}
