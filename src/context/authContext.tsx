@@ -75,14 +75,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [user, loading]);
 
-  const redirectToDashboard = (role: string) => {
-    if (role === "Owner") {
-      router.push("/admin/parking-spots");
-    }
-    if (role === "Driver") {
-      router.push("/parking");
-    }
-  };
+  // const redirectToDashboard = (role: string) => {
+  //   if (role === "Owner") {
+  //     router.push("/admin/parking-spots");
+  //   }
+  //   if (role === "Driver") {
+  //     router.push("/parking");
+  //   }
+  // };
 
   // eslint-disable-next-line
   const signInWithGoogle = async (access_token: string, role: string) => {
@@ -100,7 +100,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       toast.success("Succesfully logged in!!");
       localStorage.setItem("accessToken", res.data?.tokens.access);
       localStorage.setItem("refreshToken", res.data?.tokens.refresh);
-      redirectToDashboard(res.data.roles[0]);
+      router.push("/");
+      // redirectToDashboard(res.data.roles[0]);
     } catch (error) {
       setLoading(false);
       console.error("Error signing in with Google:", error);
@@ -108,61 +109,65 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  const signInWithEmail = async (
-    signInForm: UseFormReturn<SignInFormData>,
-    setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
-    data: SignInFormData
-  ) => {
-    const payload = {
-      persona: data.email,
-      password: data.password,
-      redirectUrl: "/auth/callback",
-    };
+  const signInWithEmail = useCallback(
+    async (
+      signInForm: UseFormReturn<SignInFormData>,
+      setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
+      data: SignInFormData
+    ) => {
+      const payload = {
+        persona: data.email,
+        password: data.password,
+        redirectUrl: "/auth/callback",
+      };
 
-    try {
-      const res = await axiosInstance.post(
-        "/public/user-app/users/signin",
-        payload
-      );
+      try {
+        const res = await axiosInstance.post(
+          "/public/user-app/users/signin",
+          payload
+        );
 
-      if (res.data?.status === "verify_email") {
-        toast.info(res.data?.message);
-        return;
-      }
+        if (res.data?.status === "verify_email") {
+          toast.info(res.data?.message);
+          return;
+        }
 
-      if (res) {
-        const {
-          message,
-          tokens: { refresh, access },
-          ...fetchedUser
-        } = res.data;
-        toast.success(message);
-        setUser(fetchedUser);
-        setIsAuthenticated(true);
-        localStorage.setItem("accessToken", access);
-        localStorage.setItem("refreshToken", refresh);
-        redirectToDashboard(res.data.roles[0]);
-      }
-      // eslint-disable-next-line
-    } catch (err: any) {
-      if (err?.response?.data?.password) {
-        signInForm.setError("password", {
-          type: "manual",
-          message: err.response.data.password[0],
-        });
-      }
+        if (res) {
+          const {
+            message,
+            tokens: { refresh, access },
+            ...fetchedUser
+          } = res.data;
+          toast.success(message);
+          setUser(fetchedUser);
+          setIsAuthenticated(true);
+          localStorage.setItem("accessToken", access);
+          localStorage.setItem("refreshToken", refresh);
+          router.push("/");
+          // redirectToDashboard(res.data.roles[0]);
+        }
+        // eslint-disable-next-line
+      } catch (err: any) {
+        if (err?.response?.data?.password) {
+          signInForm.setError("password", {
+            type: "manual",
+            message: err.response.data.password[0],
+          });
+        }
 
-      if (err?.response?.data?.persona) {
-        signInForm.setError("email", {
-          type: "manual",
-          message: err.response.data.persona[0],
-        });
+        if (err?.response?.data?.persona) {
+          signInForm.setError("email", {
+            type: "manual",
+            message: err.response.data.persona[0],
+          });
+        }
+      } finally {
+        setIsLoading(false);
+        setLoading(false);
       }
-    } finally {
-      setIsLoading(false);
-      setLoading(false);
-    }
-  };
+    },
+    [router]
+  );
 
   const signUpWithEmail = async (
     signUpForm: UseFormReturn<SignUpFormData>,

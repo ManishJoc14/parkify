@@ -90,11 +90,20 @@ export default function EditProfilePage() {
   const onSubmit = async (data: ProfileFormData) => {
     const formData = new FormData();
 
-    Object.entries(data).forEach(([key, value]) => {
-      if (key === "photo" && value instanceof File) {
+    const urlToFile = async (url: string, filename: string) => {
+      const res = await fetch(url, { mode: "no-cors" });
+      const blob = await res.blob();
+      return new File([blob], filename, { type: blob.type });
+    };
+
+    Object.entries(data).forEach(async ([key, value]) => {
+      if (key === "photo" && typeof value === "string") {
+        const file = await urlToFile(value, "profileImage.jpg");
+        formData.append(key, file);
+      } else if (key === "photo" && value instanceof File) {
         formData.append(key, value);
-      } else if (typeof value === "string") {
-        formData.append(key, value);
+      } else {
+        formData.append(key, value as string);
       }
     });
 
@@ -140,7 +149,9 @@ export default function EditProfilePage() {
                 </AvatarFallback>
               </Avatar>
               <div>
-                <h2 className="text-2xl font-mont-semibold">{profile.fullName}</h2>
+                <h2 className="text-2xl font-mont-semibold">
+                  {profile.fullName}
+                </h2>
                 <p className="text-muted-foreground">{profile.email}</p>
               </div>
             </div>
@@ -213,7 +224,9 @@ export default function EditProfilePage() {
                 </FormControl>
               </FormItem>
               <FormItem>
-                <FormLabel className="font-mont-semibold">Date Joined</FormLabel>
+                <FormLabel className="font-mont-semibold">
+                  Date Joined
+                </FormLabel>
                 <FormControl>
                   <Input
                     value={new Date(profile.dateJoined).toLocaleDateString()}
@@ -274,7 +287,9 @@ export default function EditProfilePage() {
             <Separator />
 
             <div className="space-y-2">
-              <h3 className="text-lg font-mont-semibold">Account Information</h3>
+              <h3 className="text-lg font-mont-semibold">
+                Account Information
+              </h3>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
                   <span className="font-mont-semibold">User ID:</span>{" "}
