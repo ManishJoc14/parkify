@@ -126,7 +126,6 @@ export default function EditParkingSpotForm({
 
   const onSubmit = async (data: ParkingSpotFormData) => {
     const formData = new FormData();
-    console.log(data);
 
     const urlToFile = async (url: string, filename: string) => {
       const res = await fetch(url, { mode: "no-cors" });

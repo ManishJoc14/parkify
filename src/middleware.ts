@@ -10,12 +10,10 @@ export function middleware(request: NextRequest) {
   const isLoggedIn = request.cookies.get("isLoggedIn")?.value == "true";
 
   const pathname = request.nextUrl.pathname;
-  console.log(role, request.cookies.get("isLoggedIn")?.value);
 
-  const isRestrictedPath =
-    pathname.startsWith("/admin") || pathname.startsWith("/parking");
+  const isRestrictedPath = pathname.startsWith("/admin");
 
-  // Block access to admin or driver routes unless logged in
+  // Block access to admin routes unless logged in
   if (!isLoggedIn && isRestrictedPath) {
     console.log(
       "Unauthenticated access to restricted area, redirecting to /login"

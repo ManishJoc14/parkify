@@ -12,7 +12,7 @@ import {
   ParkingFeature,
 } from "@/types/definitions";
 import Link from "next/link";
-import Map from "@/components/parking/map";
+import Map from "@/components/parkingComponents/map";
 import { useParams } from "next/navigation";
 import axiosInstance from "@/lib/axiosInstance";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -20,8 +20,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import clsx from "clsx";
 import { getDayInNumber, timeAgo } from "@/lib/utils";
-import BookingForm from "@/components/parking/booking-form";
-import ParkingSpotReviewForm from "@/components/parking/create-review-form";
+import BookingForm from "@/components/parkingComponents/booking-form";
+import ParkingSpotReviewForm from "@/components/parkingComponents/create-review-form";
 
 const GetVehicleTypeIcon = ({ vehicleType }: { vehicleType: VehicleType }) => {
   switch (vehicleType) {

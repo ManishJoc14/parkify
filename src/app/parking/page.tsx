@@ -20,8 +20,8 @@ import type {
   OrderingOptions,
   VehicleType,
 } from "@/types/definitions";
-import { FiltersDialog } from "@/components/parking/filters-dialog";
-import ParkingCard from "@/components/parking/parking-card";
+import { FiltersDialog } from "@/components/parkingComponents/filters-dialog";
+import ParkingCard from "@/components/parkingComponents/parking-card";
 import Link from "next/link";
 import axiosInstance from "@/lib/axiosInstance";
 import ParkingCardSkeleton from "@/components/skeletons/parking-card-skeleton";
@@ -29,7 +29,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import clsx from "clsx";
 
 // Dynamically import the Map component
-const Map = dynamic(() => import("@/components/parking/map"), {
+const Map = dynamic(() => import("@/components/parkingComponents/map"), {
   ssr: false,
   loading: () => (
     <div className="w-full h-full bg-gray-100 animate-pulse rounded-lg" />

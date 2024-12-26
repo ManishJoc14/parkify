@@ -100,7 +100,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       toast.success("Succesfully logged in!!");
       localStorage.setItem("accessToken", res.data?.tokens.access);
       localStorage.setItem("refreshToken", res.data?.tokens.refresh);
-      router.push("/");
+
+      const redirect = localStorage?.getItem("redirectBackToParking");
+      if (redirect) {
+        router.push(redirect || "/");
+        localStorage.removeItem("redirectBackToParking");
+      }
       // redirectToDashboard(res.data.roles[0]);
     } catch (error) {
       setLoading(false);
@@ -142,7 +147,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           setIsAuthenticated(true);
           localStorage.setItem("accessToken", access);
           localStorage.setItem("refreshToken", refresh);
-          router.push("/");
+
+          const redirect = localStorage?.getItem("redirectBackToParking");
+          if (redirect) {
+            router.push(redirect);
+            localStorage?.removeItem("redirectBackToParking");
+          } else {
+            router.push("/");
+          }
           // redirectToDashboard(res.data.roles[0]);
         }
         // eslint-disable-next-line
@@ -199,7 +211,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
       if (res.data?.type === "Account Verification.") {
         toast.info(res.data.message);
-        return;
+      }
+      const redirect = localStorage?.getItem("redirectBackToParking");
+      if (redirect) {
+        router.push(redirect);
+        localStorage.removeItem("redirectBackToParking");
       }
       // eslint-disable-next-line
     } catch (err: any) {

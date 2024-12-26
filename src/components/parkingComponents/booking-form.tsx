@@ -20,6 +20,8 @@ import {
 import axiosInstance from "@/lib/axiosInstance";
 import { toast } from "react-toastify";
 import Image from "next/image";
+import { useAuth } from "@/context/authContext";
+import { useParams, useRouter } from "next/navigation";
 
 export interface BookingFormProps {
   id: number;
@@ -31,6 +33,10 @@ export default function BookingForm({ id, parkingDetailed }: BookingFormProps) {
   const defaultEndTime = new Date(
     defaultStartTime.getTime() + 2 * 60 * 60 * 1000
   );
+
+  const { user } = useAuth();
+  const router = useRouter();
+  const { uuid } = useParams();
 
   const startTimeRef = useRef<HTMLInputElement | null>(null);
   const endTimeRef = useRef<HTMLInputElement | null>(null);
@@ -49,7 +55,7 @@ export default function BookingForm({ id, parkingDetailed }: BookingFormProps) {
 
   const openDateTimePicker = (inputRef: React.RefObject<HTMLInputElement>) => {
     if (inputRef.current) {
-      inputRef.current.click(); // Programmatically trigger the input click
+      inputRef.current.click();
     }
   };
 
@@ -82,6 +88,13 @@ export default function BookingForm({ id, parkingDetailed }: BookingFormProps) {
 
     if (endTime <= startTime) {
       toast.error("End time must be after start time");
+      return;
+    }
+
+    if (!user) {
+      toast.error("Please login to book a parking spot");
+      localStorage.setItem("redirectBackToParking", `/parking/${uuid}`);
+      router.push("/login");
       return;
     }
 
