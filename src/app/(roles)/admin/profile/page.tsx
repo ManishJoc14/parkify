@@ -79,7 +79,7 @@ export default function EditProfilePage() {
           setLoading(false);
         }
       } catch (error) {
-        console.error("Error fetching profile data:", error);
+        console.log("Error fetching profile data:", error);
         setLoading(false);
       }
     };
@@ -122,7 +122,7 @@ export default function EditProfilePage() {
         toast.success("Your profile has been successfully updated.");
       }
     } catch (error) {
-      console.error("Error updating profile:", error);
+      console.log("Error updating profile:", error);
       toast.error(
         "An error occurred while updating your profile. Please try again."
       );

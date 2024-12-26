@@ -27,7 +27,7 @@ export default function BookingsPage() {
       setPrevious(res.data.previous);
       setTotal(res.data.count);
     } catch (error) {
-      console.error("Error fetching bookings:", error);
+      console.log("Error fetching bookings:", error);
     }
   };
 

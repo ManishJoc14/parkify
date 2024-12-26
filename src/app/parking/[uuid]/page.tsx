@@ -82,7 +82,7 @@ export default function ParkingBookingPage() {
       );
       setParkingDetailed(res.data);
     } catch (error) {
-      console.error("Error fetching parking details:", error);
+      console.log("Error fetching parking details:", error);
     }
   }, [uuid]);
 
@@ -102,7 +102,7 @@ export default function ParkingBookingPage() {
           setUserPosition([latitude, longitude]);
         },
         (error) => {
-          console.error("Error getting user location:", error);
+          console.log("Error getting user location:", error);
         }
       );
     }

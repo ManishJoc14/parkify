@@ -104,8 +104,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       // redirectToDashboard(res.data.roles[0]);
     } catch (error) {
       setLoading(false);
-      console.error("Error signing in with Google:", error);
-      throw new Error("Failed to sign in with Google. Please try again.");
+      console.log("Error signing in with Google:", error);
     }
   };
 
@@ -236,8 +235,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         toast.success(res.data.message);
       }
     } catch (error) {
-      console.error("Error sending password reset email:", error, email);
-      throw new Error("Failed to send password reset email. Try again later.");
+      console.log("Error sending password reset email:", error, email);
     }
   };
 
@@ -245,49 +243,62 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     const access = localStorage.getItem("accessToken");
     const refresh = localStorage.getItem("refreshToken");
 
-    if (!access && !refresh) router.push("/login");
-    const res = await axiosInstance.get("/public/user-app/users/profile", {
-      headers: {
-        Authorization: `Bearer ${access}`,
-      },
-    });
-    setUser(res?.data);
-  }, [router]);
+    if (!access || !refresh) {
+      setUser(null);
+      setIsAuthenticated(false);
+      return;
+    }
+    try {
+      const res = await axiosInstance.get("/public/user-app/users/profile", {
+        headers: {
+          Authorization: `Bearer ${access}`,
+        },
+      });
+      setUser(res?.data);
+      // eslint-disable-next-line
+    } catch (err: any) {
+      console.log("Error fetching user:", err);
+      if (err?.response?.status === 403) {
+        setUser(null);
+        setIsAuthenticated(false);
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+      }
+    }
+  }, []);
 
   const logout = async () => {
+    router.push("/");
     try {
-      router.push("/");
       const access = localStorage?.getItem("accessToken");
       const refresh = localStorage?.getItem("refreshToken");
 
-      axiosInstance
-        .post(
-          "/public/user-app/users/logout",
-          { refreshToken: refresh },
-          {
-            headers: {
-              Authorization: `Bearer ${access}`,
-            },
-          }
-        )
-        .then(() => {
-          toast.info("Successfully logged out!!");
-          localStorage.removeItem("accessToken");
-          localStorage.removeItem("refreshToken");
-          setUser(null);
-          setIsAuthenticated(false);
-        })
-        .catch((error) => {
-          console.error("Error signing out:", error);
-          throw error;
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    } catch (error) {
-      console.error("Error signing out:", error);
-      throw error;
+      if (!access || !refresh) {
+        setUser(null);
+        setIsAuthenticated(false);
+        return;
+      }
+
+      await axiosInstance.post(
+        "/public/user-app/users/logout",
+        { refreshToken: refresh },
+        {
+          headers: {
+            Authorization: `Bearer ${access}`,
+          },
+        }
+      );
+      // eslint-disable-next-line
+    } catch (error: any) {
+      if (error?.response?.status === 400) {
+        console.log(error?.response?.data);
+      }
+      console.log("Error signing out:", error);
     } finally {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      setUser(null);
+      setIsAuthenticated(false);
       setLoading(false);
     }
   };

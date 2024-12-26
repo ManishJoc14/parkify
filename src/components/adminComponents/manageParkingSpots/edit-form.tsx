@@ -114,7 +114,7 @@ export default function EditParkingSpotForm({
           setLoading(false);
         }
       } catch (error) {
-        console.error("Error fetching parking spot data:", error);
+        console.log("Error fetching parking spot data:", error);
         setLoading(false);
       }
     };
@@ -170,7 +170,7 @@ export default function EditParkingSpotForm({
         router.push("/admin/parking-spots");
       }
     } catch (error) {
-      console.error("Error updating parking spot:", error);
+      console.log("Error updating parking spot:", error);
       toast.error("Failed to update parking spot.");
     }
   };
@@ -183,7 +183,7 @@ export default function EditParkingSpotForm({
         },
       });
     } catch (error) {
-      console.error("Error deleting parking spot:", error);
+      console.log("Error deleting parking spot:", error);
     }
   };
 

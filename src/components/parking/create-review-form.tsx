@@ -68,7 +68,7 @@ export default function ParkingSpotReviewForm({
         refresh();
       }
     } catch (error) {
-      console.error("Error submitting review:", error);
+      console.log("Error submitting review:", error);
       toast.error("Failed to submit review. Please try again.");
     } finally {
       setIsSubmitting(false);

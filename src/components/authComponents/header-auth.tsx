@@ -14,11 +14,12 @@ export default function HeaderAuth() {
     if (role === "Driver") {
       return "/parking";
     }
+    return "/";
   };
 
   return user ? (
     <div className="flex items-center gap-4">
-      <Link href={getRoute(user.roles[0]) as string}>
+      <Link href={getRoute(user?.roles[0]) as string}>
         Hey, {user.firstName} {user.middleName} {user.lastName}!
       </Link>
       <Button

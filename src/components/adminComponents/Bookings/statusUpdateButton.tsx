@@ -37,7 +37,7 @@ export default function StatusUpdateButton({
       setStatus(newStatus as BookingStatus);
       fetchBookings("/admin/parking-spot-app/bookings?limit=4");
     } catch (error) {
-      console.error("Error updating booking status:", error);
+      console.log("Error updating booking status:", error);
     } finally {
       setIsLoading(false);
     }

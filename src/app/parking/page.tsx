@@ -68,7 +68,7 @@ export default function SearchPage() {
       next.current = res.data.next;
       setParkings((prev) => [...prev, ...res.data.results]);
     } catch (error) {
-      console.error("Failed to fetch parking spots:", error);
+      console.log("Failed to fetch parking spots:", error);
       setParkings([]);
     }
   };
@@ -132,7 +132,7 @@ export default function SearchPage() {
           setUserPosition([latitude, longitude]);
         },
         (error) => {
-          console.error("Error getting user location:", error);
+          console.log("Error getting user location:", error);
         }
       );
     }
@@ -149,7 +149,7 @@ export default function SearchPage() {
           );
           setSuggestions(res.data.suggestions || []);
         } catch (error) {
-          console.error("Failed to fetch search suggestions:", error);
+          console.log("Failed to fetch search suggestions:", error);
         }
       } else {
         setSuggestions([]);
@@ -168,7 +168,7 @@ export default function SearchPage() {
         setParkings(res.data.results);
         next.current = res.data.next;
       } catch (error) {
-        console.error("Failed to fetch parking spots:", error);
+        console.log("Failed to fetch parking spots:", error);
         setParkings([]);
       }
     };

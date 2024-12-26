@@ -70,7 +70,7 @@ export default function CreateParkingSpotForm() {
           setValue("longitude", longitude);
         },
         (error) => {
-          console.error("Error getting user location:", error);
+          console.log("Error getting user location:", error);
         }
       );
     }
@@ -141,7 +141,7 @@ export default function CreateParkingSpotForm() {
 
       }
     } catch (error) {
-      console.error("Error in creating parking spot", error);
+      console.log("Error in creating parking spot", error);
       toast.error("Failed to create parking spot");
     }
   };

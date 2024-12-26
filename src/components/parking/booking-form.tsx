@@ -109,7 +109,7 @@ export default function BookingForm({ id, parkingDetailed }: BookingFormProps) {
         setIsBookingSuccess(true);
       }
     } catch (error) {
-      console.error("Error in booking parking spot", error);
+      console.log("Error in booking parking spot", error);
       toast.error("Failed to book parking spot");
     }
   };
