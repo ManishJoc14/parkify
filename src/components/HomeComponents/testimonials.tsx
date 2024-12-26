@@ -11,11 +11,11 @@ export default function Testimonials() {
   const [testimonials, setTestimonials] = useState<Feedback[] | null>(null);
 
   useEffect(() => {
-    async function fetchTestimonials() {
-      const res = await axiosInstance.get("/public/website-app/feedbacks");
-      setTestimonials(res.data.reverse());
-    }
     try {
+      async function fetchTestimonials() {
+        const res = await axiosInstance.get("/public/website-app/feedbacks");
+        setTestimonials(res.data.reverse());
+      }
       fetchTestimonials();
     } catch {
       console.log("Error fetching testimonials");

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -16,6 +16,7 @@ import {
   calculateAmount,
   generateParkingToken,
   getVehicleTypeKey,
+  isValidTime,
 } from "@/lib/utils";
 import axiosInstance from "@/lib/axiosInstance";
 import { toast } from "react-toastify";
@@ -34,7 +35,7 @@ export default function BookingForm({ id, parkingDetailed }: BookingFormProps) {
     defaultStartTime.getTime() + 2 * 60 * 60 * 1000
   );
 
-  const { user } = useAuth();
+  const { user, fetchUser } = useAuth();
   const router = useRouter();
   const { uuid } = useParams();
 
@@ -79,17 +80,20 @@ export default function BookingForm({ id, parkingDetailed }: BookingFormProps) {
     setFormState(updatedState);
   };
 
+  useEffect(() => {
+    if (user) return;
+    if (
+      !(
+        localStorage.getItem("accessToken") &&
+        localStorage.getItem("refreshToken")
+      )
+    )
+      return;
+    fetchUser();
+  }, [fetchUser, user]);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(formState);
-
-    const startTime = new Date(formState.startTime);
-    const endTime = new Date(formState.endTime);
-
-    if (endTime <= startTime) {
-      toast.error("End time must be after start time");
-      return;
-    }
 
     if (!user) {
       toast.error("Please login to book a parking spot");
@@ -98,10 +102,25 @@ export default function BookingForm({ id, parkingDetailed }: BookingFormProps) {
       return;
     }
 
+    const isValid = isValidTime(
+      formState.startTime.toLocaleString(),
+      formState.endTime.toLocaleString(),
+      parkingDetailed
+    );
+
+    if (!isValid) return;
+
     try {
       const res = await axiosInstance.post(
         "/public/parking-app/create-booking",
-        formState,
+        {
+          parkingSpot: formState.parkingSpot,
+          amount: formState.amount,
+          vehicleNo: formState.vehicleNo,
+          vehicle: formState.vehicle,
+          startTime: formState.startTime.toLocaleString(),
+          endTime: formState.endTime.toLocaleString(),
+        },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,

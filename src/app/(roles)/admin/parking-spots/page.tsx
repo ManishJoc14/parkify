@@ -34,23 +34,23 @@ export default function Page() {
   const limit = 4;
 
   const fetchData = async (url: string) => {
-    const res = await axiosInstance.get(url, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-      },
-    });
-    setParkingSpots(res.data.results);
-    setNext(res.data.next);
-    setPrevious(res.data.previous);
-    setTotal(res.data.count);
+    try {
+      const res = await axiosInstance.get(url, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
+      setParkingSpots(res.data.results);
+      setNext(res.data.next);
+      setPrevious(res.data.previous);
+      setTotal(res.data.count);
+    } catch (error) {
+      console.log("Error fetching parking spots in admin table", error);
+    }
   };
 
   useEffect(() => {
-    try {
-      fetchData(`/admin/parking-spot-app/parking-spots?limit=${limit}`);
-    } catch {
-      console.log("Error fetching parking spots in admin table");
-    }
+    fetchData(`/admin/parking-spot-app/parking-spots?limit=${limit}`);
   }, []);
 
   const handleSearch = async (query: string) => {

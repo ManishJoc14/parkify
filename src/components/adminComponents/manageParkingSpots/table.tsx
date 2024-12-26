@@ -95,10 +95,10 @@ export default function ParkingSpotsTable({
                       {spot.coverImage ? (
                         <Image
                           src={spot.coverImage}
-                          className="mr-2 rounded-full"
+                          className="mr-2 h-7 w-7  rounded-full"
                           width={28}
                           height={28}
-                          alt={`Parking spot ${spot.name}`}
+                          alt={`Parking spot${spot.name}`}
                         />
                       ) : (
                         <div className="mr-2 h-7 w-7 text-xs rounded-full bg-gray-200 flex justify-center items-center">

@@ -14,6 +14,7 @@ import {
   ParkingDetailed,
   VehicleType,
 } from "@/types/definitions";
+import { toast } from "react-toastify";
 
 export const formatCurrency = (amount: number) => {
   return amount.toLocaleString("en-GB", {
@@ -243,3 +244,153 @@ export function generateParkingToken(
   // Return the image as a base64 string
   return canvas.toDataURL();
 }
+
+// export const isValidTime = (
+//   start: string,
+//   end: string,
+//   parkingDetailed: ParkingDetailed
+// ) => {
+//   const startTime = new Date(start);
+//   const endTime = new Date(end);
+
+//   if (endTime <= startTime) {
+//     toast.error("End time must be after start time", { autoClose: 4000 });
+//     return false;
+//   }
+
+//   const availabilities = parkingDetailed.availabilities;
+//   const validDays = availabilities.map((availability) => availability.day);
+//   // Example- [{day: 'Monday', startTime: '08:00:00', endTime: '20:00:00'}]
+
+//   const dayOfWeek = startTime.toLocaleDateString("en-US", {
+//     weekday: "long",
+//   }); // Example- 'Monday'
+
+//   const availabilityForDay = availabilities.find(
+//     (availability) => availability.day.toLowerCase() === dayOfWeek.toLowerCase()
+//   );
+
+//   if (!availabilityForDay) {
+//     toast.error(
+//       `Parking is not available on this day (${dayOfWeek}) choose from ${validDays.join(
+//         ", "
+//       )}`,
+//       { autoClose: 20000 }
+//     );
+//     return false;
+//   }
+
+//   // Example- "2024-12-23T18:38:13.699Z".split("T")[1].slice(0,8) // '18:38:13'
+//   const startTimeString = start.split("T")[1].slice(0, 8);
+//   const endTimeString = end.split("T")[1].slice(0, 8);
+
+//   const isStartTimeValid =
+//     startTimeString >= availabilityForDay.startTime &&
+//     startTimeString <= availabilityForDay.endTime;
+
+//   if (!isStartTimeValid) {
+//     toast.error(
+//       `Start time is not valid please choose between ${availabilityForDay.startTime} and ${availabilityForDay.endTime}`,
+//       { autoClose: 20000 }
+//     );
+//     return false;
+//   }
+
+//   const isEndTimeValid =
+//     endTimeString >= availabilityForDay.startTime &&
+//     endTimeString <= availabilityForDay.endTime;
+
+//   if (!isEndTimeValid) {
+//     toast.error(
+//       `End time is not valid please choose between ${availabilityForDay.startTime} and ${availabilityForDay.endTime}`,
+//       { autoClose: 20000 }
+//     );
+//     return false;
+//   }
+
+//   return true;
+// };
+
+export const isValidTime = (
+  start: string,
+  end: string,
+  parkingDetailed: ParkingDetailed
+) => {
+  const startTime = new Date(start);
+  const endTime = new Date(end);
+
+  if (endTime <= startTime) {
+    toast.error("End time must be after start time", { autoClose: 4000 });
+    return false;
+  }
+
+  const availabilities = parkingDetailed.availabilities;
+  const validDays = availabilities.map((availability) => availability.day);
+  // Example- [{day: 'Monday', startTime: '08:00:00', endTime: '20:00:00'}]
+
+  const dayOfWeek = startTime.toLocaleDateString("en-US", {
+    weekday: "long",
+  }); // Example- 'Monday'
+
+  const availabilityForDay = availabilities.find(
+    (availability) => availability.day.toLowerCase() === dayOfWeek.toLowerCase()
+  );
+
+  if (!availabilityForDay) {
+    toast.error(
+      `Parking is not available on this day (${dayOfWeek}) choose from ${validDays.join(
+        ", "
+      )}`,
+      { autoClose: 20000 }
+    );
+    return false;
+  }
+
+  const availabilityStartTime = new Date(availabilityForDay.startTime);
+  const availabilityEndTime = new Date(availabilityForDay.endTime);
+
+  // Set the availability times for the day
+  const [
+    availabilityStartHours,
+    availabilityStartMinutes,
+    availabilityStartSeconds,
+  ] = availabilityForDay.startTime.split(":").map(Number);
+  availabilityStartTime.setHours(
+    availabilityStartHours,
+    availabilityStartMinutes,
+    availabilityStartSeconds
+  );
+
+  const [availabilityEndHours, availabilityEndMinutes, availabilityEndSeconds] =
+    availabilityForDay.endTime.split(":").map(Number);
+  availabilityEndTime.setHours(
+    availabilityEndHours,
+    availabilityEndMinutes,
+    availabilityEndSeconds
+  );
+
+  // Adjust for times that go past midnight
+  if (availabilityEndTime <= availabilityStartTime) {
+    availabilityEndTime.setDate(availabilityEndTime.getDate() + 1);
+  }
+
+  // Check if the start time is within the availability
+  if (startTime < availabilityStartTime || startTime > availabilityEndTime) {
+    toast.error(
+      `Start time is not valid. Please choose between ${availabilityForDay.startTime} and ${availabilityForDay.endTime}`,
+      { autoClose: 20000 }
+    );
+    return false;
+  }
+
+  // Check if the end time is within the availability
+  if (endTime < availabilityStartTime || endTime > availabilityEndTime) {
+    toast.error(
+      `End time is not valid. Please choose between ${availabilityForDay.startTime} and ${availabilityForDay.endTime}`,
+      { autoClose: 20000 }
+    );
+    return false;
+  }
+
+  return true;
+};
