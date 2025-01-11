@@ -23,7 +23,6 @@ const parkingIcon = new Icon({
   iconAnchor: [12, 41],
 });
 
-// Custom hook to add the routing control after the map has loaded
 function RoutingControl({
   userPosition,
   parking,
@@ -35,7 +34,6 @@ function RoutingControl({
 
   useEffect(() => {
     if (!userPosition || !parking.length) return;
-
     const { latitude, longitude } = parking[0]; // First parking location
 
     const routingControl = L.Routing.control({
@@ -43,7 +41,20 @@ function RoutingControl({
         L.latLng(latitude, longitude), // Parking position
         L.latLng(userPosition[0], userPosition[1]), // User's position
       ],
-      routeWhileDragging: true,
+
+      plan: L.Routing.plan([L.latLng(latitude, longitude), L.latLng(userPosition[0], userPosition[1])], {
+        createMarker: (i, waypoint) => {
+          const markerIcon = i === 1
+            ? userIcon // User icon for the second waypoint
+            : parkingIcon; // Parking icon for the other waypoints
+
+          // Create and return the marker for the waypoint
+          const marker = L.marker(waypoint.latLng, { icon: markerIcon });
+
+          return marker; // Return the marker to be added to the map
+        },
+        draggableWaypoints: true,
+      }),
     }).addTo(map); // Add routing control to the map
 
     // Cleanup routing control when the component is unmounted or dependencies change
