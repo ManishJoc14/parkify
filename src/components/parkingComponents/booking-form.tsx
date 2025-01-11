@@ -184,7 +184,7 @@ export default function BookingForm({ id, parkingDetailed }: BookingFormProps) {
                 <input
                   ref={startTimeRef}
                   type="datetime-local"
-                  value={formState.startTime}
+                  value={formState.startTime.slice(0, 16)}
                   onChange={(e) =>
                     handleInputChange("startTime", e.target.value)
                   }
@@ -199,7 +199,7 @@ export default function BookingForm({ id, parkingDetailed }: BookingFormProps) {
                   ref={endTimeRef}
                   id="endTime"
                   type="datetime-local"
-                  value={formState.endTime}
+                  value={formState.endTime.slice(0, 16)}
                   onChange={(e) => handleInputChange("endTime", e.target.value)}
                   className="mt-1 text-sm block w-full border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary"
                 />
