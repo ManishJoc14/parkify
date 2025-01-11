@@ -17,9 +17,8 @@ import { Feedback } from "@/types/definitions";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { revalidatePath } from "next/cache";
 
-export default function FeedbackForm() {
+export default function FeedbackForm({ refetch }: { refetch: () => void }) {
   const [formData, setFormData] = useState<Feedback>({
     fullName: "",
     email: "",
@@ -49,7 +48,15 @@ export default function FeedbackForm() {
 
       if (res.status === 201) {
         setIsSubmitted(true);
-        revalidatePath("/");
+        setFormData({
+          fullName: "",
+          email: "",
+          role: "",
+          rating: 1,
+          message: "",
+        });
+        setError("");
+        refetch();
       }
     } catch (error) {
       setError((error as { message: string }).message);

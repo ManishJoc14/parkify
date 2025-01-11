@@ -122,8 +122,6 @@ export default function EditParkingSpotForm({
     fetchParkingSpot();
   }, [parkingSpotId, setValue, reset]);
 
-  console.log(errors);
-
   const onSubmit = async (data: ParkingSpotFormData) => {
     const formData = new FormData();
 

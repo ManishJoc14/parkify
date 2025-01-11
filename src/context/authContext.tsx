@@ -103,8 +103,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
       const redirect = localStorage?.getItem("redirectBackToParking");
       if (redirect) {
-        router.push(redirect || "/");
+        router.push(redirect);
         localStorage.removeItem("redirectBackToParking");
+      }
+      else {
+        router.push("/");
       }
       // redirectToDashboard(res.data.roles[0]);
     } catch (error) {

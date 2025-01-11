@@ -1,28 +1,15 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { ChevronLeft, ChevronRight, Star, User } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import axiosInstance from "@/lib/axiosInstance";
 import { Feedback } from "@/types/definitions";
+import { LoadingSpinner } from "../ui/loading-spinner";
 
-export default function Testimonials() {
+export default function Testimonials({ testimonials }: { testimonials: Feedback[] | null }) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [testimonials, setTestimonials] = useState<Feedback[] | null>(null);
 
-  useEffect(() => {
-    try {
-      async function fetchTestimonials() {
-        const res = await axiosInstance.get("/public/website-app/feedbacks");
-        setTestimonials(res.data.reverse());
-      }
-      fetchTestimonials();
-    } catch {
-      console.log("Error fetching testimonials");
-    }
-  }, []);
-
-  if (!testimonials) return <p>Loading...</p>;
+  if (!testimonials) return <LoadingSpinner />
 
   const nextTestimonial = () => {
     setCurrentIndex((prev) => (prev + 1) % testimonials.length);
@@ -108,11 +95,10 @@ export default function Testimonials() {
               {[1, 2, 3, 4, 5].map((star) => (
                 <Star
                   key={star}
-                  className={`h-6 w-6 ${
-                    star <= Math.floor(calculateAverageRating())
-                      ? "fill-yellow-400 text-yellow-400"
-                      : "fill-gray-200 text-gray-200"
-                  }`}
+                  className={`h-6 w-6 ${star <= Math.floor(calculateAverageRating())
+                    ? "fill-yellow-400 text-yellow-400"
+                    : "fill-gray-200 text-gray-200"
+                    }`}
                 />
               ))}
               <span className="text-muted-foreground">
@@ -148,11 +134,10 @@ export default function Testimonials() {
                         {[1, 2, 3, 4, 5].map((star) => (
                           <Star
                             key={star}
-                            className={`h-6 w-6 ${
-                              star <= testimonials[currentIndex].rating
-                                ? "fill-yellow-400 text-yellow-400"
-                                : "fill-gray-200 text-gray-200"
-                            }`}
+                            className={`h-6 w-6 ${star <= testimonials[currentIndex].rating
+                              ? "fill-yellow-400 text-yellow-400"
+                              : "fill-gray-200 text-gray-200"
+                              }`}
                           />
                         ))}
                       </div>

@@ -1,6 +1,8 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { createCanvas } from "canvas";
+import { parseISO, isBefore, isAfter, format, isEqual } from "date-fns";
+import { Decimal } from 'decimal.js';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -64,26 +66,28 @@ export const calculateAmount = (
   if (start && end) {
     const startDate = new Date(start);
     const endDate = new Date(end);
-    const hours = Math.max(
-      0,
-      (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60)
-    );
-    if (hours <= 24) {
-      return (hours * parseFloat(parkingDetailed.ratePerHour))
-        .toFixed(2)
-        .toString();
+    const durationSeconds = (endDate.getTime() - startDate.getTime()) / 1000; // Duration in seconds
+    const durationHours = new Decimal(durationSeconds).dividedBy(3600); // Convert to hours with Decimal
+
+    let calculatedAmount;
+
+    if (durationHours.lessThanOrEqualTo(24)) {
+      calculatedAmount = durationHours.times(parkingDetailed.ratePerHour);
     } else {
-      let calculateAmount =
-        parseFloat(parkingDetailed.ratePerDay) * (hours / 24);
-      const remainingHours = hours % 24;
-      if (remainingHours > 0) {
-        calculateAmount +=
-          remainingHours * parseFloat(parkingDetailed.ratePerHour);
+      const fullDays = durationHours.div(24).floor(); // Floor the days (similar to // in Python)
+      const remainingHours = durationHours.mod(24); // Remainder of hours after full days
+
+      calculatedAmount = fullDays.times(parkingDetailed.ratePerDay);
+
+      if (remainingHours.greaterThan(0)) {
+        calculatedAmount = calculatedAmount.plus(remainingHours.times(parkingDetailed.ratePerHour));
       }
-      return calculateAmount.toFixed(2).toString();
     }
+
+    return calculatedAmount.toFixed(2); // Round to two decimal places to match backend rounding
   }
 };
+
 
 export const splitName = (
   form: UseFormReturn<SignUpFormData>,
@@ -245,100 +249,63 @@ export function generateParkingToken(
   return canvas.toDataURL();
 }
 
-// export const isValidTime = (
-//   start: string,
-//   end: string,
-//   parkingDetailed: ParkingDetailed
-// ) => {
-//   const startTime = new Date(start);
-//   const endTime = new Date(end);
-
-//   if (endTime <= startTime) {
-//     toast.error("End time must be after start time", { autoClose: 4000 });
-//     return false;
-//   }
-
-//   const availabilities = parkingDetailed.availabilities;
-//   const validDays = availabilities.map((availability) => availability.day);
-//   // Example- [{day: 'Monday', startTime: '08:00:00', endTime: '20:00:00'}]
-
-//   const dayOfWeek = startTime.toLocaleDateString("en-US", {
-//     weekday: "long",
-//   }); // Example- 'Monday'
-
-//   const availabilityForDay = availabilities.find(
-//     (availability) => availability.day.toLowerCase() === dayOfWeek.toLowerCase()
-//   );
-
-//   if (!availabilityForDay) {
-//     toast.error(
-//       `Parking is not available on this day (${dayOfWeek}) choose from ${validDays.join(
-//         ", "
-//       )}`,
-//       { autoClose: 20000 }
-//     );
-//     return false;
-//   }
-
-//   // Example- "2024-12-23T18:38:13.699Z".split("T")[1].slice(0,8) // '18:38:13'
-//   const startTimeString = start.split("T")[1].slice(0, 8);
-//   const endTimeString = end.split("T")[1].slice(0, 8);
-
-//   const isStartTimeValid =
-//     startTimeString >= availabilityForDay.startTime &&
-//     startTimeString <= availabilityForDay.endTime;
-
-//   if (!isStartTimeValid) {
-//     toast.error(
-//       `Start time is not valid please choose between ${availabilityForDay.startTime} and ${availabilityForDay.endTime}`,
-//       { autoClose: 20000 }
-//     );
-//     return false;
-//   }
-
-//   const isEndTimeValid =
-//     endTimeString >= availabilityForDay.startTime &&
-//     endTimeString <= availabilityForDay.endTime;
-
-//   if (!isEndTimeValid) {
-//     toast.error(
-//       `End time is not valid please choose between ${availabilityForDay.startTime} and ${availabilityForDay.endTime}`,
-//       { autoClose: 20000 }
-//     );
-//     return false;
-//   }
-
-//   return true;
-// };
-
 export const isValidTime = (
   start: string,
   end: string,
   parkingDetailed: ParkingDetailed
 ) => {
-  const startTime = new Date(start);
-  const endTime = new Date(end);
+  const startTime = parseISO(start);
+  const endTime = parseISO(end);
+  const now = new Date();
 
-  if (endTime <= startTime) {
+  /* ------------- start date and end date should be in the future ------------ */
+  if (isBefore(startTime, now)) {
+    toast.error("Start time should be in the future", { autoClose: 4000 });
+    return false;
+  }
+
+  if (isBefore(endTime, now)) {
+    toast.error("End time should be in the future", { autoClose: 4000 });
+    return false;
+  }
+
+  /* ------------- end date should be after start date ------------ */
+  if (isBefore(endTime, startTime) || isEqual(endTime, startTime)) {
     toast.error("End time must be after start time", { autoClose: 4000 });
     return false;
   }
 
+  /* -------------------------- for availability day -------------------------- */
+
   const availabilities = parkingDetailed.availabilities;
+
+  // Get valid days as: ["Monday", "Tuesday", ...]
   const validDays = availabilities.map((availability) => availability.day);
-  // Example- [{day: 'Monday', startTime: '08:00:00', endTime: '20:00:00'}]
 
-  const dayOfWeek = startTime.toLocaleDateString("en-US", {
-    weekday: "long",
-  }); // Example- 'Monday'
+  // Get the day names for start and end times
+  const startDay = format(startTime, "EEEE"); // "Monday", "Tuesday", ...
+  const endDay = format(endTime, "EEEE");
 
-  const availabilityForDay = availabilities.find(
-    (availability) => availability.day.toLowerCase() === dayOfWeek.toLowerCase()
+  /* --------- Get the availability obj for the start day and end day --------- */
+
+  const availabilityForStartDay = availabilities.find(
+    (availability) =>
+      availability.day.toLowerCase() ===
+      startDay.toLowerCase()
   );
 
-  if (!availabilityForDay) {
+  const availabilityForEndDay = availabilities.find(
+    (availability) =>
+      availability.day.toLowerCase() ===
+      endDay.toLowerCase()
+  );
+
+
+  /* ------------ check if the start day and end day are valid ------------ */
+  // is the start day valid?
+  if (!availabilityForStartDay) {
     toast.error(
-      `Parking is not available on this day (${dayOfWeek}) choose from ${validDays.join(
+      `Start day is not valid. Choose from ${validDays.join(
         ", "
       )}`,
       { autoClose: 20000 }
@@ -346,47 +313,47 @@ export const isValidTime = (
     return false;
   }
 
-  const availabilityStartTime = new Date(availabilityForDay.startTime);
-  const availabilityEndTime = new Date(availabilityForDay.endTime);
-
-  // Set the availability times for the day
-  const [
-    availabilityStartHours,
-    availabilityStartMinutes,
-    availabilityStartSeconds,
-  ] = availabilityForDay.startTime.split(":").map(Number);
-  availabilityStartTime.setHours(
-    availabilityStartHours,
-    availabilityStartMinutes,
-    availabilityStartSeconds
-  );
-
-  const [availabilityEndHours, availabilityEndMinutes, availabilityEndSeconds] =
-    availabilityForDay.endTime.split(":").map(Number);
-  availabilityEndTime.setHours(
-    availabilityEndHours,
-    availabilityEndMinutes,
-    availabilityEndSeconds
-  );
-
-  // Adjust for times that go past midnight
-  if (availabilityEndTime <= availabilityStartTime) {
-    availabilityEndTime.setDate(availabilityEndTime.getDate() + 1);
-  }
-
-  // Check if the start time is within the availability
-  if (startTime < availabilityStartTime || startTime > availabilityEndTime) {
+  // is the end day valid?
+  if (!availabilityForEndDay) {
     toast.error(
-      `Start time is not valid. Please choose between ${availabilityForDay.startTime} and ${availabilityForDay.endTime}`,
+      `End day is not valid. Choose from ${validDays.join(
+        ", "
+      )}`,
       { autoClose: 20000 }
     );
     return false;
   }
 
-  // Check if the end time is within the availability
-  if (endTime < availabilityStartTime || endTime > availabilityEndTime) {
+
+  /* ---------------- for availability times(minutes and hours) --------------- */
+
+  // Combine date and availability times
+  const availabilityStartTime = parseISO(
+    `${format(startTime, "yyyy-MM-dd")}T${availabilityForStartDay.startTime}`
+  );
+  const availabilityEndTime = parseISO(
+    `${format(endTime, "yyyy-MM-dd")}T${availabilityForEndDay.endTime}`
+  );
+
+  // Validate start time
+  if (
+    isBefore(startTime, availabilityStartTime) ||
+    isAfter(startTime, availabilityEndTime)
+  ) {
     toast.error(
-      `End time is not valid. Please choose between ${availabilityForDay.startTime} and ${availabilityForDay.endTime}`,
+      `Start time is not valid. Please choose between ${availabilityForStartDay.startTime} and ${availabilityForStartDay.endTime}`,
+      { autoClose: 20000 }
+    );
+    return false;
+  }
+
+  // Validate end time
+  if (
+    isBefore(endTime, availabilityStartTime) ||
+    isAfter(endTime, availabilityEndTime)
+  ) {
+    toast.error(
+      `End time is not valid. Please choose between ${availabilityForEndDay.startTime} and ${availabilityForEndDay.endTime}`,
       { autoClose: 20000 }
     );
     return false;
