@@ -58,6 +58,21 @@ export function getStatusColor(status: string) {
   }
 }
 
+export const getRoute = (role: string | undefined) => {
+  if (role && role === "Owner") {
+    return "/admin/parking-spots";
+  } else {
+    return "/parking";
+  }
+}
+export const getMessage = (role: string | undefined) => {
+  if (role && role === "Owner") {
+    return "Go to Dashboard";
+  } else {
+    return "Find Parking";
+  }
+}
+
 export const calculateAmount = (
   parkingDetailed: ParkingDetailed,
   start: string,

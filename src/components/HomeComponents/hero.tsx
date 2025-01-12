@@ -1,7 +1,9 @@
 import { Button } from "@/components/ui/button";
+import { getMessage, getRoute } from "@/lib/utils";
+import { User } from "@/types/definitions";
 import Link from "next/link";
 
-export default function Hero() {
+export default function Hero({ user }: { user: User | null }) {
   return (
     <div className="container mx-auto relative overflow-hidden ">
       <div className=" px-4 md:px-6 pb-8">
@@ -23,12 +25,12 @@ export default function Hero() {
             time and avoid the hassle of finding parking in busy areas.
           </p>
           <div className="flex flex-col gap-4 pt-4 min-[400px]:flex-row justify-center">
-            <Link href={"/parking"}>
+            <Link href={getRoute(user?.roles[0]) as string}>
               <Button
                 size="lg"
                 className="h-12 px-10 hover:scale-95 font-mont-medium transition-all"
               >
-                Find Parking
+                {getMessage(user?.roles[0])}
               </Button>
             </Link>
           </div>

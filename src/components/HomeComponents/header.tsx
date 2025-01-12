@@ -1,27 +1,14 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import HeaderAuth from "../authComponents/header-auth";
-import { useAuth } from "@/context/authContext";
+import { User } from "@/types/definitions";
 
-export default function Header() {
+export default function Header({ user }: { user: User | null }) {
   const [isOpen, setIsOpen] = useState(false);
-  const { user, fetchUser } = useAuth();
-
-  useEffect(() => {
-    if (user) return;
-    if (
-      !(
-        localStorage.getItem("accessToken") &&
-        localStorage.getItem("refreshToken")
-      )
-    )
-      return;
-    fetchUser();
-  }, [fetchUser, user]);
 
   const navLinks = [
     { href: "/", label: "Home" },
@@ -55,7 +42,7 @@ export default function Header() {
 
         {/* Desktop Login Button */}
         <div className="hidden md:block">
-          <HeaderAuth />
+          <HeaderAuth user={user} />
         </div>
 
         {/* Mobile Menu */}
@@ -78,7 +65,7 @@ export default function Header() {
                   {link.label}
                 </Link>
               ))}
-              <HeaderAuth />
+              <HeaderAuth user={user} />
             </div>
           </SheetContent>
         </Sheet>

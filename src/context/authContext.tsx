@@ -6,7 +6,6 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useState,
 } from "react";
 import { setCookie, deleteCookie } from "cookies-next";
@@ -18,6 +17,7 @@ import {
   SignInFormData,
   SignUpFormData,
 } from "@/app/(auth-pages)/login/AuthModal";
+import useNavigateWithPromise from "@/hooks/useNavigateWithPromise";
 
 interface AuthContextType {
   user: User | null;
@@ -50,39 +50,40 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const router = useRouter();
+  const navigateTo = useNavigateWithPromise();
 
-  useEffect(() => {
-    if (!loading) {
-      if (user) {
-        setCookie("role", user.roles[0], {
-          path: "/",
-          secure: true,
-          sameSite: "strict",
-        });
-        setCookie("isLoggedIn", true, {
-          path: "/",
-          secure: true,
-          sameSite: "strict",
-        });
-      } else {
-        deleteCookie("role", { path: "/" });
-        setCookie("isLoggedIn", false, {
-          path: "/",
-          secure: true,
-          sameSite: "strict",
-        });
-      }
+  const handleCookie = (user: User) => {
+    if (user) {
+      setCookie("role", user.roles[0], {
+        path: "/",
+        secure: true,
+        sameSite: "strict",
+      });
+      setCookie("isLoggedIn", true, {
+        path: "/",
+        secure: true,
+        sameSite: "strict",
+      });
+    } else {
+      deleteCookie("role", { path: "/" });
+      setCookie("isLoggedIn", false, {
+        path: "/",
+        secure: true,
+        sameSite: "strict",
+      });
     }
-  }, [user, loading]);
+  }
 
-  // const redirectToDashboard = (role: string) => {
-  //   if (role === "Owner") {
-  //     router.push("/admin/parking-spots");
-  //   }
-  //   if (role === "Driver") {
-  //     router.push("/parking");
-  //   }
-  // };
+  const redirectToDashboard = useCallback((role: string) => {
+    if (role === "Owner") {
+      router.push("/admin/parking-spots");
+    } else {
+      router.push("/");
+    }
+    // if (role === "Driver") {
+    //   router.push("/parking");
+    // }
+  }, [router]);
 
   // eslint-disable-next-line
   const signInWithGoogle = async (access_token: string, role: string) => {
@@ -96,6 +97,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         }
       );
       setUser(res?.data);
+      handleCookie(res?.data);
       setIsAuthenticated(true);
       toast.success("Succesfully logged in!!");
       localStorage.setItem("accessToken", res.data?.tokens.access);
@@ -107,9 +109,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         localStorage.removeItem("redirectBackToParking");
       }
       else {
-        router.push("/");
+        redirectToDashboard(res.data.roles[0]);
       }
-      // redirectToDashboard(res.data.roles[0]);
     } catch (error) {
       setLoading(false);
       console.log("Error signing in with Google:", error);
@@ -147,6 +148,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           } = res.data;
           toast.success(message);
           setUser(fetchedUser);
+          handleCookie(fetchedUser);
           setIsAuthenticated(true);
           localStorage.setItem("accessToken", access);
           localStorage.setItem("refreshToken", refresh);
@@ -156,9 +158,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             router.push(redirect);
             localStorage?.removeItem("redirectBackToParking");
           } else {
-            router.push("/");
+            redirectToDashboard(res.data.roles[0]);
           }
-          // redirectToDashboard(res.data.roles[0]);
         }
         // eslint-disable-next-line
       } catch (err: any) {
@@ -180,7 +181,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         setLoading(false);
       }
     },
-    [router]
+    [router, redirectToDashboard]
   );
 
   const signUpWithEmail = async (
@@ -287,39 +288,48 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   }, []);
 
   const logout = async () => {
-    router.push("/");
-    try {
-      const access = localStorage?.getItem("accessToken");
-      const refresh = localStorage?.getItem("refreshToken");
+    navigateTo("/").then(async () => {
+      try {
+        const access = localStorage?.getItem("accessToken");
+        const refresh = localStorage?.getItem("refreshToken");
 
-      if (!access || !refresh) {
+        if (!access || !refresh) {
+          setUser(null);
+          setIsAuthenticated(false);
+          return;
+        }
+
+        await axiosInstance.post(
+          "/public/user-app/users/logout",
+          { refreshToken: refresh },
+          {
+            headers: {
+              Authorization: `Bearer ${access}`,
+            },
+          }
+        );
+        // eslint-disable-next-line
+      } catch (error: any) {
+        if (error?.response?.status === 400) {
+          console.log(error?.response?.data);
+        }
+        console.log("Error signing out:", error);
+      } finally {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
         setUser(null);
         setIsAuthenticated(false);
-        return;
+        setLoading(false);
+        deleteCookie("role", { path: "/" });
+        setCookie("isLoggedIn", false, {
+          path: "/",
+          secure: true,
+          sameSite: "strict",
+        });
       }
-
-      await axiosInstance.post(
-        "/public/user-app/users/logout",
-        { refreshToken: refresh },
-        {
-          headers: {
-            Authorization: `Bearer ${access}`,
-          },
-        }
-      );
-      // eslint-disable-next-line
-    } catch (error: any) {
-      if (error?.response?.status === 400) {
-        console.log(error?.response?.data);
-      }
-      console.log("Error signing out:", error);
-    } finally {
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
-      setUser(null);
-      setIsAuthenticated(false);
-      setLoading(false);
-    }
+    }).catch((error) => {
+      console.log("Error logging out:", error);
+    });
   };
 
   return (

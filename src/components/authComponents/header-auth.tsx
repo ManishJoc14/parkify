@@ -3,23 +3,15 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/authContext";
+import { User } from "@/types/definitions";
+import { getRoute } from "@/lib/utils";
 
-export default function HeaderAuth() {
-  const { user, logout } = useAuth();
-
-  const getRoute = (role: string) => {
-    if (role === "Owner") {
-      return "/admin/parking-spots";
-    }
-    if (role === "Driver") {
-      return "/parking";
-    }
-    return "/";
-  };
+export default function HeaderAuth({ user }: { user: User | null }) {
+  const { logout } = useAuth();
 
   return user ? (
     <div className="flex items-center gap-4">
-      <Link href={getRoute(user?.roles[0]) as string}>
+      <Link href={getRoute(user?.roles[0])}>
         Hey, {user.firstName} {user.middleName} {user.lastName}!
       </Link>
       <Button
