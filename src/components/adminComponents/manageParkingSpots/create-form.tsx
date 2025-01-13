@@ -25,6 +25,7 @@ import Image from "next/image";
 import { Trash2 } from "lucide-react";
 import MapInAdminPage from "./mapInAdminPage";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/authContext";
 
 export default function CreateParkingSpotForm() {
   const [userPosition, setUserPosition] = useState<[number, number] | null>(
@@ -32,6 +33,7 @@ export default function CreateParkingSpotForm() {
   );
   const [previewImage, setPreviewImage] = useState<null | string>(null);
   const router = useRouter();
+  const { handleTokenNotValid } = useAuth();
 
   const {
     register,
@@ -140,9 +142,13 @@ export default function CreateParkingSpotForm() {
         router.push("/admin/parking-spots");
 
       }
-    } catch (error) {
+      // eslint-disable-next-line
+    } catch (error: any) {
       console.log("Error in creating parking spot", error);
       toast.error("Failed to create parking spot");
+      if (error?.response?.data?.code === "token_not_valid") {
+        handleTokenNotValid();
+      }
     }
   };
 

@@ -35,7 +35,7 @@ export default function BookingForm({ id, parkingDetailed }: BookingFormProps) {
     defaultStartTime.getTime() + 2 * 60 * 60 * 1000
   );
 
-  const { user, fetchUser } = useAuth();
+  const { user, fetchUser, handleTokenNotValid } = useAuth();
   const router = useRouter();
   const { uuid } = useParams();
 
@@ -140,9 +140,14 @@ export default function BookingForm({ id, parkingDetailed }: BookingFormProps) {
         setTokenImage(tokenImage);
         setIsBookingSuccess(true);
       }
-    } catch (error) {
+
+      // eslint-disable-next-line
+    } catch (error: any) {
       console.log("Error in booking parking spot", error);
       toast.error("Failed to book parking spot");
+      if (error?.response?.data?.code === "token_not_valid") {
+        handleTokenNotValid();
+      }
     }
   };
 

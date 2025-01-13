@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import BookingsTable from "@/components/adminComponents/Bookings/table";
 import { BookingsTableSkeleton } from "@/components/adminComponents/skeletons";
 import axiosInstance from "@/lib/axiosInstance";
 import { Booking } from "@/types/definitions";
 import Pagination from "@/components/adminComponents/manageParkingSpots/pagination";
 import { SearchIcon } from "lucide-react";
+import { useAuth } from "@/context/authContext";
 
 export default function BookingsPage() {
   const [bookings, setBookings] = useState<Booking[] | null>(null);
@@ -14,8 +15,9 @@ export default function BookingsPage() {
   const [next, setNext] = useState<string | null>(null);
   const [previous, setPrevious] = useState<string | null>(null);
   const limit = 4;
+  const { handleTokenNotValid } = useAuth();
 
-  const fetchBookings = async (url: string) => {
+  const fetchBookings = useCallback(async (url: string) => {
     try {
       const res = await axiosInstance.get(url, {
         headers: {
@@ -26,10 +28,14 @@ export default function BookingsPage() {
       setNext(res.data.next);
       setPrevious(res.data.previous);
       setTotal(res.data.count);
-    } catch (error) {
+      // eslint-disable-next-line
+    } catch (error: any) {
       console.log("Error fetching bookings:", error);
+      if (error?.response?.data?.code === "token_not_valid") {
+        handleTokenNotValid();
+      }
     }
-  };
+  }, [handleTokenNotValid]);
 
   useEffect(() => {
     try {
@@ -37,7 +43,7 @@ export default function BookingsPage() {
     } catch {
       console.log("Error fetching bookings in admin table");
     }
-  }, []);
+  }, [fetchBookings]);
 
   const handleSearch = async (query: string) => {
     fetchBookings(

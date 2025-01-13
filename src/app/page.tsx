@@ -14,29 +14,12 @@ import { useAuth } from "@/context/authContext";
 
 export default function Home() {
   const [testimonials, setTestimonials] = useState<Feedback[] | null>(null);
-  const { user, fetchUser } = useAuth();
+  const { user } = useAuth();
 
   const fetchTestimonials = useCallback(async () => {
     const res = await axiosInstance.get("/public/website-app/feedbacks");
     setTestimonials(res.data.reverse());
   }, []);
-
-  useEffect(() => {
-    // if user is already fetched, no need to fetch again
-    if (user) return;
-
-    // if user is not fetched and tokens are not present, no need to fetch user
-    if (
-      !(
-        localStorage.getItem("accessToken") &&
-        localStorage.getItem("refreshToken")
-      )
-    )
-      return;
-
-    // else fetch User   
-    fetchUser();
-  }, [fetchUser, user]);
 
   useEffect(() => {
     try {

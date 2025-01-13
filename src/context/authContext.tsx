@@ -6,6 +6,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useState,
 } from "react";
 import { setCookie, deleteCookie } from "cookies-next";
@@ -38,6 +39,7 @@ interface AuthContextType {
   fetchUser: () => Promise<void>;
   forgetPassword: (email: string) => Promise<void>;
   logout: () => Promise<void>;
+  handleTokenNotValid: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -73,6 +75,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       });
     }
   }
+
+  const handleTokenNotValid = useCallback(() => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    setUser(null);
+    setIsAuthenticated(false);
+    deleteCookie("role", { path: "/" });
+    setCookie("isLoggedIn", false, {
+      path: "/",
+      secure: true,
+      sameSite: "strict",
+    });
+    router.push("/login");
+  }, [router]);
 
   const redirectToDashboard = useCallback((role: string) => {
     if (role === "Owner") {
@@ -332,6 +348,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     });
   };
 
+  useEffect(() => {
+    // if user is already fetched, no need to fetch again
+    if (user) return;
+
+    // if user is not fetched and tokens are not present, no need to fetch user
+    if (
+      !(
+        localStorage.getItem("accessToken") &&
+        localStorage.getItem("refreshToken")
+      )
+    )
+      return;
+
+    // else fetch User   
+    fetchUser();
+  }, [fetchUser, user]);
+
+
   return (
     <AuthContext.Provider
       value={{
@@ -344,6 +378,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         fetchUser,
         forgetPassword,
         logout,
+        handleTokenNotValid
       }}
     >
       {children}

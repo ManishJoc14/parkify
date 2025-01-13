@@ -25,6 +25,7 @@ import { useRouter } from "next/navigation";
 import { Trash2 } from "lucide-react";
 import MapInAdminPage from "./mapInAdminPage";
 import CreateFormSkeleton from "../skeletons";
+import { useAuth } from "@/context/authContext";
 
 export default function EditParkingSpotForm({
   parkingSpotId,
@@ -56,6 +57,7 @@ export default function EditParkingSpotForm({
   });
   const router = useRouter();
   const [previewImage, setPreviewImage] = useState<null | string>(null);
+  const { handleTokenNotValid } = useAuth();
 
   const setLocation = (latitude: number, longitude: number) => {
     setValue("latitude", latitude);
@@ -113,14 +115,18 @@ export default function EditParkingSpotForm({
           setPreviewImage(data.coverImage);
           setLoading(false);
         }
-      } catch (error) {
+        // eslint-disable-next-line 
+      } catch (error: any) {
         console.log("Error fetching parking spot data:", error);
         setLoading(false);
+        if (error?.response?.data?.code === "token_not_valid") {
+          handleTokenNotValid();
+        }
       }
     };
 
     fetchParkingSpot();
-  }, [parkingSpotId, setValue, reset]);
+  }, [parkingSpotId, setValue, reset, handleTokenNotValid]);
 
   const onSubmit = async (data: ParkingSpotFormData) => {
     const formData = new FormData();
@@ -166,9 +172,13 @@ export default function EditParkingSpotForm({
         toast.success(res.data.message);
         router.push("/admin/parking-spots");
       }
-    } catch (error) {
+      // eslint-disable-next-line
+    } catch (error: any) {
       console.log("Error updating parking spot:", error);
       toast.error("Failed to update parking spot.");
+      if (error?.response?.data?.code === "token_not_valid") {
+        handleTokenNotValid();
+      }
     }
   };
 
@@ -179,8 +189,12 @@ export default function EditParkingSpotForm({
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
       });
-    } catch (error) {
+      // eslint-disable-next-line
+    } catch (error: any) {
       console.log("Error deleting parking spot:", error);
+      if (error?.response?.data?.code === "token_not_valid") {
+        handleTokenNotValid();
+      }
     }
   };
 

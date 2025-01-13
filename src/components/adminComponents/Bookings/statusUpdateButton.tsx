@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/select";
 import axiosInstance from "@/lib/axiosInstance";
 import { getBookingKey } from "@/lib/utils";
+import { useAuth } from "@/context/authContext";
 
 export default function StatusUpdateButton({
   booking,
@@ -21,6 +22,7 @@ export default function StatusUpdateButton({
 }) {
   const [status, setStatus] = useState(booking.status);
   const [isLoading, setIsLoading] = useState(false);
+  const { handleTokenNotValid } = useAuth();
 
   const handleStatusChange = async (newStatus: string) => {
     setIsLoading(true);
@@ -36,8 +38,12 @@ export default function StatusUpdateButton({
       );
       setStatus(newStatus as BookingStatus);
       fetchBookings("/admin/parking-spot-app/bookings?limit=4");
-    } catch (error) {
+      // eslint-disable-next-line
+    } catch (error: any) {
       console.log("Error updating booking status:", error);
+      if (error?.response?.data?.code === "token_not_valid") {
+        handleTokenNotValid();
+      }
     } finally {
       setIsLoading(false);
     }

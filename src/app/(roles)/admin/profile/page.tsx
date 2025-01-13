@@ -23,6 +23,7 @@ import axiosInstance from "@/lib/axiosInstance";
 import { toast } from "react-toastify";
 import { Badge } from "@/components/ui/badge";
 import { ProfileSkeleton } from "@/components/adminComponents/profile/profileSkeleton";
+import { useAuth } from "@/context/authContext";
 
 const profileSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -49,6 +50,7 @@ export default function EditProfilePage() {
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const { handleTokenNotValid } = useAuth();
 
   const form = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
@@ -78,14 +80,18 @@ export default function EditProfilePage() {
           setPreviewImage(res.data.photo);
           setLoading(false);
         }
-      } catch (error) {
+        // eslint-disable-next-line
+      } catch (error: any) {
         console.log("Error fetching profile data:", error);
         setLoading(false);
+        if (error?.response?.data?.code === "token_not_valid") {
+          handleTokenNotValid();
+        }
       }
     };
 
     fetchProfile();
-  }, [form]);
+  }, [form, handleTokenNotValid]);
 
   const onSubmit = async (data: ProfileFormData) => {
     const formData = new FormData();
@@ -121,11 +127,15 @@ export default function EditProfilePage() {
       if (res.status === 200) {
         toast.success("Your profile has been successfully updated.");
       }
-    } catch (error) {
+      // eslint-disable-next-line
+    } catch (error: any) {
       console.log("Error updating profile:", error);
       toast.error(
         "An error occurred while updating your profile. Please try again."
       );
+      if (error?.response?.data?.code === "token_not_valid") {
+        handleTokenNotValid();
+      }
     }
   };
 
