@@ -103,24 +103,34 @@ export default function SearchPage() {
   };
 
   const GetQueryParams = useCallback(() => {
-    return new URLSearchParams({
-      ...(userPosition && {
-        latitude: userPosition[0].toString(),
-        longitude: userPosition[1].toString(),
-      }),
-      ...(search && { search }),
-      ...(activeFilters &&
-        Object.fromEntries(
-          activeFilters.vehicle_type.flatMap((vehicle_type) => [
-            ["vehicle_type", vehicle_type],
-          ])
-        )),
-      ...(activeFilters &&
-        Object.fromEntries(
-          activeFilters.features.flatMap((feature) => [["features", feature]])
-        )),
-      ...(ordering && { ordering }),
-    });
+    const params = new URLSearchParams();
+
+    if (userPosition) {
+      params.append("latitude", userPosition[0].toString());
+      params.append("longitude", userPosition[1].toString());
+    }
+
+    if (search) {
+      params.append("search", search);
+    }
+
+    if (activeFilters) {
+      // Add multiple values for 'vehicle_type'
+      activeFilters.vehicle_type.forEach((vehicle_type) =>
+        params.append("vehicle_type", vehicle_type)
+      );
+
+      // Add multiple values for 'features'
+      activeFilters.features.forEach((feature) =>
+        params.append("features", feature)
+      );
+    }
+
+    if (ordering) {
+      params.append("ordering", ordering);
+    }
+
+    return params;
   }, [userPosition, search, activeFilters, ordering]);
 
   // Set user location
@@ -161,8 +171,7 @@ export default function SearchPage() {
       try {
         const queryParams = GetQueryParams();
         const res = await axiosInstance.get(
-          `/public/parking-app/parking-spots?${queryParams.toString()}&limit=${limit}&offset=${
-            offset.current
+          `/public/parking-app/parking-spots?${queryParams.toString()}&limit=${limit}&offset=${offset.current
           }`
         );
         setParkings(res.data.results);
