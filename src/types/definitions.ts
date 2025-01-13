@@ -173,3 +173,5 @@ export interface Booking {
   parkingSpot: number;
   user: number;
 }
+
+

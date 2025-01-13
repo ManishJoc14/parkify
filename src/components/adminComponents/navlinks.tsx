@@ -1,22 +1,23 @@
 "use client";
 
-import { HomeIcon, Settings, User } from "lucide-react";
+import { CalendarCheck, ChartNoAxesCombined, HomeIcon, Settings } from "lucide-react";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
 
 const links = [
-  { name: "Bookings", href: "/admin/bookings", icon: HomeIcon },
+  { name: "Analytics", href: "/admin/analytics", icon: ChartNoAxesCombined },
+  { name: "Bookings", href: "/admin/bookings", icon: CalendarCheck },
   {
     name: "Parking Spots",
     href: "/admin/parking-spots",
-    icon: Settings,
+    icon: HomeIcon,
   },
   {
     name: "Profile",
     href: "/admin/profile",
-    icon: User,
+    icon: Settings,
   },
 ];
 

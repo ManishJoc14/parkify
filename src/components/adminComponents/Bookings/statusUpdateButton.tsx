@@ -55,8 +55,8 @@ export default function StatusUpdateButton({
       onValueChange={handleStatusChange}
       disabled={isLoading}
     >
-      <SelectTrigger className="w-[145px]">
-        <SelectValue placeholder="Update status" />
+      <SelectTrigger className="w-[115px]">
+        <SelectValue placeholder="Update to" />
       </SelectTrigger>
       <SelectContent>
         {Object.keys(BookingStatus).map((statusOption) => (

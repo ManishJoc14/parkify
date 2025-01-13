@@ -194,6 +194,11 @@ export const timeAgo = (timestamp: string): string => {
   return `${diffYears} years ago`;
 };
 
+export const formatTimeTo12Hour = (time: string): string => {
+  const date = new Date(`1970-01-01T${time}`);
+  return format(date, "hh:mm a");
+}
+
 /**
  * Generates a parking token image based on the API response.
  * @param response API response containing parking booking details.
@@ -207,62 +212,72 @@ export function generateParkingToken(
   amount: string,
   vehicleNo: string,
   vehicle: VehicleType
-): string {
-  // Destructure the response
-  const { bookingNo, startTime, endTime, status, paymentStatus } = response;
+): string | undefined {
+  try {
+    // Destructure the response
+    const { bookingNo, startTime, endTime, status, paymentStatus } = response;
 
-  // Create a canvas
-  const canvas = createCanvas(600, 420);
-  const ctx = canvas.getContext("2d");
+    const start = startTime.split("T")[0] + " " + formatTimeTo12Hour(response.startTime.split("T")[1]);
+    const end = endTime.split("T")[0] + " " + formatTimeTo12Hour(response.endTime.split("T")[1]);
 
-  // Background with a light gradient
-  const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-  gradient.addColorStop(0, "#f9f9f9");
-  gradient.addColorStop(1, "#e9e9e9");
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Draw a border
-  ctx.strokeStyle = "#cccccc";
-  ctx.lineWidth = 5;
-  ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
+    // Create a canvas
+    const canvas = createCanvas(600, 420);
+    const ctx = canvas.getContext("2d");
 
-  // Title
-  ctx.fillStyle = "#333333";
-  ctx.font = "bold 28px Arial";
-  ctx.textAlign = "center";
-  ctx.fillText("Parkify", canvas.width / 2, 50);
+    // Background with a light gradient
+    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    gradient.addColorStop(0, "#f9f9f9");
+    gradient.addColorStop(1, "#e9e9e9");
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Separator
-  ctx.strokeStyle = "#dddddd";
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(20, 70);
-  ctx.lineTo(canvas.width - 20, 70);
-  ctx.stroke();
+    // Draw a border
+    ctx.strokeStyle = "#cccccc";
+    ctx.lineWidth = 5;
+    ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
 
-  // Draw details
-  ctx.textAlign = "left";
-  ctx.font = "18px Arial";
-  ctx.fillStyle = "#555555";
-  ctx.fillText(`Booking No: ${bookingNo}`, 30, 100); // Booking number
-  ctx.fillText(`Vehicle No: ${vehicleNo}`, 30, 140); // Vehicle number
-  ctx.fillText(`Vehicle Type: ${vehicle}`, 30, 180); // Vehicle type
-  ctx.fillText(`Start Time: ${new Date(startTime).toLocaleString()}`, 30, 220); // Start time
-  ctx.fillText(`End Time: ${new Date(endTime).toLocaleString()}`, 30, 260); // End time
-  ctx.fillText(`Amount: £${amount}`, 30, 300); // Amount
-  ctx.fillText(`Status: ${status}`, 30, 330); // Booking status
-  ctx.fillText(`Payment Status: ${paymentStatus}`, 30, 360); // Payment status
+    // Title
+    ctx.fillStyle = "#333333";
+    ctx.font = "bold 28px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText("Parkify", canvas.width / 2, 50);
 
-  // Footer
-  ctx.fillStyle = "#777777";
-  ctx.font = "italic 16px Arial";
-  ctx.textAlign = "center";
-  ctx.fillText("Thank you for using our service!", canvas.width / 2, 400);
+    // Separator
+    ctx.strokeStyle = "#dddddd";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(20, 70);
+    ctx.lineTo(canvas.width - 20, 70);
+    ctx.stroke();
 
-  // Return the image as a base64 string
-  return canvas.toDataURL();
+    // Draw details
+    ctx.textAlign = "left";
+    ctx.font = "18px Arial";
+    ctx.fillStyle = "#555555";
+    ctx.fillText(`Booking No: ${bookingNo}`, 30, 100); // Booking number
+    ctx.fillText(`Vehicle No: ${vehicleNo}`, 30, 140); // Vehicle number
+    ctx.fillText(`Vehicle Type: ${vehicle}`, 30, 180); // Vehicle type
+    ctx.fillText(`Start Time: ${start} `, 30, 220); // Start time
+    ctx.fillText(`End Time: ${end} `, 30, 260); // End time
+    ctx.fillText(`Amount: £${amount}`, 30, 300); // Amount
+    ctx.fillText(`Status: ${status}`, 30, 330); // Booking status
+    ctx.fillText(`Payment Status: ${paymentStatus}`, 30, 360); // Payment status
+
+    // Footer
+    ctx.fillStyle = "#777777";
+    ctx.font = "italic 16px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText("Thank you for using our service!", canvas.width / 2, 400);
+
+    // Return the image as a base64 string
+    return canvas.toDataURL();
+
+  } catch (error) {
+    console.error("Error generating parking token:", error);
+  }
 }
+
 
 export const isValidTime = (
   start: string,
@@ -356,7 +371,7 @@ export const isValidTime = (
     isAfter(startTime, availabilityEndTime)
   ) {
     toast.error(
-      `Start time is not valid. Please choose between ${availabilityForStartDay.startTime} and ${availabilityForStartDay.endTime}`,
+      `Start time is not valid. Please choose between ${formatTimeTo12Hour(availabilityForStartDay.startTime)} and ${formatTimeTo12Hour(availabilityForStartDay.endTime)}`,
       { autoClose: 20000 }
     );
     return false;
@@ -368,7 +383,7 @@ export const isValidTime = (
     isAfter(endTime, availabilityEndTime)
   ) {
     toast.error(
-      `End time is not valid. Please choose between ${availabilityForEndDay.startTime} and ${availabilityForEndDay.endTime}`,
+      `End time is not valid. Please choose between ${formatTimeTo12Hour(availabilityForEndDay.startTime)} and ${formatTimeTo12Hour(availabilityForEndDay.endTime)}`,
       { autoClose: 20000 }
     );
     return false;

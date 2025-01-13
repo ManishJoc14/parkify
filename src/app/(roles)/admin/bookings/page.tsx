@@ -2,7 +2,7 @@ import BookingsPage from "@/components/adminComponents/Bookings/bookingsPage";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Dashboard",
+  title: "Bookings",
 };
 
 export default async function Page() {
