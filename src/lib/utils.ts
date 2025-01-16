@@ -217,8 +217,8 @@ export function generateParkingToken(
     // Destructure the response
     const { bookingNo, startTime, endTime, status, paymentStatus } = response;
 
-    const start = startTime.split("T")[0] + " " + formatTimeTo12Hour(response.startTime.split("T")[1]);
-    const end = endTime.split("T")[0] + " " + formatTimeTo12Hour(response.endTime.split("T")[1]);
+    const start = startTime.split("T")[0] + " " + formatTimeTo12Hour(response.startTime.split("T")[1].slice(0,8));
+    const end = endTime.split("T")[0] + " " + formatTimeTo12Hour(response.endTime.split("T")[1].slice(0,8));
 
 
     // Create a canvas
